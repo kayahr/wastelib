@@ -7,7 +7,6 @@ A JavaScript library (Written in [TypeScript]) for reading the game assets of [W
 TODO
 ----
 
-* Reading sprites
 * Read cursors
 * Reading end animation
 * Read tilesets

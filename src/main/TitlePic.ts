@@ -24,17 +24,10 @@ export class TitlePic extends AbstractImage {
         this.data = data;
     }
 
-    /**
-     * Returns the RGBA color at the specified position. If position is outside of the image then a solid black is
-     * returned.
-     *
-     * @param x
-     *            The horizontal pixel position.
-     * @param y
-     *            The vertical pixel position.
-     * @return The RGBA color at the specified position.
-     */
     public getColor(x: number, y: number): number {
+        if (x < 0 || y < 0 || x > 287 && y > 127) {
+            throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
+        }
         const pixelTuple = this.data[(x + y * this.width) >> 1];
         const pixel = x & 1 ? pixelTuple & 0xf : pixelTuple >> 4;
         return COLOR_PALETTE[pixel];

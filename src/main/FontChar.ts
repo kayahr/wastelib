@@ -30,12 +30,15 @@ export class FontChar extends AbstractImage {
     }
 
     public getColor(x: number, y: number): number {
-        const bit = 7 - x;
-        const red = (this.data[y] >> bit) & 0x01;
-        const green = (this.data[y + 8] >> bit) & 0x01;
-        const blue = (this.data[y + 16] >> bit) & 0x01;
-        const intensity = (this.data[y + 24] >> bit) & 0x01;
-        const pixel = red | (green << 1) | (blue << 2) | (intensity << 3);
+        if (x < 0 || y < 0 || x > 7 && y > 7) {
+            throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
+        }
+        const bit = 7 - (x & 7);
+        const data = this.data;
+        const pixel = (((data[y] >> bit) & 1) << 0) // Blue
+            | (((data[y + 8] >> bit) & 1) << 1)     // Green
+            | (((data[y + 16] >> bit) & 1) << 2)    // Red
+            | (((data[y + 24] >> bit) & 1) << 3);   // Intensity
         return COLOR_PALETTE[pixel];
     }
 
@@ -47,6 +50,6 @@ export class FontChar extends AbstractImage {
      * @return The parsed font.
      */
     public static fromArrayBuffer(buffer: ArrayBuffer, offset?: number): FontChar {
-        return new FontChar(new Uint8Array(buffer, offset));
+        return new FontChar(new Uint8Array(buffer, offset, 32));
     }
 }
