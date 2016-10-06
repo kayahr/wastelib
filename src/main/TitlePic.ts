@@ -3,32 +3,41 @@
  * See LICENSE.md for licensing information.
  */
 
-import { decodeVxor } from "./vxor";
-import { EgaImage } from "./EgaImage";
+import { AbstractImage } from "./AbstractImage";
+import { COLOR_PALETTE } from "./colors";
 
 /**
  * Container for the title pic image.
  */
-export class TitlePic extends EgaImage {
+export class TitlePic extends AbstractImage {
+    /** The image data. Each byte contains two pixels. */
+    private data: ArrayLike<number>;
+
     /**
      * Creates a new title pic image with the given EGA image data.
      *
      * @param data
      *            The (vxor-decoded) EGA image data of the title.pic image.
      */
-    public constructor(data: ArrayLike<number>) {
-        super(data, 288, 128);
+    private constructor(data: ArrayLike<number>) {
+        super(288, 128);
+        this.data = data;
     }
 
     /**
-     * Parses a title pic image from the given vxor encoded array and returns it.
+     * Returns the RGBA color at the specified position. If position is outside of the image then a solid black is
+     * returned.
      *
-     * @param data
-     *            The vxor encoded array.
-     * @return The parsed title.pic image.
+     * @param x
+     *            The horizontal pixel position.
+     * @param y
+     *            The vertical pixel position.
+     * @return The RGBA color at the specified position.
      */
-    public static fromArray(data: ArrayLike<number>): TitlePic {
-        return new TitlePic(decodeVxor(data, 144));
+    public getColor(x: number, y: number): number {
+        const pixelTuple = this.data[(x + y * this.width) >> 1];
+        const pixel = x & 1 ? pixelTuple & 0xf : pixelTuple >> 4;
+        return COLOR_PALETTE[pixel];
     }
 
     /**
@@ -39,7 +48,11 @@ export class TitlePic extends EgaImage {
      * @return The parsed title.pic image.
      */
     public static fromArrayBuffer(buffer: ArrayBuffer): TitlePic {
-        return TitlePic.fromArray(new Uint8Array(buffer));
+        const data = new Uint8Array(buffer);
+        for (let i = 144, j = 0, max = data.length; i < max; ++i, ++j) {
+            data[i] ^= data[j];
+        }
+        return new TitlePic(data);
     }
 
     /**

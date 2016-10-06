@@ -9,13 +9,13 @@ TODO
 
 * Reading sprites
 * Read cursors
-* Read font
 * Reading end animation
 * Read tilesets
 * Read encounter animations
 * Read game data (Maps, shop item lists, savegame)
 * Node.js compatibility
 * Create namespaced bundle for simple web deployment
+* Write unit tests
 
 
 Build
