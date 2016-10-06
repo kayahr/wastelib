@@ -7,7 +7,7 @@ import { AbstractImage } from "./AbstractImage";
 import { COLOR_PALETTE, TRANSPARENCY } from "./colors";
 
 /**
- * Container for a single sprite image image.
+ * Container for a single sprite image.
  */
 export class Sprite extends AbstractImage {
     /** The image data. */
