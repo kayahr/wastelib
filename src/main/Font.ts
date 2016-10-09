@@ -46,6 +46,15 @@ export class Font {
     }
 
     /**
+     * Returns the number of characters.
+     *
+     * @return THe number of characters.
+     */
+    public getNumChars(): number {
+        return this.chars.length;
+    }
+
+    /**
      * Parses a font from the given array buffer and returns it.
      *
      * @param buffer

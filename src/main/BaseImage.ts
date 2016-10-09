@@ -4,9 +4,9 @@
  */
 
 /**
- * Base class for all wasteland specific images.
+ * Base class for all images.
  */
-export abstract class AbstractImage {
+export abstract class BaseImage {
     /** The image width in pixels. */
     protected width: number;
 

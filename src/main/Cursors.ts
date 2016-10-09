@@ -46,6 +46,15 @@ export class Cursors {
     }
 
     /**
+     * Returns the number of mouse cursors.
+     *
+     * @return THe number of mouse cursors.
+     */
+    public getNumCursors(): number {
+        return this.cursors.length;
+    }
+
+    /**
      * Parses the mouse cursor images from the given array buffer and returns it.
      *
      * @param buffer

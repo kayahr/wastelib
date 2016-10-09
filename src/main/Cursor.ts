@@ -3,13 +3,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AbstractImage } from "./AbstractImage";
+import { BaseImage } from "./BaseImage";
 import { COLOR_PALETTE, TRANSPARENCY } from "./colors";
 
 /**
  * Container for a single mouse cursor image.
  */
-export class Cursor extends AbstractImage {
+export class Cursor extends BaseImage {
     /** The image data. */
     private data: ArrayLike<number>;
 

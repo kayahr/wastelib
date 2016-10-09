@@ -6,14 +6,11 @@
 /** Transparent RGBA color. */
 export const TRANSPARENCY = 0x00000000;
 
-/** A solid black. */
-export const BLACK = 0x000000ff;
-
 /**
  * The 16 colors (In RGBA format) used by the game graphics.
  */
 export const COLOR_PALETTE = [
-    BLACK,      //  0 = black
+    0x000000ff, //  0 = black
     0x0000aaff, //  1 = blue
     0x00aa00ff, //  2 = green
     0x00aaaaff, //  3 = cyan

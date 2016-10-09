@@ -8,7 +8,6 @@ TODO
 ----
 
 * Reading end animation
-* Read tilesets
 * Read encounter animations
 * Read game data (Maps, shop item lists, savegame)
 * Node.js compatibility

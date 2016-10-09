@@ -3,13 +3,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AbstractImage } from "./AbstractImage";
+import { BaseImage } from "./BaseImage";
 import { COLOR_PALETTE, TRANSPARENCY } from "./colors";
 
 /**
  * Container for a single sprite image.
  */
-export class Sprite extends AbstractImage {
+export class Sprite extends BaseImage {
     /** The image data. */
     private data: ArrayLike<number>;
 

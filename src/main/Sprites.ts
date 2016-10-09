@@ -46,6 +46,15 @@ export class Sprites {
     }
 
     /**
+     * Returns the number of srpites.
+     *
+     * @return The number of sprites.
+     */
+    public getNumSprites(): number {
+        return this.sprites.length;
+    }
+
+    /**
      * Parses sprites from the given array buffers and returns it.
      *
      * @param dataBuffer

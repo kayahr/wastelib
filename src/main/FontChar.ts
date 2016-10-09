@@ -3,13 +3,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AbstractImage } from "./AbstractImage";
+import { BaseImage } from "./BaseImage";
 import { COLOR_PALETTE } from "./colors";
 
 /**
  * Container for a single font character image.
  */
-export class FontChar extends AbstractImage {
+export class FontChar extends BaseImage {
     /**
      * The image data. 32 bytes. Each byte contains one color component for 8 pixels. So first pixel contains the red
      * component bits of the first image row, second pixel contains the green component bits, third bit contains the
