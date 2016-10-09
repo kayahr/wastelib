@@ -68,4 +68,55 @@ export class Tileset {
         }
         return this.tiles[index];
     }
+
+    /**
+     * Creates and returns a new canvas containing the tileset image. 16 tilesets per row.
+     *
+     * @return The created canvas.
+     */
+    public toCanvas(): HTMLCanvasElement {
+        const tiles = this.tiles;
+        const numTiles = tiles.length;
+        const canvas = document.createElement("canvas");
+        canvas.width = 256;
+        canvas.height = Math.ceil(numTiles / 16) * 16;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            throw new Error("Unable to create 2D rendering context");
+        }
+        for (let i = 0; i < numTiles; ++i) {
+            this.getTile(i).draw(ctx, (i & 15) << 4, i >> 4 << 4);
+        }
+        return canvas;
+    }
+
+    /**
+     * Creates and returns a tileset image data URL. 16 tiles per row.
+     *
+     * @param type
+     *            Optional image mime type. Defaults to image/png.
+     * @param args
+     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *            with a default value of 0.92.
+     * @return The created data URL.
+     */
+    public toDataUrl(type?: string, ...args: any[]): string {
+        return this.toCanvas().toDataURL(type, ...args);
+    }
+
+    /**
+     * Creates and returns a HTML image of the tileset. 16 tiles per row.
+     *
+     * @param type
+     *            Optional image mime type. Defaults to image/png.
+     * @param args
+     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *            with a default value of 0.92.
+     * @return The created HTML image.
+     */
+    public toImage(type?: string, ...args: any[]): HTMLImageElement {
+        const image = new Image();
+        image.src = this.toDataUrl(type, ...args);
+        return image;
+    }
 }

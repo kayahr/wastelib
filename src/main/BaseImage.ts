@@ -56,19 +56,19 @@ export abstract class BaseImage {
     public abstract getColor(x: number, y: number): number;
 
     /**
-     * Creates and returns a new canvas containing the image.
+     * Draws the image onto the given rendering context.
      *
-     * @return The created canvas.
+     * @param ctx
+     *            The rendering context to draw the image to.
+     * @param x
+     *            Optional horizontal target position. Defaults to 0.
+     * @param y
+     *            Optional vertical target position. Defaults to 0.
      */
-    public toCanvas(): HTMLCanvasElement {
-        const canvas = document.createElement("canvas");
-        const width = canvas.width = this.width;
-        const height = canvas.height = this.height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-            throw new Error("Unable to create 2D rendering context");
-        }
-        const imageData = ctx.getImageData(0, 0, width, height);
+    public draw(ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0): void {
+        const width = this.width;
+        const height = this.height;
+        const imageData = ctx.createImageData(width, height);
         const pixels = imageData.data;
         let rgbaIndex = 0;
         for (let y = 0; y < height; ++y) {
@@ -80,7 +80,23 @@ export abstract class BaseImage {
                 pixels[rgbaIndex++] = color & 0xff;
             }
         }
-        ctx.putImageData(imageData, 0, 0);
+        ctx.putImageData(imageData, x, y);
+    }
+
+    /**
+     * Creates and returns a new canvas containing the image.
+     *
+     * @return The created canvas.
+     */
+    public toCanvas(): HTMLCanvasElement {
+        const canvas = document.createElement("canvas");
+        canvas.width = this.width;
+        canvas.height = this.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            throw new Error("Unable to create 2D rendering context");
+        }
+        this.draw(ctx);
         return canvas;
     }
 

@@ -82,7 +82,6 @@ export class Tilesets {
             for (let i = 0; i < numOfTiles; ++i) {
                 tiles.push(Tile.fromArray(decoded, i * 128));
             }
-            console.log(decoded.length);
             tilesets.push(new Tileset(tiles, disk));
         }
         return new Tilesets(tilesets);
