@@ -1,0 +1,30 @@
+body {
+    font-family: "Sans Serif";
+}
+
+#demo {
+    display: none;
+}
+
+#installer {
+    border: 1px solid red;
+    background: #fdd;
+    display: none;
+}
+
+#installer p {
+    margin: 10px;
+    padding: 0;
+}
+
+#installer p .filenames {
+    font-weight: bold;
+}
+
+#output {
+    margin-top: 1em;
+}
+
+img, canvas {
+    margin: 0 5px 5px 0;
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>wastelib demo</title>
+    <script src="../../node_modules/systemjs/dist/system.js"></script>
+    <script src="system-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>wastelib demo</h1>
+
+    <div id="installer">
+      <p>
+        The demo needs access to the original Wasteland data files on your system. Please click the
+        <strong>Browse</strong> button below and multi-select the following files:
+        <span class="filenames"></span>
+      </p>
+      <p>
+        <input type="file" class="selector" multiple />
+      </p>
+      <p>
+        If you have the Steam version of Wasteland then you may find the files here:
+      </p>
+      <ul>
+        <li>Linux: <strong>~/.steam/steam/steamapps/common/Wasteland/rom/data</strong></li>
+        <li>Windows: <strong>C:\Program Files\Steam\SteamApps\common\Wasteland\rom\data</strong></li>
+      </ul>
+    </div>
+
+    <div id="demo">
+      <nav>
+        <button id="cursors">Cursors</button>
+        <button id="cursors-map">Cursors (Map)</button>
+        <button id="font">Font</button>
+        <button id="font-map">Font (Map)</button>
+        <button id="sprites">Sprites</button>
+        <button id="sprites-map">Sprites (Map)</button>
+        <button id="tilesets">Tilesets</button>
+        <button id="tilesets-map">Tilesets (Map)</button>
+        <button id="title">Title</button>
+      </nav>
+      <div id="output"></div>
+    </div>
+
+    <script>System.import("../../lib/demo/demo")</script>
+  </body>
+</html>

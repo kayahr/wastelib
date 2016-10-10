@@ -92,4 +92,55 @@ export class Font {
             }
         });
     }
+
+    /**
+     * Creates and returns a new canvas containing all characters of the font. 16 characters per row.
+     *
+     * @return The created canvas.
+     */
+    public toCanvas(): HTMLCanvasElement {
+        const chars = this.chars;
+        const numChars = chars.length;
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = Math.ceil(numChars / 8) * 8;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+            throw new Error("Unable to create 2D rendering context");
+        }
+        for (let i = 0; i < numChars; ++i) {
+            this.getChar(i).draw(ctx, (i & 15) << 3, i >> 4 << 3);
+        }
+        return canvas;
+    }
+
+    /**
+     * Creates and returns a font image data URL. 16 font characters per row.
+     *
+     * @param type
+     *            Optional image mime type. Defaults to image/png.
+     * @param args
+     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *            with a default value of 0.92.
+     * @return The created data URL.
+     */
+    public toDataUrl(type?: string, ...args: any[]): string {
+        return this.toCanvas().toDataURL(type, ...args);
+    }
+
+    /**
+     * Creates and returns a HTML image of the font. 16 font characters per row.
+     *
+     * @param type
+     *            Optional image mime type. Defaults to image/png.
+     * @param args
+     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *            with a default value of 0.92.
+     * @return The created HTML image.
+     */
+    public toImage(type?: string, ...args: any[]): HTMLImageElement {
+        const image = new Image();
+        image.src = this.toDataUrl(type, ...args);
+        return image;
+    }
 }

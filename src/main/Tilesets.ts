@@ -21,7 +21,7 @@ export class Tilesets {
      * @parm chars
      *           The tilesets.
      */
-    private constructor(tilesets: Tileset[]) {
+    private constructor(...tilesets: Tileset[]) {
         this.tilesets = tilesets;
     }
 
@@ -84,7 +84,7 @@ export class Tilesets {
             }
             tilesets.push(new Tileset(tiles, disk));
         }
-        return new Tilesets(tilesets);
+        return new Tilesets(...tilesets);
     }
 
     /**
@@ -108,6 +108,12 @@ export class Tilesets {
             } catch (e) {
                 reject(e);
             }
+        });
+    }
+
+    public static fromFiles(file1: File, file2: File): Promise<Tilesets> {
+        return Promise.all([this.fromFile(file1), this.fromFile(file2)]).then(tilesets => {
+            return new Tilesets(...tilesets[0].tilesets, ...tilesets[1].tilesets);
         });
     }
 }
