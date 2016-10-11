@@ -7,7 +7,6 @@ A JavaScript library (Written in [TypeScript]) for reading the game assets of [W
 TODO
 ----
 
-* Reading end animation
 * Read encounter animations
 * Read game data (Maps, shop item lists, savegame)
 * Node.js compatibility

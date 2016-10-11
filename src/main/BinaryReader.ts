@@ -94,6 +94,21 @@ export class BinaryReader {
     }
 
     /**
+     * Reads the specified number of unsigned 8 bit values and returns it.
+     *
+     * @param len
+     *            The number of bytes to read.
+     * @return The read bytes.
+     */
+    public readUint8s(len: number): number[] {
+        const result: number[] = [];
+        for (let i = 0; i < len; ++i) {
+            result.push(this.readUint8());
+        }
+        return result;
+    }
+
+    /**
      * Reads an unsigned 16 bit value and returns it.
      *
      * @return The read value.

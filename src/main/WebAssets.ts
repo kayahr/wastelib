@@ -8,6 +8,7 @@ import { Tilesets } from "./Tilesets";
 import { Cursors } from "./Cursors";
 import { Font } from "./Font";
 import { Sprites } from "./Sprites";
+import { EndAnim } from "./EndAnim";
 
 /** The version of the indexed DB used to store the Wasteland files in the browser. */
 const dbVersion = 1;
@@ -228,6 +229,15 @@ export class WebAssets {
      */
     public readCursors(): Promise<Cursors> {
         return Cursors.fromFile(this.getFile("CURS"));
+    }
+
+    /**
+     * Reads the end animation from the END.CPA file and returns them.
+     *
+     * @return The end animation.
+     */
+    public readEndAnim(): Promise<EndAnim> {
+        return EndAnim.fromFile(this.getFile("END.CPA"));
     }
 
     /**

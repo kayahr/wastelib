@@ -4,6 +4,7 @@
  */
 
 import { WebAssets } from "../main/WebAssets";
+import { EndAnimPlayer } from "../main/EndAnimPlayer";
 
 /**
  * Shows the installer panel and let the user select the Wasteland files. These selected files are then returned
@@ -50,6 +51,36 @@ WebAssets.create(installer).then(assets => {
         assets.readCursors().then(cursors => {
             output.innerHTML = "";
             output.appendChild(cursors.toImage());
+        });
+    });
+
+    // End animation
+    document.querySelector("#end").addEventListener("click", () => {
+        assets.readEndAnim().then(endAnim => {
+            const player = new EndAnimPlayer(endAnim);
+            output.innerHTML = "";
+            output.appendChild(player.getCanvas());
+            (<any>window).player = player;
+
+            const buttons = document.createElement("div");
+            output.appendChild(buttons);
+
+            const nextButton = document.createElement("button");
+            nextButton.innerHTML = "Next";
+            nextButton.onclick = () => player.next();
+            buttons.appendChild(nextButton);
+            const startButton = document.createElement("button");
+            startButton.innerHTML = "Start";
+            startButton.onclick = () => player.start();
+            buttons.appendChild(startButton);
+            const stopButton = document.createElement("button");
+            stopButton.innerHTML = "Stop";
+            stopButton.onclick = () => player.stop();
+            buttons.appendChild(stopButton);
+            const resetButton = document.createElement("button");
+            resetButton.innerHTML = "Reset";
+            resetButton.onclick = () => player.reset();
+            buttons.appendChild(resetButton);
         });
     });
 
