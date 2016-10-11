@@ -14,7 +14,7 @@ import { EndAnimPlayer } from "../main/EndAnimPlayer";
  *            The names of the Wasteland files that need to be selected.
  * @return The Wasteland files selected by the user.
  */
-function installer(filenames: string[]): Promise<File> {
+function installer(filenames: string[]): Promise<File[]> {
     return new Promise((resolve, reject) => {
         const panel = <HTMLElement>document.querySelector("#installer");
         const filenameList = <HTMLElement>panel.querySelector(".filenames");

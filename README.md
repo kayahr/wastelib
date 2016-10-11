@@ -13,7 +13,6 @@ This library is currently under development and the following features are not y
 
 * Read encounter animations
 * Read game data (Maps, shop item lists, savegame)
-* Node.js compatibility
 * Create namespaced bundle for simple web deployment
 * Write unit tests
 
@@ -97,6 +96,49 @@ const data = fs.readFileSync("title.pic");
 const titlePic = TitlePic.fromArray(data);
 ```
 
+
+Web Assets
+----------
+
+Because of copyright issues you don't want to include the Wasteland files in your web application and you want to rely
+on the users installation of Wasteland. But this means the user has to select the files in the browser so JavaScript
+can read them. To improve the usability of the library in a web environment wastelib provides a class called
+`WebAssets`. This class is an asset factory which can be used to store and retrieve all the original Wasteland files in
+the browser by using the [IndexedDB API].
+
+The user has to select all the files on the local system once and this selection is a UI specific task and not the
+responsibility of wastelib. But you only need to implement a single callback function for this which then
+asynchronously provides the selected files. Everything else is handled by wastelib.
+
+Here is a very simplistic example implementation:
+
+```javascript
+// This installer callback is only called if files are missing in the database
+function installer(filenames) {
+    return new Promise(function(resolve, reject) {
+        // Display some UI telling the user to select the Wasteland files with the provided file input element
+        var selector = document.createElement("input");
+        selector.type = "file";
+        document.body.appendChild(selector);
+        selector.onchange = function() {
+            document.body.removeChild(selector);
+            resolve(Array.prototype.slice.call(selector.files));
+        };
+    });
+}
+
+WebAssets.create(installer).then(function(assets) {
+    assets.readTitlePic().then(function(titlePic) {
+        // Do something with the title image
+    });
+    assets.readTilesets().then(function(tilesets) {
+        // Do something with the tilesets
+    });
+    // ... and so on ...
+});
+```
+
 [TypeScript]: https://www.typescriptlang.org/
 [Wasteland]: https://en.wikipedia.org/wiki/Wasteland_(video_game)
 [node-canvas]: https://www.npmjs.com/package/canvas
+[IndexedDB API]: https://developer.mozilla.org/nl/docs/IndexedDB
