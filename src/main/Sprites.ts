@@ -63,7 +63,7 @@ export class Sprites {
      *            The transparency mask array with the masks.wlf file content to parse.
      * @return The parsed sprites.
      */
-    public static fromArray(imageArray: Uint8Array, maskArray: Uint8Array): Sprites {
+    public static fromArrays(imageArray: Uint8Array, maskArray: Uint8Array): Sprites {
         const sprites: Sprite[] = [];
         for (let i = 0; i < 10; ++i) {
             sprites.push(Sprite.fromArray(imageArray, maskArray, i * 128, i * 32));
@@ -72,37 +72,37 @@ export class Sprites {
     }
 
     /**
-     * Parses sprites from the given files and returns it.
+     * Reads sprites from the given blobs and returns it.
      *
-     * @param file
-     *            The ic0_9.wlf file to read.
+     * @param imagesBlob
+     *            The IC0_9.WLF blob to read.
      * @param masksFile
-     *            The masks.wlf file to read.
-     * @return The parsed sprites.
+     *            The MASKS.WLF blob to read.
+     * @return The read sprites.
      */
-    public static fromFile(file: File, masksFile: File): Promise<Sprites> {
+    public static fromBlobs(imagesBlob: Blob, masksBlob: Blob): Promise<Sprites> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = () => {
+                reader.onload = event => {
                     try {
                         const masksReader = new FileReader();
-                        masksReader.onload = () => {
-                            resolve(Sprites.fromArray(new Uint8Array(reader.result),
+                        masksReader.onload = event => {
+                            resolve(Sprites.fromArrays(new Uint8Array(reader.result),
                                 new Uint8Array(masksReader.result)));
                         };
-                        masksReader.onerror = () => {
-                            reject(new Error("Unable to read sprite masks from file " + masksFile.name));
+                        masksReader.onerror = event => {
+                            reject(new Error("Unable to read sprite masks from blob: " + event.error));
                         };
-                        masksReader.readAsArrayBuffer(masksFile);
+                        masksReader.readAsArrayBuffer(masksBlob);
                     } catch (e) {
                         reject(e);
                     }
                 };
-                reader.onerror = () => {
-                    reject(new Error("Unable to read sprites from file " + file.name));
+                reader.onerror = event => {
+                    reject(new Error("Unable to read sprite images from blob: " + event.error));
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(imagesBlob);
             } catch (e) {
                 reject(e);
             }

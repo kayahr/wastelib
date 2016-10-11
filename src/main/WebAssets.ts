@@ -153,8 +153,8 @@ function putFiles(db: IDBDatabase, files: File[]): Promise<void> {
  *            The installation callback to call if not all Wasteland files were found in the database.
  * @return The file map with all Wasteland files.
  */
-function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[])
-    => Promise<File[]>): Promise<{ [name: string]: File }> {
+function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]) => Promise<File[]>):
+        Promise<{ [name: string]: File }> {
     return Promise.all(filenames.map(filename => getFile(db, filename))).then(files => {
         const missing: WastelandFilename[] = [];
         const fileMap: { [name: string]: File } = {};
@@ -205,7 +205,7 @@ export class WebAssets {
      *            returned list are ignored. The callback is called again if files are still missing.
      * @return The created web assets factory.
      */
-    public static create(installFiles: (filenames: WastelandFilename[]) => Promise<File[]>): Promise<WebAssets> {
+    public static create(installFiles: (filenames: WastelandFilename[]) => Promise<Blob[]>): Promise<WebAssets> {
         return openDB().then(db => {
             return getFiles(db, installFiles).then(fileMap => new WebAssets(fileMap));
         });
@@ -228,7 +228,7 @@ export class WebAssets {
      * @return The mouse cursors.
      */
     public readCursors(): Promise<Cursors> {
-        return Cursors.fromFile(this.getFile("CURS"));
+        return Cursors.fromBlob(this.getFile("CURS"));
     }
 
     /**
@@ -237,7 +237,7 @@ export class WebAssets {
      * @return The end animation.
      */
     public readEndAnim(): Promise<EndAnim> {
-        return EndAnim.fromFile(this.getFile("END.CPA"));
+        return EndAnim.fromBlob(this.getFile("END.CPA"));
     }
 
     /**
@@ -246,7 +246,7 @@ export class WebAssets {
      * @return The font.
      */
     public readFont(): Promise<Font> {
-        return Font.fromFile(this.getFile("COLORF.FNT"));
+        return Font.fromBlob(this.getFile("COLORF.FNT"));
     }
 
     /**
@@ -255,7 +255,7 @@ export class WebAssets {
      * @return The sprites.
      */
     public readSprites(): Promise<Sprites> {
-        return Sprites.fromFile(this.getFile("IC0_9.WLF"), this.getFile("MASKS.WLF"));
+        return Sprites.fromBlobs(this.getFile("IC0_9.WLF"), this.getFile("MASKS.WLF"));
     }
 
     /**
@@ -264,7 +264,7 @@ export class WebAssets {
      * @return The tilesets.
      */
     public readTilesets(): Promise<Tilesets> {
-        return Tilesets.fromFiles(this.getFile("ALLHTDS1"), this.getFile("ALLHTDS2"));
+        return Tilesets.fromBlobs(this.getFile("ALLHTDS1"), this.getFile("ALLHTDS2"));
     }
 
     /**
@@ -273,6 +273,6 @@ export class WebAssets {
      * @return The title image.
      */
     public readTitlePic(): Promise<TitlePic> {
-        return TitlePic.fromFile(this.getFile("TITLE.PIC"));
+        return TitlePic.fromBlob(this.getFile("TITLE.PIC"));
     }
 }

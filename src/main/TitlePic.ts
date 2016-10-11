@@ -32,23 +32,23 @@ export class TitlePic extends PicImage {
     }
 
     /**
-     * Parses a title pic image from the given file and returns it.
+     * Reads the tile image from the given blob and returns it.
      *
-     * @param file
-     *            The vxor encoded file.
-     * @return The parsed title.pic image.
+     * @param blob
+     *            The TITLE.PIC blob to read.
+     * @return The read title image.
      */
-    public static fromFile(file: File): Promise<TitlePic> {
+    public static fromBlob(blob: Blob): Promise<TitlePic> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = () => {
+                reader.onload = event => {
                     resolve(new TitlePic(decodeVxorInplace(new Uint8Array(reader.result), 144)));
                 };
-                reader.onerror = () => {
-                    reject(new Error("Unable to read title pic image from file " + file.name));
+                reader.onerror = event => {
+                    reject(new Error("Unable to read title pic image from blob: " + event.error));
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(blob);
             } catch (e) {
                 reject(e);
             }

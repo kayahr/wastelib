@@ -108,23 +108,23 @@ export class EndAnim extends PicImage {
     }
 
     /**
-     * Parses the end animation from the given file and returns it.
+     * Reads the end animation from the given blob and returns it.
      *
-     * @param file
-     *            The END.CPA file.
-     * @return The parsed end animation.
+     * @param blob
+     *            The END.CPA blob.
+     * @return The read end animation.
      */
-    public static fromFile(file: File): Promise<EndAnim> {
+    public static fromBlob(blob: Blob): Promise<EndAnim> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = () => {
+                reader.onload = event => {
                     resolve(EndAnim.fromArray(new Uint8Array(reader.result)));
                 };
-                reader.onerror = () => {
-                    reject(new Error("Unable to read end animation from file " + file.name));
+                reader.onerror = event => {
+                    reject(new Error("Unable to read end animation from blob: " + event.error));
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(blob);
             } catch (e) {
                 reject(e);
             }

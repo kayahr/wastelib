@@ -70,23 +70,23 @@ export class Cursors {
     }
 
     /**
-     * Parses mouse cursor images from the given file and returns it.
+     * Reads mouse cursor images from the given blob and returns it.
      *
      * @param file
-     *            The CURS file to read.
-     * @return The parsed mouse cursors.
+     *            The CURS blob to read.
+     * @return The read mouse cursors.
      */
-    public static fromFile(file: File): Promise<Cursors> {
+    public static fromBlob(blob: Blob): Promise<Cursors> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = () => {
+                reader.onload = event => {
                     resolve(Cursors.fromArray(new Uint8Array(reader.result)));
                 };
-                reader.onerror = () => {
-                    reject(new Error("Unable to read cursors from file " + file.name));
+                reader.onerror = event => {
+                    reject(new Error("Unable to read cursors from blob: " + event.error));
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(blob);
             } catch (e) {
                 reject(e);
             }

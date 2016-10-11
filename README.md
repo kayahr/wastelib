@@ -76,29 +76,27 @@ There are classes for each asset type of the game:
 * `Tilesets` - For parsing the tilesets from the `ALLHTDS1` and `ALLHTDS2` files.
 * `TitlePic` - For parsing the title image from the `TITLE.PIC` file.
 
-There are always two static methods to parse the files. The `fromFile()` method can be used with a `File` object
-which can be created by a file selector in the browser. The method asynchronously returns the parsed asset (Using
-the Promise API)
+There are always two static methods to parse the files. The `fromBlob()` (and/or `fromBlobs()`) method can be used with
+`Blob` or `File` objects which can be created by a file selector in the browser. The methods asynchronously returns the
+parsed asset (Using the Promise API):
 
 ```javascript
 const file = document.getElementById("selector").files[0];
 
-TitlePic.fromFile(file).then(titlePic => {
+TitlePic.fromBlob(file).then(titlePic => {
     ...
 });
 ```
 
-The `fromArray()` method can be used to parse a file which is already read into an array like structure. It can be
-a normal JavaScript array, a `Uint8Array` or a Node.js `Buffer` object. The asset is returned synchronously:
+The `fromArray()` (and/or `fromArrays()`) methods can be used to parse files which are already read into an
+`Uint8Array`. Node.js buffers are derived from this data type so it can be used as input as well. The assets are
+returned synchronously:
 
 ```javascript
 const data = fs.readFileSync("title.pic");
 const titlePic = TitlePic.fromArray(data);
 ```
 
-For parsing Sprites you have to specify two files:
-
-Sprites 
 
 Assets
 ------

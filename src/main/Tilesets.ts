@@ -87,31 +87,53 @@ export class Tilesets {
     }
 
     /**
-     * Reads tilesets from the given file.
+     * Reads tilesets from the given blob.
      *
-     * @param file
-     *            The file to read the tilesets from.
+     * @param blob
+     *            The ALLHTDS1 or ALLHTDS2 blob to read.
      * @return The read tilesets.
      */
-    public static fromFile(file: File): Promise<Tilesets> {
+    public static fromBlob(blob: Blob): Promise<Tilesets> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = () => {
+                reader.onload = event => {
                     resolve(Tilesets.fromArray(new Uint8Array(reader.result)));
                 };
-                reader.onerror = () => {
-                    reject(new Error("Unable to read tilesets from file " + file.name));
+                reader.onerror = event => {
+                    reject(new Error("Unable to read tilesets from blob: " + event.error));
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(blob);
             } catch (e) {
                 reject(e);
             }
         });
     }
 
-    public static fromFiles(file1: File, file2: File): Promise<Tilesets> {
-        return Promise.all([this.fromFile(file1), this.fromFile(file2)]).then(tilesets => {
+    /**
+     * Reads tilesets from the two given arrays.
+     *
+     * @param array1
+     *            The array with the ALLHTDS1 file content.
+     * @param array2
+     *            The array with the ALLHTDS2 file content.
+     * @return The read tilesets.
+     */
+    public static fromArrays(array1: Uint8Array, array2: Uint8Array): Tilesets {
+        return new Tilesets(...this.fromArray(array1).tilesets, ...this.fromArray(array2).tilesets);
+    }
+
+    /**
+     * Reads tilesets from the two given blobs.
+     *
+     * @param blob1
+     *            The ALLHTDS1 blob to read.
+     * @param blob2
+     *            The ALLHTDS2 blop to read
+     * @return The read tilesets.
+     */
+    public static fromBlobs(blob1: Blob, blob2: Blob): Promise<Tilesets> {
+        return Promise.all([this.fromBlob(blob1), this.fromBlob(blob2)]).then(tilesets => {
             return new Tilesets(...tilesets[0].tilesets, ...tilesets[1].tilesets);
         });
     }

@@ -70,23 +70,23 @@ export class Font {
     }
 
     /**
-     * Parses a font from the given file and returns it.
+     * Reads the color font from the given blob and returns it.
      *
-     * @param file
-     *            The colorf.fnt file to read.
-     * @return The parsed font.
+     * @param blob
+     *            The COLORF.FNT blob to read.
+     * @return The read font.
      */
-    public static fromFile(file: File): Promise<Font> {
+    public static fromBlob(blob: Blob): Promise<Font> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = () => {
+                reader.onload = event => {
                     resolve(Font.fromArray(new Uint8Array(reader.result)));
                 };
-                reader.onerror = () => {
-                    reject(new Error("Unable to read font from file " + file.name));
+                reader.onerror = event => {
+                    reject(new Error("Unable to read color font from blob: " + event.error));
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(blob);
             } catch (e) {
                 reject(e);
             }
