@@ -55,16 +55,16 @@ export class Font {
     }
 
     /**
-     * Parses a font from the given array buffer and returns it.
+     * Parses a font from the given array and returns it.
      *
      * @param buffer
-     *            The array buffer with the colorf.fnt file content to parse.
+     *            The array with the colorf.fnt file content to parse.
      * @return The parsed font.
      */
-    public static fromArrayBuffer(buffer: ArrayBuffer): Font {
+    public static fromArray(array: Uint8Array): Font {
         const chars: FontChar[] = [];
         for (let i = 0; i < 172; ++i) {
-            chars.push(FontChar.fromArrayBuffer(buffer, i * 32));
+            chars.push(FontChar.fromArray(array, i * 32));
         }
         return new Font(chars);
     }
@@ -81,7 +81,7 @@ export class Font {
             try {
                 const reader = new FileReader();
                 reader.onload = () => {
-                    resolve(Font.fromArrayBuffer(reader.result));
+                    resolve(Font.fromArray(new Uint8Array(reader.result)));
                 };
                 reader.onerror = () => {
                     reject(new Error("Unable to read font from file " + file.name));

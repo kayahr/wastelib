@@ -55,18 +55,18 @@ export class Sprites {
     }
 
     /**
-     * Parses sprites from the given array buffers and returns it.
+     * Parses sprites from the given arrays and returns it.
      *
-     * @param dataBuffer
-     *            The image data array buffer with the ico0_9.wlf file content to parse.
-     * @param maskBuffer
-     *            The transparency mask array buffer with the masks.wlf file content to parse.
+     * @param imageArray
+     *            The image data array with the ico0_9.wlf file content to parse.
+     * @param maskArray
+     *            The transparency mask array with the masks.wlf file content to parse.
      * @return The parsed sprites.
      */
-    public static fromArrayBuffer(dataBuffer: ArrayBuffer, maskBuffer: ArrayBuffer): Sprites {
+    public static fromArray(imageArray: Uint8Array, maskArray: Uint8Array): Sprites {
         const sprites: Sprite[] = [];
         for (let i = 0; i < 10; ++i) {
-            sprites.push(Sprite.fromArrayBuffer(dataBuffer, maskBuffer, i * 128, i * 32));
+            sprites.push(Sprite.fromArray(imageArray, maskArray, i * 128, i * 32));
         }
         return new Sprites(sprites);
     }
@@ -88,7 +88,8 @@ export class Sprites {
                     try {
                         const masksReader = new FileReader();
                         masksReader.onload = () => {
-                            resolve(Sprites.fromArrayBuffer(reader.result, masksReader.result));
+                            resolve(Sprites.fromArray(new Uint8Array(reader.result),
+                                new Uint8Array(masksReader.result)));
                         };
                         masksReader.onerror = () => {
                             reject(new Error("Unable to read sprite masks from file " + masksFile.name));

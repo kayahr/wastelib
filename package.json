@@ -9,6 +9,7 @@
   ],
   "license": "MIT",
   "main": "lib/main",
+  "typings": "lib/main/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/kayahr/wastelib.git"
@@ -25,9 +26,8 @@
     "lib",
     "src"
   ],
-  "dependencies": {
-  },
   "devDependencies": {
+    "@types/node": "^6.0.45",
     "del-cli": "^0.2.0",
     "jasmine": "~2.4.1",
     "systemjs": "^0.19.38",

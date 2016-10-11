@@ -43,13 +43,15 @@ export class FontChar extends BaseImage {
     }
 
     /**
-     * Parses a font from the given file and returns it.
+     * Parses a single font character from the given array and returns it.
      *
-     * @param file
-     *            The colorf.fnt file to read.
-     * @return The parsed font.
+     * @param buffer
+     *            The array with the content of the colorf.fnt file.
+     * @param offset
+     *            The offset in the array pointing to the font character.
+     * @return The parsed font character.
      */
-    public static fromArrayBuffer(buffer: ArrayBuffer, offset?: number): FontChar {
-        return new FontChar(new Uint8Array(buffer, offset, 32));
+    public static fromArray(array: Uint8Array, offset: number = 0): FontChar {
+        return new FontChar(array.slice(offset, offset + 32));
     }
 }

@@ -55,16 +55,16 @@ export class Cursors {
     }
 
     /**
-     * Parses the mouse cursor images from the given array buffer and returns it.
+     * Parses the mouse cursor images from the given array and returns it.
      *
      * @param buffer
-     *            The array buffer with the CURS file content to parse.
+     *            The array with the CURS file content to parse.
      * @return The parsed mouse cursors.
      */
-    public static fromArrayBuffer(buffer: ArrayBuffer): Cursors {
+    public static fromArray(array: Uint8Array): Cursors {
         const cursors: Cursor[] = [];
         for (let i = 0; i < 8; ++i) {
-            cursors.push(Cursor.fromArrayBuffer(buffer, i * 256));
+            cursors.push(Cursor.fromArray(array, i * 256));
         }
         return new Cursors(cursors);
     }
@@ -81,7 +81,7 @@ export class Cursors {
             try {
                 const reader = new FileReader();
                 reader.onload = () => {
-                    resolve(Cursors.fromArrayBuffer(reader.result));
+                    resolve(Cursors.fromArray(new Uint8Array(reader.result)));
                 };
                 reader.onerror = () => {
                     reject(new Error("Unable to read cursors from file " + file.name));

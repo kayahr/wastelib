@@ -48,20 +48,20 @@ export class Sprite extends BaseImage {
     }
 
     /**
-     * Parses a sprite from the given array buffers.
+     * Parses a sprite from the given arrays.
      *
-     * @param dataBuffer
-     *            The array buffer containing the image data.
-     * @param maskBuffer
-     *            The array buffer containing the mask data.
+     * @param dataArray
+     *            The array containing the image data.
+     * @param maskArray
+     *            The array containing the mask data.
      * @param dataOffset
      *            Optional data offset. Defaults to 0.
      * @param maskOffset
      *            Optional mask offset. Defaults to 0.
      * @return The parsed sprite.
      */
-    public static fromArrayBuffer(dataBuffer: ArrayBuffer, maskBuffer: ArrayBuffer, dataOffset?: number,
-            maskOffset?: number): Sprite {
-        return new Sprite(new Uint8Array(dataBuffer, dataOffset, 128), new Uint8Array(maskBuffer, maskOffset, 32));
+    public static fromArray(dataArray: Uint8Array, maskArray: Uint8Array, dataOffset: number = 0,
+            maskOffset: number = 0): Sprite {
+        return new Sprite(dataArray.slice(dataOffset, dataOffset + 128), maskArray.slice(maskOffset, maskOffset + 32));
     }
 }

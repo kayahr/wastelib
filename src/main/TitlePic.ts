@@ -4,7 +4,7 @@
  */
 
 import { PicImage } from "./PicImage";
-import { decodeVxorInplace } from "./vxor";
+import { decodeVxor, decodeVxorInplace } from "./vxor";
 
 /**
  * Container for the title pic image.
@@ -16,19 +16,19 @@ export class TitlePic extends PicImage {
      * @param data
      *            The (vxor-decoded) EGA image data of the title.pic image.
      */
-    private constructor(data: ArrayLike<number>) {
+    private constructor(data: Uint8Array) {
         super(data, 288, 128);
     }
 
     /**
-     * Parses a title pic image from the given array buffer and returns it.
+     * Parses a title pic image from the given array and returns it.
      *
      * @param data
-     *            The vxor encoded array buffer.
+     *            The vxor encoded array.
      * @return The parsed title.pic image.
      */
-    public static fromArrayBuffer(buffer: ArrayBuffer): TitlePic {
-        return new TitlePic(decodeVxorInplace(new Uint8Array(buffer), 144, 144 * 128));
+    public static fromArray(array: Uint8Array): TitlePic {
+        return new TitlePic(decodeVxor(array, 144));
     }
 
     /**
@@ -43,7 +43,7 @@ export class TitlePic extends PicImage {
             try {
                 const reader = new FileReader();
                 reader.onload = () => {
-                    resolve(TitlePic.fromArrayBuffer(reader.result));
+                    resolve(new TitlePic(decodeVxorInplace(new Uint8Array(reader.result), 144)));
                 };
                 reader.onerror = () => {
                     reject(new Error("Unable to read title pic image from file " + file.name));

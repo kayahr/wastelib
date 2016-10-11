@@ -56,7 +56,7 @@
         "no-eval": true,
         "no-inferrable-types": false,
         "no-internal-module": true,
-        "no-require-imports": true,
+        "no-require-imports": false,
         "no-shadowed-variable": false,
         "no-string-literal": false,
         "no-switch-case-fall-through": true,
@@ -117,7 +117,7 @@
             "check-function"
         ],
         "variable-name": [
-            true
+            true, "allow-pascal-case"
         ],
         "whitespace": [
             true,

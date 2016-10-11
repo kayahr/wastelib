@@ -4,7 +4,7 @@
  */
 
 import { PicImage } from "./PicImage";
-import { decodeVxor } from "./vxor";
+import { decodeVxorInplace } from "./vxor";
 
 /**
  * Container for a single tile.
@@ -21,15 +21,15 @@ export class Tile extends PicImage {
     }
 
     /**
-     * Parses a tile from the given array.
+     * Parses a tile from the given array buffer.
      *
      * @param array
-     *            The array containing the image data.
+     *            The array buffer containing the image data.
      * @param offset
      *            Optional data offset. Defaults to 0.
      * @return The parsed tile.
      */
-    public static fromArray(array: ArrayLike<number>, offset?: number): Tile {
-        return new Tile(decodeVxor(array, 8, 128, offset));
+    public static fromArray(array: Uint8Array, offset?: number): Tile {
+        return new Tile(decodeVxorInplace(array.slice(offset, offset + 128), 8));
     }
 }

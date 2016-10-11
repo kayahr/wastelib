@@ -3,6 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
+import { createCanvas } from "./canvas";
+
 /**
  * Base class for all images.
  */
@@ -89,9 +91,7 @@ export abstract class BaseImage {
      * @return The created canvas.
      */
     public toCanvas(): HTMLCanvasElement {
-        const canvas = document.createElement("canvas");
-        canvas.width = this.width;
-        canvas.height = this.height;
+        const canvas = createCanvas(this.width, this.height);
         const ctx = canvas.getContext("2d");
         if (!ctx) {
             throw new Error("Unable to create 2D rendering context");

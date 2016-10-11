@@ -63,15 +63,14 @@ export class EndAnim extends PicImage {
     }
 
     /**
-     * Parses a end animation from the given array buffer and returns it.
+     * Parses a end animation from the given array and returns it.
      *
      * @param data
-     *            The encoded array buffer containing the two MSQ blocks with the base frame and animation data.
+     *            The array containing the two encoded MSQ blocks with the base frame and animation data.
      * @return The parsed end animation.
      */
-    public static fromArrayBuffer(buffer: ArrayBuffer): EndAnim {
-        const data = new Uint8Array(buffer);
-        const reader = new BinaryReader(data);
+    public static fromArray(array: Uint8Array): EndAnim {
+        const reader = new BinaryReader(array);
 
         // Parse base frame from first MSQ block
         const imageSize = reader.readUint32();
@@ -120,7 +119,7 @@ export class EndAnim extends PicImage {
             try {
                 const reader = new FileReader();
                 reader.onload = () => {
-                    resolve(EndAnim.fromArrayBuffer(reader.result));
+                    resolve(EndAnim.fromArray(new Uint8Array(reader.result)));
                 };
                 reader.onerror = () => {
                     reject(new Error("Unable to read end animation from file " + file.name));

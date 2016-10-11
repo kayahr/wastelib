@@ -47,15 +47,15 @@ export class Cursor extends BaseImage {
     }
 
     /**
-     * Parses a mouse cursor image from the given array buffer.
+     * Parses a mouse cursor image from the given array.
      *
-     * @param buffer
-     *            The array buffer containing the image data.
+     * @param array
+     *            The array containing the image data.
      * @param offset
-     *            Optional buffer offset. Defaults to 0.
+     *            Optional start offset within the array. Defaults to 0.
      * @return The parsed mouse cursor image.
      */
-    public static fromArrayBuffer(buffer: ArrayBuffer, offset?: number): Cursor {
-        return new Cursor(new Uint8Array(buffer, offset, 256));
+    public static fromArray(array: Uint8Array, offset: number = 0): Cursor {
+        return new Cursor(array.slice(offset, offset + 256));
     }
 }

@@ -58,15 +58,14 @@ export class Tilesets {
     }
 
     /**
-     * Reads tilesets from the given array buffer.
+     * Reads tilesets from the given array.
      *
      * @param buffer
-     *            The array buffer to read the tilesets from.
+     *            The array to read the tilesets from.
      * @return The read tilesets.
      */
-    public static fromArrayBuffer(buffer: ArrayBuffer): Tilesets {
-        const data = new Uint8Array(buffer);
-        const reader = new BinaryReader(data);
+    public static fromArray(array: Uint8Array): Tilesets {
+        const reader = new BinaryReader(array);
 
         const tilesets: Tileset[] = [];
         while (reader.hasData()) {
@@ -99,7 +98,7 @@ export class Tilesets {
             try {
                 const reader = new FileReader();
                 reader.onload = () => {
-                    resolve(Tilesets.fromArrayBuffer(reader.result));
+                    resolve(Tilesets.fromArray(new Uint8Array(reader.result)));
                 };
                 reader.onerror = () => {
                     reject(new Error("Unable to read tilesets from file " + file.name));
