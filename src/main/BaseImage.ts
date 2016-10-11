@@ -4,6 +4,7 @@
  */
 
 import { createCanvas } from "./canvas";
+import { createImage } from "./image";
 
 /**
  * Base class for all images.
@@ -125,7 +126,7 @@ export abstract class BaseImage {
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {
-        const image = new Image();
+        const image = createImage();
         image.src = this.toDataUrl(type, ...args);
         return image;
     }

@@ -4,6 +4,8 @@
  */
 
 import { FontChar } from "./FontChar";
+import { createCanvas } from "./canvas";
+import { createImage } from "./image";
 
 /**
  * Container for the 172 font characters of the colorf.fnt file.
@@ -101,9 +103,7 @@ export class Font {
     public toCanvas(): HTMLCanvasElement {
         const chars = this.chars;
         const numChars = chars.length;
-        const canvas = document.createElement("canvas");
-        canvas.width = 128;
-        canvas.height = Math.ceil(numChars / 8) * 8;
+        const canvas = createCanvas(128, Math.ceil(numChars / 8) * 8);
         const ctx = canvas.getContext("2d");
         if (!ctx) {
             throw new Error("Unable to create 2D rendering context");
@@ -139,7 +139,7 @@ export class Font {
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {
-        const image = new Image();
+        const image = createImage();
         image.src = this.toDataUrl(type, ...args);
         return image;
     }

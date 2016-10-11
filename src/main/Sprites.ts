@@ -4,6 +4,8 @@
  */
 
 import { Sprite } from "./Sprite";
+import { createCanvas } from "./canvas";
+import { createImage } from "./image";
 
 /**
  * Container for the 10 sprites defined in the ic0_9.wlf and masks.wlf files.
@@ -117,9 +119,7 @@ export class Sprites {
     public toCanvas(): HTMLCanvasElement {
         const cursors = this.sprites;
         const numSprites = cursors.length;
-        const canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = Math.ceil(numSprites / 16) * 16;
+        const canvas = createCanvas(256, Math.ceil(numSprites / 16) * 16);
         const ctx = canvas.getContext("2d");
         if (!ctx) {
             throw new Error("Unable to create 2D rendering context");
@@ -155,7 +155,7 @@ export class Sprites {
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {
-        const image = new Image();
+        const image = createImage();
         image.src = this.toDataUrl(type, ...args);
         return image;
     }

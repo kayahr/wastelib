@@ -4,6 +4,8 @@
  */
 
 import { Tile } from "./Tile";
+import { createCanvas } from "./canvas";
+import { createImage } from "./image";
 
 /**
  * Container for a set of tiles read from an allhtds file.
@@ -77,9 +79,7 @@ export class Tileset {
     public toCanvas(): HTMLCanvasElement {
         const tiles = this.tiles;
         const numTiles = tiles.length;
-        const canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = Math.ceil(numTiles / 16) * 16;
+        const canvas = createCanvas(256, Math.ceil(numTiles / 16) * 16);
         const ctx = canvas.getContext("2d");
         if (!ctx) {
             throw new Error("Unable to create 2D rendering context");
@@ -115,7 +115,7 @@ export class Tileset {
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {
-        const image = new Image();
+        const image = createImage();
         image.src = this.toDataUrl(type, ...args);
         return image;
     }

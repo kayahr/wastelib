@@ -4,6 +4,8 @@
  */
 
 import { Cursor } from "./Cursor";
+import { createCanvas } from "./canvas";
+import { createImage } from "./image";
 
 /**
  * Container for the 8 mouse cursors in the CURS file.
@@ -101,9 +103,7 @@ export class Cursors {
     public toCanvas(): HTMLCanvasElement {
         const cursors = this.cursors;
         const numCursors = cursors.length;
-        const canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = Math.ceil(numCursors / 16) * 16;
+        const canvas = createCanvas(256, Math.ceil(numCursors / 16) * 16);
         const ctx = canvas.getContext("2d");
         if (!ctx) {
             throw new Error("Unable to create 2D rendering context");
@@ -139,7 +139,7 @@ export class Cursors {
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {
-        const image = new Image();
+        const image = createImage();
         image.src = this.toDataUrl(type, ...args);
         return image;
     }
