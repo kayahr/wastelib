@@ -120,6 +120,16 @@ WebAssets.create(installer).then(assets => {
         });
     });
 
+    // Portraits
+    document.querySelector("#portraits").addEventListener("click", () => {
+        assets.readPortraits().then(sprites => {
+            output.innerHTML = "";
+            sprites.getPortraits().forEach(portrait => {
+                output.appendChild(portrait.toImage());
+            });
+        });
+    });
+
     // Tilesets as separate tile images
     document.querySelector("#tilesets").addEventListener("click", () => {
         assets.readTilesets().then(tilesets => {

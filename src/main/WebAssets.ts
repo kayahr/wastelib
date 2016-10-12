@@ -9,6 +9,7 @@ import { Cursors } from "./Cursors";
 import { Font } from "./Font";
 import { Sprites } from "./Sprites";
 import { EndAnim } from "./EndAnim";
+import { Portraits } from "./Portraits";
 
 /** The version of the indexed DB used to store the Wasteland files in the browser. */
 const dbVersion = 1;
@@ -250,6 +251,15 @@ export class WebAssets {
     }
 
     /**
+     * Reads the portraits from the ALLPIC1 and ALLPICS2 files and returns them.
+     *
+     * @return The portraits.
+     */
+    public readPortraits(): Promise<Portraits> {
+        return Portraits.fromBlobs(this.getFile("ALLPICS1"), this.getFile("ALLPICS2"));
+    }
+
+    /**
      * Reads the sprites from the IC0_9.WLF and MASKS.WLF files and returns them.
      *
      * @return The sprites.
@@ -259,7 +269,7 @@ export class WebAssets {
     }
 
     /**
-     * Reads the tilesets from the ALLHTDS1 and ALLHTDS2 files.
+     * Reads the tilesets from the ALLHTDS1 and ALLHTDS2 files and returns them.
      *
      * @return The tilesets.
      */
