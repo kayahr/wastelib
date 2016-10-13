@@ -7,59 +7,98 @@ import { PicImage } from "./PicImage";
 import { BinaryReader } from "./BinaryReader";
 import { decodeVxorInplace } from "./vxor";
 import { decodeHuffman } from "./huffman";
-import { PortraitFrame } from "./PortraitFrame";
+import { PortraitUpdate } from "./PortraitUpdate";
+import { PortraitScript } from "./PortraitScript";
 
 /**
  * An animated portrait. Contains the base frame image but also provides methods to access the animation information.
  * To simply play the animation it is recommended to use the `PortraitPlayer` class.
  */
 export class Portrait extends PicImage {
+    /** The animation scripts. */
+    private scripts: PortraitScript[];
+
     /** The animation frames. */
-    private frames: PortraitFrame[];
+    private updates: PortraitUpdate[];
 
     /**
      * Creates a new portrait with the given base frame and animation frames.
      *
      * @param baseFrame
      *            The image data of the base frame.
-     * @param frames
-     *            The animation frames.
+     * @param scripts
+     *            The animation scripts.
+     * @param updates
+     *            The animation updates.
      */
-    private constructor(baseFrame: ArrayLike<number>, frames: PortraitFrame[]) {
+    private constructor(baseFrame: ArrayLike<number>, scripts: PortraitScript[], updates: PortraitUpdate[]) {
         super(baseFrame, 96, 84);
-        this.frames = frames;
+        this.scripts = scripts;
+        this.updates = updates;
     }
 
     /**
-     * Returns the animation frames.
+     * Returns the animation scripts.
      *
-     * @return The animation frames
+     * @return The animation scripts.
      */
-    public getFrames(): PortraitFrame[] {
-        return this.frames.slice();
+    public getScripts(): PortraitScript[] {
+        return this.scripts.slice();
     }
 
     /**
-     * Returns the animation frame with the given index.
+     * Returns the animation script with the given index.
      *
      * @param index
-     *            Animation frame index.
-     * @return The animation frame.
+     *            Animation script index.
+     * @return The animation script.
      */
-    public getFrame(index: number): PortraitFrame {
-        if (index < 0 || index >= this.frames.length) {
+    public getScript(index: number): PortraitScript {
+        if (index < 0 || index >= this.scripts.length) {
             throw new Error("Index out of bounds: " + index);
         }
-        return this.frames[index];
+        return this.scripts[index];
     }
 
     /**
-     * Returns the number of animation frames (Base frame not included).
+     * Returns the number of animation scripts.
      *
-     * @return THe number of animation frames.
+     * @return The number of animation scripts.
      */
-    public getNumFrames(): number {
-        return this.frames.length;
+    public getNumScripts(): number {
+        return this.scripts.length;
+    }
+
+    /**
+     * Returns the animation updates.
+     *
+     * @return The animation updates.
+     */
+    public getUpdates(): PortraitUpdate[] {
+        return this.updates.slice();
+    }
+
+    /**
+     * Returns the animation update with the given index.
+     *
+     * @param index
+     *            Animation update index.
+     * @return The animation update.
+     */
+    public getUpdate(index: number): PortraitUpdate {
+        if (index < 0 || index >= this.updates.length) {
+            throw new Error("Index out of bounds: " + index);
+        }
+        return this.updates[index];
+    }
+
+    /**
+     * Returns the number of animation updates.
+     *
+     * @return The number of animation updates.
+     */
+    public getNumUpdates(): number {
+        return this.updates.length;
     }
 
     /**
@@ -70,7 +109,6 @@ export class Portrait extends PicImage {
      * @return The parsed portrait.
      */
     public static read(reader: BinaryReader): Portrait {
-
         // Parse base frame from first MSQ block
         const imageSize = reader.readUint32();
         const imageMsq = reader.readString(3);
@@ -88,23 +126,24 @@ export class Portrait extends PicImage {
             throw new Error("Invalid animation data block: " + animMsq +  animDisk + imageDisk);
         }
         const animData = decodeHuffman(reader, animSize);
-        /*
         const animReader = new BinaryReader(animData);
-        const animSize2 = animReader.readUint16();
-        if (animSize2 !== animSize - 4) {
-            throw new Error("Invalid animation data block size");
+
+        // Parse animation scripts
+        const scriptsSize = animReader.readUint16();
+        const scripts: PortraitScript[] = [];
+        while (animReader.getByteIndex() - 2 < scriptsSize) {
+            scripts.push(PortraitScript.read(animReader));
         }
-        const frames: EndAnimFrame[] = [];
-        let frame: EndAnimFrame | null;
-        while (frame = EndAnimFrame.read(animReader)) {
-            frames.push(frame);
+
+        // Parse animation update blocks
+        const updatesSize = animReader.readUint16();
+        const startIndex = animReader.getByteIndex();
+        const updates: PortraitUpdate[] = [];
+        while (animReader.getByteIndex() - startIndex < updatesSize) {
+            updates.push(PortraitUpdate.read(animReader));
         }
-        if (animReader.readUint16() !== 0) {
-            throw new Error("Invalid animation data block end");
-        }
-        */
 
         // Create the end animation
-        return new Portrait(baseFrame, []);
+        return new Portrait(baseFrame, scripts, updates);
     }
 }

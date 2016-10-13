@@ -57,6 +57,24 @@ export class BinaryReader {
     }
 
     /**
+     * Returns the current byte index.
+     *
+     * @return The current byte index.
+     */
+    public getByteIndex(): number {
+        return this.byte;
+    }
+
+    /**
+     * Returns the current bit index.
+     *
+     * @return The current bit index.
+     */
+    public getBitIndex(): number {
+        return this.bit;
+    }
+
+    /**
      * Reads a single bit and returns it.
      *
      * @return The read bit.

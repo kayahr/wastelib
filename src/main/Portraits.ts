@@ -10,7 +10,7 @@ import { BinaryReader } from "./BinaryReader";
  * Container for the portraits of an allpics file.
  */
 export class Portraits {
-    /** The tiles in this set. */
+    /** The portraits. */
     private portraits: Portrait[];
 
     /**
@@ -26,7 +26,7 @@ export class Portraits {
     }
 
     /**
-     * Returns array with all porraits.
+     * Returns array with all portraits.
      *
      * @return The portraits.
      */
@@ -60,7 +60,7 @@ export class Portraits {
     /**
      * Reads portraits from the given array.
      *
-     * @param buffer
+     * @param array
      *            The array to read the portraits from.
      * @return The read portraits.
      */
