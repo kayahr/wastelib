@@ -57,9 +57,15 @@ WebAssets.create(installer).then(assets => {
     // End animation
     document.querySelector("#end").addEventListener("click", () => {
         assets.readEndAnim().then(endAnim => {
-            const player = new EndAnimPlayer(endAnim);
+            const canvas = document.createElement("canvas");
+            const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
+            const player = new EndAnimPlayer(endAnim, (frame) => {
+                canvas.width = frame.getWidth();
+                canvas.height = frame.getHeight();
+                frame.draw(ctx);
+            });
             output.innerHTML = "";
-            output.appendChild(player.getCanvas());
+            output.appendChild(canvas);
             (<any>window).player = player;
 
             const buttons = document.createElement("div");

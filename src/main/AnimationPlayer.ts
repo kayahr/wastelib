@@ -89,9 +89,11 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     /**
      * Returns the number of time units to wait before rendering the next frame.
      *
+     * @param animation
+     *            The animation to play.
      * @return The next delay in time units.
      */
-    protected abstract getNextDelayInUnits(): number;
+    protected abstract getNextDelayInUnits(animation: A): number;
 
     /**
      * Returns the delay to wait before rendering the next frame.
@@ -99,7 +101,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
      * @return The next delay in milliseconds.
      */
     public getNextDelay(): number {
-        return this.getNextDelayInUnits() * this.speed;
+        return this.getNextDelayInUnits(this.animation) * this.speed;
     }
 
     /**

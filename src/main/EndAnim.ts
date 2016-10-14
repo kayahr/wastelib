@@ -7,7 +7,7 @@ import { PicImage } from "./PicImage";
 import { BinaryReader } from "./BinaryReader";
 import { decodeVxorInplace } from "./vxor";
 import { decodeHuffman } from "./huffman";
-import { EndAnimFrame } from "./EndAnimFrame";
+import { EndAnimUpdate } from "./EndAnimUpdate";
 
 /**
  * The end animation. Contains the base frame image but also provides methods to access the animation information.
@@ -15,7 +15,7 @@ import { EndAnimFrame } from "./EndAnimFrame";
  */
 export class EndAnim extends PicImage {
     /** The animation frames. */
-    private frames: EndAnimFrame[];
+    private updates: EndAnimUpdate[];
 
     /**
      * Creates a new end animation with the given image and animation data.
@@ -25,9 +25,9 @@ export class EndAnim extends PicImage {
      * @param frames
      *            The animation frames.
      */
-    private constructor(baseFrame: Uint8Array, frames: EndAnimFrame[]) {
+    private constructor(baseFrame: Uint8Array, updates: EndAnimUpdate[]) {
         super(baseFrame, 288, 128);
-        this.frames = frames;
+        this.updates = updates;
     }
 
     /**
@@ -35,8 +35,8 @@ export class EndAnim extends PicImage {
      *
      * @return The animation frames
      */
-    public getFrames(): EndAnimFrame[] {
-        return this.frames.slice();
+    public getFrames(): EndAnimUpdate[] {
+        return this.updates.slice();
     }
 
     /**
@@ -46,11 +46,11 @@ export class EndAnim extends PicImage {
      *            Animation frame index.
      * @return The animation frame.
      */
-    public getFrame(index: number): EndAnimFrame {
-        if (index < 0 || index >= this.frames.length) {
+    public getFrame(index: number): EndAnimUpdate {
+        if (index < 0 || index >= this.updates.length) {
             throw new Error("Index out of bounds: " + index);
         }
-        return this.frames[index];
+        return this.updates[index];
     }
 
     /**
@@ -59,7 +59,7 @@ export class EndAnim extends PicImage {
      * @return THe number of animation frames.
      */
     public getNumFrames(): number {
-        return this.frames.length;
+        return this.updates.length;
     }
 
     /**
@@ -94,9 +94,9 @@ export class EndAnim extends PicImage {
         if (animSize2 !== animSize - 4) {
             throw new Error("Invalid animation data block size");
         }
-        const frames: EndAnimFrame[] = [];
-        let frame: EndAnimFrame | null;
-        while (frame = EndAnimFrame.read(animReader)) {
+        const frames: EndAnimUpdate[] = [];
+        let frame: EndAnimUpdate | null;
+        while (frame = EndAnimUpdate.read(animReader)) {
             frames.push(frame);
         }
         if (animReader.readUint16() !== 0) {

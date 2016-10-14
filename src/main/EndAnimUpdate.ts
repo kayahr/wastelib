@@ -4,116 +4,81 @@
  */
 
 import { BinaryReader } from "./BinaryReader";
-import { COLOR_PALETTE } from "./colors";
+import { EndAnimPatch } from "./EndAnimPatch";
 
 /**
- * Image update of an end animation frame.
+ * A single end animation frame.
  */
 export class EndAnimUpdate {
-    /** The image offset to update. */
-    private offset: number;
+    /** The delay before showing this frame. */
+    private delay: number;
 
-    /** The image update (Four bytes with eight 4-bit colors). */
-    private update: number[];
+    /** The image updates to apply to the previous frame to get this frame. */
+    private patches: EndAnimPatch[];
 
     /**
-     * Creates a new end animation frame image update,
+     * Creates an end animation frame with the given delay and image updates.
      *
-     * @param offset
-     *            The image update offset.
-     * @param update
-     *            The image update (Four bytes with eight 4-bit colors).
+     * @param delay
+     *            The delay before showing this frame.
+     * @param updates
+     *            The image updates to apply to the previous frame to get this frame.
      */
-    private constructor(offset: number, update: number[]) {
-        this.offset = offset;
-        this.update = update;
+    private constructor(delay: number, updates: EndAnimPatch[]) {
+        this.delay = delay;
+        this.patches = updates;
     }
 
     /**
-     * Returns the image offset to update. This is the raw offset value from the end.cpa file measured in 8 byte
-     * blocks relative to a 320 pixels wide screen. Too complex to use. So it's recommended to use the `getX()` and
-     * `getY()` methods which converts this offset into pixel coordinates relative to the image.
+     * Returns the delay to wait before showing this frame. The unit is unknown but good results can be achieved
+     * by multiplying this value with 50 to get a millisecond value.
      *
-     * @return The raw image update offset.
+     * @return The delay.
      */
-    public getOffset(): number {
-        return this.offset;
+    public getDelay(): number {
+        return this.delay;
     }
 
     /**
-     * The horizontal update position in pixels relative to the image.
+     * Returns the image updates to apply to the previous frame to get this frame.
      *
-     * @return The horizontal update position.
+     * @return The image updates to apply to the previous frame to get this frame.
      */
-    public getX(): number {
-        return this.offset * 8 % 320;
+    public getUpdates(): EndAnimPatch[] {
+        return this.patches.slice();
     }
 
     /**
-     * The vertical update position in pixels relative to the image.
-     *
-     * @return The vertical update position.
-     */
-    public getY(): number {
-        return this.offset * 8 / 320;
-    }
-
-    /**
-     * Returns the image update to apply to the image. Always four bytes with eight 4-bit colors.
-     *
-     * @return The update color bytes.
-     */
-    public getUpdate(): number[] {
-        return this.update.slice();
-    }
-
-    /**
-     * Returns the RGBA color at the specified position.
-     *
-     * @param x
-     *            The horizontal pixel position.
-     * @return The RGBA color at the specified position.
-     */
-    public getColor(x: number): number {
-        const pixelTuple = this.update[x >> 1];
-        const pixel = x & 1 ? pixelTuple & 0xf : pixelTuple >> 4;
-        return COLOR_PALETTE[pixel];
-    }
-
-    /**
-     * Reads an image update from the given reader. If end of animation frame is reached then `null` is returned.
-     *
-     * @param reader
-     *            The readet to read the image update from.
-     * @return The read image update or null if end of animation frame is reached.
-     */
-    public static read(reader: BinaryReader): EndAnimUpdate | null {
-        const offset = reader.readUint16();
-        if (offset === 0xffff) {
-            return null;
-        }
-        const pixels = reader.readUint8s(4);
-        return new EndAnimUpdate(offset, pixels);
-    }
-
-    /**
-     * Draws this image update into the specified rendering context. The canvas must already contain the full
-     * image of the previous frame.
+     * Draws this animation frame on the given rendering context. The canvas must already contain the full image of
+     * the previous frame because the existing pixels are just updated and not completely redrawn.
      *
      * @param ctx
-     *            The rendering context.
+     *            The rendering context to update.
      */
     public draw(ctx: CanvasRenderingContext2D) {
-        const imageData = ctx.createImageData(8, 1);
-        const pixels = imageData.data;
-        let rgbaIndex = 0;
-        for (let x = 0; x < 8; ++x) {
-            const color = this.getColor(x);
-            pixels[rgbaIndex++] = (color >> 24) & 0xff;
-            pixels[rgbaIndex++] = (color >> 16) & 0xff;
-            pixels[rgbaIndex++] = (color >> 8) & 0xff;
-            pixels[rgbaIndex++] = color & 0xff;
+        this.patches.forEach(update => {
+            update.draw(ctx);
+        });
+    }
+
+    /**
+     * Reads an animation frame from the given reader. If the end of the animation has been reached then `null` is
+     * returned.
+     *
+     * @param reader
+     *            The reader to read the animation frame from.
+     * @return The read animation frame or null if end of animation has been reached.
+     */
+    public static read(reader: BinaryReader): EndAnimUpdate | null {
+        const delay = reader.readUint16();
+        if (delay === 0xffff) {
+            return null;
         }
-        ctx.putImageData(imageData, this.getX(), this.getY());
+        let update: EndAnimPatch | null;
+        let updates: EndAnimPatch[] = [];
+        while (update = EndAnimPatch.read(reader)) {
+            updates.push(update);
+        }
+        return new EndAnimUpdate(delay, updates);
     }
 }
