@@ -25,7 +25,7 @@ export class EndAnim extends PicImage {
      * @param frames
      *            The animation frames.
      */
-    private constructor(baseFrame: ArrayLike<number>, frames: EndAnimFrame[]) {
+    private constructor(baseFrame: Uint8Array, frames: EndAnimFrame[]) {
         super(baseFrame, 288, 128);
         this.frames = frames;
     }

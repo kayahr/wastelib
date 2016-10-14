@@ -31,7 +31,7 @@ export class Portrait extends PicImage {
      * @param updates
      *            The animation updates.
      */
-    private constructor(baseFrame: ArrayLike<number>, scripts: PortraitScript[], updates: PortraitUpdate[]) {
+    private constructor(baseFrame: Uint8Array, scripts: PortraitScript[], updates: PortraitUpdate[]) {
         super(baseFrame, 96, 84);
         this.scripts = scripts;
         this.updates = updates;

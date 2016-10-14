@@ -16,7 +16,7 @@ export class Tile extends PicImage {
      * @param data
      *            The image data.
      */
-    private constructor(data: ArrayLike<number>) {
+    private constructor(data: Uint8Array) {
         super(data, 16, 16);
     }
 

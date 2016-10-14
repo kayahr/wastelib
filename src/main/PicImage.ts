@@ -11,7 +11,7 @@ import { COLOR_PALETTE } from "./colors";
  */
 export abstract class PicImage extends BaseImage {
     /** The image data. */
-    private data: ArrayLike<number>;
+    protected data: Uint8Array;
 
     /**
      * Creates a new tile image with the given image data.
@@ -23,9 +23,18 @@ export abstract class PicImage extends BaseImage {
      * @param height
      *            The image height in pixels.
      */
-    protected constructor(data: ArrayLike<number>, width: number, height: number) {
+    protected constructor(data: Uint8Array, width: number, height: number) {
         super(width, height);
         this.data = data;
+    }
+
+    /**
+     * Returns a copy of the image data. Each byte contains two 4-bit colors.
+     *
+     * @eturn The image data.
+     */
+    public getData(): Uint8Array {
+        return this.data.slice();
     }
 
     public getColor(x: number, y: number): number {

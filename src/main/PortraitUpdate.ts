@@ -33,6 +33,29 @@ export class PortraitUpdate {
     }
 
     /**
+     * Returns the patch with the given index.
+     *
+     * @param index
+     *            The index of the patch to return.
+     * @return The patch.
+     */
+    public getPatch(index: number): PortraitPatch {
+        if (index < 0 || index >= this.patches.length) {
+           throw new Error("Index out of bounds: " + index);
+        }
+        return this.patches[index];
+    }
+
+    /**
+     * Returns the number of patches.
+     *
+     * @return The number of patches.
+     */
+    public getNumPatches(): number {
+        return this.patches.length;
+    }
+
+    /**
      * Reads an animation update from the given reader. If the end of the animation has been reached then `null` is
      * returned.
      *

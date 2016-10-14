@@ -33,6 +33,29 @@ export class PortraitScript {
     }
 
     /**
+     * Returns the animation script line with the given index.
+     *
+     * @param index
+     *            The index of the animation script line.
+     * @return The animation script line.
+     */
+    public getLine(index: number): PortraitScriptLine {
+        if (index < 0 || index >= this.lines.length) {
+           throw new Error("Index out of bounds: " + index);
+        }
+        return this.lines[index];
+    }
+
+    /**
+     * Returns the number of script lines.
+     *
+     * @return The number of script lines.
+     */
+    public getNumLines(): number {
+        return this.lines.length;
+    }
+
+    /**
      * Reads a portrait animation script.
      *
      * @param reader
