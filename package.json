@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "main": "lib/main",
-  "typings": "lib/main/index",
+  "typings": "lib/main/wastelib",
   "repository": {
     "type": "git",
     "url": "https://github.com/kayahr/wastelib.git"
@@ -17,6 +17,7 @@
   "scripts": {
     "clean": "del-cli lib",
     "compile": "tsc",
+    "watch": "tsc -w",
     "check": "cd src && jasmine",
     "lint": "tslint --project .",
     "prepublish": "npm run -s clean && npm run -s compile",
