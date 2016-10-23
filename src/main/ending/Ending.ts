@@ -14,7 +14,7 @@ import { EndingUpdate } from "./EndingUpdate";
  * To simply play the animation it is recommended to use the `EndingPlayer` class.
  */
 export class Ending extends PicImage {
-    /** The animation frames. */
+    /** The animation updates. */
     private updates: EndingUpdate[];
 
     /**
@@ -22,8 +22,8 @@ export class Ending extends PicImage {
      *
      * @param baseFrame
      *            The (vxor-decoded) image data of the base frame of the end animation.
-     * @param frames
-     *            The animation frames.
+     * @param updates
+     *            The animation updates.
      */
     private constructor(baseFrame: Uint8Array, updates: EndingUpdate[]) {
         super(baseFrame, 288, 128);
@@ -31,22 +31,22 @@ export class Ending extends PicImage {
     }
 
     /**
-     * Returns the animation frames.
+     * Returns the animation updates.
      *
-     * @return The animation frames
+     * @return The animation updates.
      */
-    public getFrames(): EndingUpdate[] {
+    public getUpdates(): EndingUpdate[] {
         return this.updates.slice();
     }
 
     /**
-     * Returns the animation frame with the given index.
+     * Returns the animation update with the given index.
      *
      * @param index
-     *            Animation frame index.
-     * @return The animation frame.
+     *            Animation update index.
+     * @return The animation update.
      */
-    public getFrame(index: number): EndingUpdate {
+    public getUpdate(index: number): EndingUpdate {
         if (index < 0 || index >= this.updates.length) {
             throw new Error("Index out of bounds: " + index);
         }
@@ -54,11 +54,11 @@ export class Ending extends PicImage {
     }
 
     /**
-     * Returns the number of animation frames (Base frame not included).
+     * Returns the number of animation updates.
      *
-     * @return THe number of animation frames.
+     * @return The number of animation updates.
      */
-    public getNumFrames(): number {
+    public getNumUpdatess(): number {
         return this.updates.length;
     }
 
@@ -81,7 +81,7 @@ export class Ending extends PicImage {
         }
         const baseFrame = decodeVxorInplace(decodeHuffman(reader, imageSize), 144);
 
-        // Parse animation frames from second MSQ bloack
+        // Parse animation updates from second MSQ bloack
         const animSize = reader.readUint32();
         const [ m, s, q ] = reader.readUint8s(3);
         const animDisk = reader.readUint8();
@@ -94,17 +94,17 @@ export class Ending extends PicImage {
         if (animSize2 !== animSize - 4) {
             throw new Error("Invalid animation data block size");
         }
-        const frames: EndingUpdate[] = [];
-        let frame: EndingUpdate | null;
-        while (frame = EndingUpdate.read(animReader)) {
-            frames.push(frame);
+        const updates: EndingUpdate[] = [];
+        let update: EndingUpdate | null;
+        while (update = EndingUpdate.read(animReader)) {
+            updates.push(update);
         }
         if (animReader.readUint16() !== 0) {
             throw new Error("Invalid animation data block end");
         }
 
         // Create the end animation
-        return new Ending(baseFrame, frames);
+        return new Ending(baseFrame, updates);
     }
 
     /**

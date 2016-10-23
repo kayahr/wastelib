@@ -7,32 +7,33 @@ import { BinaryReader } from "../io/BinaryReader";
 import { COLOR_PALETTE } from "../image/colors";
 
 /**
- * Image update of an end animation frame.
+ * Image update patch.
  */
 export class EndingPatch {
     /** The image offset to update. */
     private offset: number;
 
-    /** The image update (Four bytes with eight 4-bit colors). */
-    private update: number[];
+    /** The patch data (Four bytes with eight 4-bit colors). */
+    private data: number[];
 
     /**
-     * Creates a new end animation frame image update,
+     * Creates a new update patch,
      *
      * @param offset
      *            The image update offset.
-     * @param update
-     *            The image update (Four bytes with eight 4-bit colors).
+     * @param data
+     *            The patch data (Four bytes with eight 4-bit colors).
      */
-    private constructor(offset: number, update: number[]) {
+    private constructor(offset: number, data: number[]) {
         this.offset = offset;
-        this.update = update;
+        this.data = data;
     }
 
     /**
-     * Returns the image offset to update. This is the raw offset value from the end.cpa file measured in 8 byte
-     * blocks relative to a 320 pixels wide screen. Too complex to use. So it's recommended to use the `getX()` and
-     * `getY()` methods which converts this offset into pixel coordinates relative to the image.
+     * Returns the raw offset to update. This is the raw offset value from the END.CPA file measured in 8 byte
+     * blocks relative to a 320 pixels wide screen. Too complex to use. So it's recommended to use the
+     * `getX()` and `getY()` methods which converts this offset into pixel coordinates relative to
+     * the image. Or use the `getOffset()` method which returns the offset byte address in the image data.
      *
      * @return The raw image update offset.
      */
@@ -40,6 +41,11 @@ export class EndingPatch {
         return this.offset;
     }
 
+    /**
+     * Returns the byte offset in the image data array to update.
+     *
+     * @return The byte offset in the image data array to update.
+     */
     public getOffset(): number {
         return this.getY() * 144 + (this.getX() >> 1);
     }
@@ -63,12 +69,12 @@ export class EndingPatch {
     }
 
     /**
-     * Returns the image update to apply to the image. Always four bytes with eight 4-bit colors.
+     * Returns the patch data to apply to the image. Always four bytes with eight 4-bit colors.
      *
-     * @return The update color bytes.
+     * @return The patch data.
      */
-    public getUpdate(): number[] {
-        return this.update.slice();
+    public getData(): number[] {
+        return this.data.slice();
     }
 
     /**
@@ -79,17 +85,18 @@ export class EndingPatch {
      * @return The RGBA color at the specified position.
      */
     public getColor(x: number): number {
-        const pixelTuple = this.update[x >> 1];
+        const pixelTuple = this.data[x >> 1];
         const pixel = x & 1 ? pixelTuple & 0xf : pixelTuple >> 4;
         return COLOR_PALETTE[pixel];
     }
 
     /**
-     * Reads an image update from the given reader. If end of animation frame is reached then `null` is returned.
+     * Reads an update patch from the given reader. If end of animation update block is reached then `null` is
+     * returned.
      *
      * @param reader
-     *            The readet to read the image update from.
-     * @return The read image update or null if end of animation frame is reached.
+     *            The readet to read the update patch from.
+     * @return The read update patch or null if end of update block is reached.
      */
     public static read(reader: BinaryReader): EndingPatch | null {
         const offset = reader.readUint16();
@@ -98,26 +105,5 @@ export class EndingPatch {
         }
         const pixels = reader.readUint8s(4);
         return new EndingPatch(offset, pixels);
-    }
-
-    /**
-     * Draws this image update into the specified rendering context. The canvas must already contain the full
-     * image of the previous frame.
-     *
-     * @param ctx
-     *            The rendering context.
-     */
-    public draw(ctx: CanvasRenderingContext2D) {
-        const imageData = ctx.createImageData(8, 1);
-        const pixels = imageData.data;
-        let rgbaIndex = 0;
-        for (let x = 0; x < 8; ++x) {
-            const color = this.getColor(x);
-            pixels[rgbaIndex++] = (color >> 24) & 0xff;
-            pixels[rgbaIndex++] = (color >> 16) & 0xff;
-            pixels[rgbaIndex++] = (color >> 8) & 0xff;
-            pixels[rgbaIndex++] = color & 0xff;
-        }
-        ctx.putImageData(imageData, this.getX(), this.getY());
     }
 }

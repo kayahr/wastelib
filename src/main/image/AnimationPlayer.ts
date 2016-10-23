@@ -93,15 +93,15 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
      *            The animation to play.
      * @return The next delay in time units.
      */
-    protected abstract getNextDelayInUnits(animation: A): number;
+    protected abstract getNextDelay(animation: A): number;
 
     /**
      * Returns the delay to wait before rendering the next frame.
      *
      * @return The next delay in milliseconds.
      */
-    public getNextDelay(): number {
-        return this.getNextDelayInUnits(this.animation) * this.speed;
+    public getNextDelayMS(): number {
+        return this.getNextDelay(this.animation) * this.speed;
     }
 
     /**
@@ -111,9 +111,9 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
         if (this.timer == null) {
             const animate = () => {
                 this.next();
-                this.timer = setTimeout(animate, this.getNextDelay());
+                this.timer = setTimeout(animate, this.getNextDelayMS());
             };
-            this.timer = setTimeout(animate, this.getNextDelay());
+            this.timer = setTimeout(animate, this.getNextDelayMS());
         }
     }
 

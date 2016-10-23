@@ -7,67 +7,77 @@ import { BinaryReader } from "../io/BinaryReader";
 import { EndingPatch } from "./EndingPatch";
 
 /**
- * A single end animation frame.
+ * A single ending animation update.
  */
 export class EndingUpdate {
-    /** The delay before showing this frame. */
+    /** The delay before applying this update. */
     private delay: number;
 
-    /** The image updates to apply to the previous frame to get this frame. */
+    /** A set of update patches. */
     private patches: EndingPatch[];
 
     /**
-     * Creates an end animation frame with the given delay and image updates.
+     * Creates an end animation update with the given delay and patches.
      *
      * @param delay
-     *            The delay before showing this frame.
-     * @param updates
-     *            The image updates to apply to the previous frame to get this frame.
+     *            The delay before applying this update.
+     * @param patches
+     *            The set of update patches.
      */
-    private constructor(delay: number, updates: EndingPatch[]) {
+    private constructor(delay: number, patches: EndingPatch[]) {
         this.delay = delay;
-        this.patches = updates;
+        this.patches = patches;
     }
 
     /**
-     * Returns the delay to wait before showing this frame. The unit is unknown but good results can be achieved
+     * Returns the delay to wait before applying this update. The unit is unknown but good results can be achieved
      * by multiplying this value with 50 to get a millisecond value.
      *
-     * @return The delay.
+     * @return The delay in time units.
      */
     public getDelay(): number {
         return this.delay;
     }
 
     /**
-     * Returns the image updates to apply to the previous frame to get this frame.
+     * Returns the set of update patches.
      *
-     * @return The image updates to apply to the previous frame to get this frame.
+     * @return The set of update patches.
      */
-    public getUpdates(): EndingPatch[] {
+    public getPatches(): EndingPatch[] {
         return this.patches.slice();
     }
 
     /**
-     * Draws this animation frame on the given rendering context. The canvas must already contain the full image of
-     * the previous frame because the existing pixels are just updated and not completely redrawn.
+     * Returns the update patch with the given index.
      *
-     * @param ctx
-     *            The rendering context to update.
+     * @param index
+     *            Update patch index.
+     * @return The animation patch.
      */
-    public draw(ctx: CanvasRenderingContext2D) {
-        this.patches.forEach(update => {
-            update.draw(ctx);
-        });
+    public getPatch(index: number): EndingPatch {
+        if (index < 0 || index >= this.patches.length) {
+            throw new Error("Index out of bounds: " + index);
+        }
+        return this.patches[index];
     }
 
     /**
-     * Reads an animation frame from the given reader. If the end of the animation has been reached then `null` is
+     * Returns the number of update patches.
+     *
+     * @return The number of update patches.
+     */
+    public getNumPatches(): number {
+        return this.patches.length;
+    }
+
+    /**
+     * Reads an animation update from the given reader. If the end of the animation has been reached then `null` is
      * returned.
      *
      * @param reader
      *            The reader to read the animation frame from.
-     * @return The read animation frame or null if end of animation has been reached.
+     * @return The read animation update or null if end of animation has been reached.
      */
     public static read(reader: BinaryReader): EndingUpdate | null {
         const delay = reader.readUint16();

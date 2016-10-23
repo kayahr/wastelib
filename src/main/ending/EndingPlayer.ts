@@ -8,18 +8,20 @@ import { Ending } from "./Ending";
 import { EndingFrame } from "./EndingFrame";
 
 /**
- * Player for the end animation.
+ * Player for the ending animation.
  */
 export class EndingPlayer extends AnimationPlayer<Ending, EndingFrame> {
     /** The current frame index. */
     private frameIndex: number;
 
     /**
-     * Creates a new player for the given end animation. The base frame is immediately rendered but the animation
-     * is not started automatically. Call the `play()` method to start the animation.
+     * Creates a new player for the given ending animation.
      *
      * @param ending
      *            The end animation to play
+     * @param onDraw
+     *            Callback to call on each frame update. This callback is responsible for actually showing the
+     *            animation frame to the user.
      */
     public constructor(ending: Ending, onDraw: (frame: EndingFrame) => void) {
         super(ending, onDraw);
@@ -35,11 +37,11 @@ export class EndingPlayer extends AnimationPlayer<Ending, EndingFrame> {
         if (this.frameIndex === 15) {
             this.frameIndex = 11;
         }
-        frame.update(ending.getFrame(this.frameIndex));
+        frame.update(ending.getUpdate(this.frameIndex));
         return frame;
     }
 
-    protected getNextDelayInUnits(ending: Ending): number {
-        return ending.getFrame(this.frameIndex).getDelay();
+    protected getNextDelay(ending: Ending): number {
+        return ending.getUpdate(this.frameIndex).getDelay();
     }
 }

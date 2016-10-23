@@ -43,7 +43,7 @@ export class PortraitPlayer extends AnimationPlayer<Portrait, PortraitFrame> {
     }
 
     protected nextFrame(portrait: Portrait, frame: PortraitFrame): PortraitFrame {
-        const timeDelta = this.getNextDelayInUnits();
+        const timeDelta = this.getNextDelay();
         const numScripts = portrait.getNumScripts();
         for (let i = 0; i < numScripts; ++i) {
             this.scriptDelays[i] -= timeDelta;
@@ -70,7 +70,7 @@ export class PortraitPlayer extends AnimationPlayer<Portrait, PortraitFrame> {
         return frame;
     }
 
-    protected getNextDelayInUnits(): number {
+    protected getNextDelay(): number {
         return Math.min(...this.scriptDelays);
     }
 }
