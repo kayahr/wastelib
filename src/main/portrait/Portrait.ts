@@ -9,12 +9,15 @@ import { decodeVxorInplace } from "../io/vxor";
 import { decodeHuffman } from "../io/huffman";
 import { PortraitUpdate } from "./PortraitUpdate";
 import { PortraitScript } from "./PortraitScript";
+import { Animation } from "../image/Animation";
+import { BaseImage } from "../image/BaseImage";
+import { PortraitPlayer } from "./PortraitPlayer";
 
 /**
  * An animated portrait image. Contains the base frame image but also provides methods to access the animation
  * information. To simply play the animation it is recommended to use the [[PortraitPlayer]] class.
  */
-export class Portrait extends PicImage {
+export class Portrait extends PicImage implements Animation {
     /** The animation scripts. */
     private scripts: PortraitScript[];
 
@@ -94,6 +97,10 @@ export class Portrait extends PicImage {
      */
     public getNumUpdates(): number {
         return this.updates.length;
+    }
+
+    public createPlayer(onDraw: (frame: BaseImage) => void): PortraitPlayer {
+        return new PortraitPlayer(this, onDraw);
     }
 
     /**

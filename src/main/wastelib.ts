@@ -15,7 +15,9 @@ export * from "./ending/EndingUpdate";
 export * from "./font/FontChar";
 export * from "./font/Font";
 
+export * from "./image/Animation";
 export * from "./image/AnimationPlayer";
+export * from "./image/BaseAnimationPlayer";
 export * from "./image/BaseImage";
 export * from "./image/colors";
 export * from "./image/PicImage";

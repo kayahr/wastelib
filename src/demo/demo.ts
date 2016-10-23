@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { WebAssets, EndingPlayer } from "../main/wastelib";
+import { WebAssets, Animation, AnimationPlayer } from "../main/wastelib";
 
 /**
  * Shows the installer panel and let the user select the Wasteland files. These selected files are then returned
@@ -25,6 +25,30 @@ function installer(filenames: string[]): Promise<File[]> {
             resolve(Array.prototype.slice.call(selector.files));
         };
     });
+}
+
+function playAnimation(animation: Animation) {
+    const playerDiv = document.createElement("div");
+    let player: AnimationPlayer;
+    playerDiv.id = "player";
+    playerDiv.onclick = () => {
+        player.stop();
+        document.body.removeChild(playerDiv);
+    };
+    document.body.appendChild(playerDiv);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = animation.getWidth();
+    canvas.height = animation.getHeight();
+    const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
+    player = animation.createPlayer(frame => {
+        frame.draw(ctx);
+    });
+    playerDiv.appendChild(canvas);
+    player.start();
+
+    playerDiv.appendChild(document.createTextNode("Click to stop animation"));
+
 }
 
 // Creates the web assets factory
@@ -56,36 +80,14 @@ WebAssets.create(installer).then(assets => {
     // End animation
     document.querySelector("#end").addEventListener("click", () => {
         assets.readEnding().then(ending => {
-            const canvas = document.createElement("canvas");
-            const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
-            const player = new EndingPlayer(ending, (frame) => {
-                canvas.width = frame.getWidth();
-                canvas.height = frame.getHeight();
-                frame.draw(ctx);
-            });
+            const image = ending.toImage();
+            image.onclick = () => {
+                playAnimation(ending);
+            };
             output.innerHTML = "";
-            output.appendChild(canvas);
-            (<any>window).player = player;
-
-            const buttons = document.createElement("div");
-            output.appendChild(buttons);
-
-            const nextButton = document.createElement("button");
-            nextButton.innerHTML = "Next";
-            nextButton.onclick = () => player.next();
-            buttons.appendChild(nextButton);
-            const startButton = document.createElement("button");
-            startButton.innerHTML = "Start";
-            startButton.onclick = () => player.start();
-            buttons.appendChild(startButton);
-            const stopButton = document.createElement("button");
-            stopButton.innerHTML = "Stop";
-            stopButton.onclick = () => player.stop();
-            buttons.appendChild(stopButton);
-            const resetButton = document.createElement("button");
-            resetButton.innerHTML = "Reset";
-            resetButton.onclick = () => player.reset();
-            buttons.appendChild(resetButton);
+            output.appendChild(image);
+            output.appendChild(document.createElement("br"));
+            output.appendChild(document.createTextNode("Click image to start animation"));
         });
     });
 
@@ -130,8 +132,14 @@ WebAssets.create(installer).then(assets => {
         assets.readPortraits().then(sprites => {
             output.innerHTML = "";
             sprites.getPortraits().forEach(portrait => {
-                output.appendChild(portrait.toImage());
+                const image = portrait.toImage();
+                image.onclick = () => {
+                    playAnimation(portrait);
+                };
+                output.appendChild(image);
             });
+            output.appendChild(document.createElement("br"));
+            output.appendChild(document.createTextNode("Click image to start animation"));
         });
     });
 

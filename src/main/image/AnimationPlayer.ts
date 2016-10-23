@@ -3,157 +3,62 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "./BaseImage";
-
 /**
- * Abstract base class for animation player implementations.
+ * Shared interface for [[EndingAnimationPlayer]] and [[PortraitAnimationPlayer]].
  */
-export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> {
-    /** The played animation. */
-    private animation: A;
-
-    /** The current frame. */
-    private frame: T;
-
-    /** The timer handle if animation is playing. Null otherwise, */
-    private timer: any = null;
-
-    /** The playing speed in milliseconds per time unit. */
-    private speed: number = 50;
-
-    /** Callback to call on each frame update. */
-    private onDraw: (frame: T) => void;
-
-    /**
-     * Creates a new animation player for the given animation and calling the given draw callback for each
-     * animation frame.
-     *
-     * @param animation  The animation to play.
-     * @param onDraw     Callback to call on each frame update. This callback is responsible for actually showing the
-     *                   animation frame to the user.
-     */
-    protected constructor(animation: A, onDraw: (frame: T) => void) {
-        this.animation = animation;
-        this.onDraw = onDraw;
-        this.reset();
-    }
-
-    /**
-     * Initializes the player. Called for initialization when player is created and each time it is reset.
-     *
-     * @param animation  The animation to play.
-     * @return The base frame to start the animation with.
-     */
-    protected abstract init(animation: A): T;
-
+export interface AnimationPlayer {
     /**
      * Stops and resets the animation to the base frame.
      */
-    public reset(): void {
-        this.stop();
-        this.onDraw(this.frame = this.init(this.animation));
-    }
-
-    /**
-     * Returns the current animation frame.
-     *
-     * @return The current animation frame.
-     */
-    public getFrame(): T {
-        return this.frame;
-    }
-
-    /**
-     * Creates and returns the next frame in the animation.
-     *
-     * TODO Do we need a return value here?
-     *
-     * @param animation     The animation to play.
-     * @param currentFrame  The current frame.
-     * @return The next frame.
-     */
-    protected abstract nextFrame(animation: A, currentFrame: T): T;
+    reset(): void;
 
     /**
      * Advances the animation to the next frame.
      */
-    public next(): void {
-        this.onDraw(this.frame = this.nextFrame(this.animation, this.frame));
-    }
-
-    /**
-     * Returns the number of time units to wait before rendering the next frame.
-     *
-     * @param animation  The animation to play.
-     * @return The next delay in time units.
-     */
-    protected abstract getNextDelay(animation: A): number;
+    next(): void;
 
     /**
      * Returns the delay to wait before rendering the next frame.
      *
      * @return The next delay in milliseconds.
      */
-    public getNextDelayMS(): number {
-        return this.getNextDelay(this.animation) * this.speed;
-    }
+    getNextDelay(): number;
 
     /**
      * Starts the animation if not already running.
      */
-    public start(): void {
-        if (this.timer == null) {
-            const animate = () => {
-                this.next();
-                this.timer = setTimeout(animate, this.getNextDelayMS());
-            };
-            this.timer = setTimeout(animate, this.getNextDelayMS());
-        }
-    }
+    start(): void;
 
     /**
      * Stops the animation if currently running.
      */
-    public stop(): void {
-        if (this.timer != null) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
-    }
+    stop(): void;
 
     /**
      * Returns the animation speed in milliseconds per time unit. Default is 50.
      *
      * @return The animation speed in milliseconds per time unit.
      */
-    public getSpeed(): number {
-        return this.speed;
-    }
+    getSpeed(): number;
 
     /**
      * Sets the animation speed in milliseconds per time unit. Default is 50.
      *
      * @param speed  The animation speed to set.
      */
-    public setSpeed(speed: number): void {
-        this.speed = speed;
-    }
+    setSpeed(speed: number): void;
 
     /**
      * Returns the animation width in pixels.
      *
      * @return The animation width in pixels.
      */
-    public getWidth(): number {
-        return this.animation.getWidth();
-    }
+    getWidth(): number;
 
     /**
      * Returns the animation height in pixels.
      *
      * @return The animation height in pixels.
      */
-    public getHeight(): number {
-        return this.animation.getHeight();
-    }
+    getHeight(): number;
 }

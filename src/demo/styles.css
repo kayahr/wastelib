@@ -28,3 +28,21 @@ body {
 img, canvas {
     margin: 0 5px 5px 0;
 }
+
+#player {
+    position: fixed;
+    text-align: center;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    font-size: 20px;
+}
+
+#player canvas {
+    position: relative;
+    display: block;
+    margin: 50px auto 20px auto;
+}

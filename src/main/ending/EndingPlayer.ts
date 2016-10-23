@@ -3,14 +3,15 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AnimationPlayer } from "../image/AnimationPlayer";
+import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer";
 import { Ending } from "./Ending";
 import { EndingFrame } from "./EndingFrame";
+import { BaseImage } from "../image/BaseImage";
 
 /**
  * Player for the ending animation.
  */
-export class EndingPlayer extends AnimationPlayer<Ending, EndingFrame> {
+export class EndingPlayer extends BaseAnimationPlayer<Ending, EndingFrame> {
     /** The current frame index. */
     private frameIndex: number;
 
@@ -21,7 +22,7 @@ export class EndingPlayer extends AnimationPlayer<Ending, EndingFrame> {
      * @param onDraw  Callback to call on each frame update. This callback is responsible for actually showing the
      *                animation frame to the user.
      */
-    public constructor(ending: Ending, onDraw: (frame: EndingFrame) => void) {
+    public constructor(ending: Ending, onDraw: (frame: BaseImage) => void) {
         super(ending, onDraw);
     }
 
@@ -39,7 +40,7 @@ export class EndingPlayer extends AnimationPlayer<Ending, EndingFrame> {
         return frame;
     }
 
-    protected getNextDelay(ending: Ending): number {
+    protected getNextDelayInUnits(ending: Ending): number {
         return ending.getUpdate(this.frameIndex).getDelay();
     }
 }

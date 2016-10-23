@@ -3,14 +3,14 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AnimationPlayer } from "../image/AnimationPlayer";
+import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer";
 import { Portrait } from "./Portrait";
 import { PortraitFrame } from "./PortraitFrame";
 
 /**
  * Player for a portrait animation.
  */
-export class PortraitPlayer extends AnimationPlayer<Portrait, PortraitFrame> {
+export class PortraitPlayer extends BaseAnimationPlayer<Portrait, PortraitFrame> {
     /** The current script line indices. */
     private scriptPointers: number[];
 
@@ -32,7 +32,6 @@ export class PortraitPlayer extends AnimationPlayer<Portrait, PortraitFrame> {
         const numScripts = portrait.getNumScripts();
         this.scriptPointers = new Array(numScripts);
         this.scriptDelays = new Array(numScripts);
-        console.log(portrait, numScripts);
         for (let i = 0; i < numScripts; ++i) {
             this.scriptPointers[i] = 0;
             this.scriptDelays[i] = portrait.getScript(i).getLine(0).getDelay();
@@ -41,7 +40,7 @@ export class PortraitPlayer extends AnimationPlayer<Portrait, PortraitFrame> {
     }
 
     protected nextFrame(portrait: Portrait, frame: PortraitFrame): PortraitFrame {
-        const timeDelta = this.getNextDelay();
+        const timeDelta = this.getNextDelayInUnits();
         const numScripts = portrait.getNumScripts();
         for (let i = 0; i < numScripts; ++i) {
             this.scriptDelays[i] -= timeDelta;
@@ -68,7 +67,7 @@ export class PortraitPlayer extends AnimationPlayer<Portrait, PortraitFrame> {
         return frame;
     }
 
-    protected getNextDelay(): number {
+    protected getNextDelayInUnits(): number {
         return Math.min(...this.scriptDelays);
     }
 }

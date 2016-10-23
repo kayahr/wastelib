@@ -8,12 +8,15 @@ import { BinaryReader } from "../io/BinaryReader";
 import { decodeVxorInplace } from "../io/vxor";
 import { decodeHuffman } from "../io/huffman";
 import { EndingUpdate } from "./EndingUpdate";
+import { Animation } from "../image/Animation";
+import { BaseImage } from "../image/BaseImage";
+import { EndingPlayer } from "./EndingPlayer";
 
 /**
  * Contains the base frame of the ending animation but also provides methods to access the animation information.
  * To simply play the animation it is recommended to use the [[EndingPlayer]] class.
  */
-export class Ending extends PicImage {
+export class Ending extends PicImage implements Animation {
     /** The animation updates. */
     private updates: EndingUpdate[];
 
@@ -57,6 +60,10 @@ export class Ending extends PicImage {
      */
     public getNumUpdates(): number {
         return this.updates.length;
+    }
+
+    public createPlayer(onDraw: (frame: BaseImage) => void): EndingPlayer {
+        return new EndingPlayer(this, onDraw);
     }
 
     /**
