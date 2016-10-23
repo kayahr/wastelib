@@ -5,8 +5,8 @@
 
 import { Tileset } from "./Tileset";
 import { Tile } from "./Tile";
-import { BinaryReader } from "./BinaryReader";
-import { decodeHuffman } from "./huffman";
+import { BinaryReader } from "../io/BinaryReader";
+import { decodeHuffman } from "../io/huffman";
 
 /**
  * Container for the tilesets of the two allhtds files.

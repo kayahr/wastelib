@@ -4,8 +4,8 @@
  */
 
 import { FontChar } from "./FontChar";
-import { createCanvas } from "./canvas";
-import { createImage } from "./image";
+import { createCanvas } from "../sys/canvas";
+import { createImage } from "../sys/image";
 
 /**
  * Container for the 172 font characters of the colorf.fnt file.

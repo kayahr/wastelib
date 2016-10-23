@@ -3,18 +3,18 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "./BinaryReader";
-import { EndAnimPatch } from "./EndAnimPatch";
+import { BinaryReader } from "../io/BinaryReader";
+import { EndingPatch } from "./EndingPatch";
 
 /**
  * A single end animation frame.
  */
-export class EndAnimUpdate {
+export class EndingUpdate {
     /** The delay before showing this frame. */
     private delay: number;
 
     /** The image updates to apply to the previous frame to get this frame. */
-    private patches: EndAnimPatch[];
+    private patches: EndingPatch[];
 
     /**
      * Creates an end animation frame with the given delay and image updates.
@@ -24,7 +24,7 @@ export class EndAnimUpdate {
      * @param updates
      *            The image updates to apply to the previous frame to get this frame.
      */
-    private constructor(delay: number, updates: EndAnimPatch[]) {
+    private constructor(delay: number, updates: EndingPatch[]) {
         this.delay = delay;
         this.patches = updates;
     }
@@ -44,7 +44,7 @@ export class EndAnimUpdate {
      *
      * @return The image updates to apply to the previous frame to get this frame.
      */
-    public getUpdates(): EndAnimPatch[] {
+    public getUpdates(): EndingPatch[] {
         return this.patches.slice();
     }
 
@@ -69,16 +69,16 @@ export class EndAnimUpdate {
      *            The reader to read the animation frame from.
      * @return The read animation frame or null if end of animation has been reached.
      */
-    public static read(reader: BinaryReader): EndAnimUpdate | null {
+    public static read(reader: BinaryReader): EndingUpdate | null {
         const delay = reader.readUint16();
         if (delay === 0xffff) {
             return null;
         }
-        let update: EndAnimPatch | null;
-        let updates: EndAnimPatch[] = [];
-        while (update = EndAnimPatch.read(reader)) {
+        let update: EndingPatch | null;
+        let updates: EndingPatch[] = [];
+        while (update = EndingPatch.read(reader)) {
             updates.push(update);
         }
-        return new EndAnimUpdate(delay, updates);
+        return new EndingUpdate(delay, updates);
     }
 }

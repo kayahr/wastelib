@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "./PicImage";
+import { PicImage } from "../image/PicImage";
 import { Portrait } from "./Portrait";
 import { PortraitUpdate } from "./PortraitUpdate";
 

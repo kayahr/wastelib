@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "./BaseImage";
-import { COLOR_PALETTE } from "./colors";
+import { BaseImage } from "../image/BaseImage";
+import { COLOR_PALETTE } from "../image/colors";
 
 /**
  * Container for a single font character image.

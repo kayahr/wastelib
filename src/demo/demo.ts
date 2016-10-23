@@ -3,8 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { WebAssets } from "../main/WebAssets";
-import { EndAnimPlayer } from "../main/EndAnimPlayer";
+import { WebAssets, EndingPlayer } from "../main/wastelib";
 
 /**
  * Shows the installer panel and let the user select the Wasteland files. These selected files are then returned
@@ -56,10 +55,10 @@ WebAssets.create(installer).then(assets => {
 
     // End animation
     document.querySelector("#end").addEventListener("click", () => {
-        assets.readEndAnim().then(endAnim => {
+        assets.readEnding().then(ending => {
             const canvas = document.createElement("canvas");
             const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
-            const player = new EndAnimPlayer(endAnim, (frame) => {
+            const player = new EndingPlayer(ending, (frame) => {
                 canvas.width = frame.getWidth();
                 canvas.height = frame.getHeight();
                 frame.draw(ctx);
@@ -170,9 +169,9 @@ WebAssets.create(installer).then(assets => {
 
     // Title image
     document.querySelector("#title").addEventListener("click", () => {
-        assets.readTitlePic().then(titlePic => {
+        assets.readTitle().then(title => {
             output.innerHTML = "";
-            output.appendChild(titlePic.toImage());
+            output.appendChild(title.toImage());
         });
     });
 });

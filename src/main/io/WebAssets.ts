@@ -3,13 +3,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import { TitlePic } from "./TitlePic";
-import { Tilesets } from "./Tilesets";
-import { Cursors } from "./Cursors";
-import { Font } from "./Font";
-import { Sprites } from "./Sprites";
-import { EndAnim } from "./EndAnim";
-import { Portraits } from "./Portraits";
+import { Title } from "../title/Title";
+import { Tilesets } from "../tile/Tilesets";
+import { Cursors } from "../cursor/Cursors";
+import { Font } from "../font/Font";
+import { Sprites } from "../sprite/Sprites";
+import { Ending } from "../ending/Ending";
+import { Portraits } from "../portrait/Portraits";
 
 /** The version of the indexed DB used to store the Wasteland files in the browser. */
 const dbVersion = 1;
@@ -237,8 +237,8 @@ export class WebAssets {
      *
      * @return The end animation.
      */
-    public readEndAnim(): Promise<EndAnim> {
-        return EndAnim.fromBlob(this.getFile("END.CPA"));
+    public readEnding(): Promise<Ending> {
+        return Ending.fromBlob(this.getFile("END.CPA"));
     }
 
     /**
@@ -282,7 +282,7 @@ export class WebAssets {
      *
      * @return The title image.
      */
-    public readTitlePic(): Promise<TitlePic> {
-        return TitlePic.fromBlob(this.getFile("TITLE.PIC"));
+    public readTitle(): Promise<Title> {
+        return Title.fromBlob(this.getFile("TITLE.PIC"));
     }
 }

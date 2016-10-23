@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AnimationPlayer } from "./AnimationPlayer";
+import { AnimationPlayer } from "../image/AnimationPlayer";
 import { Portrait } from "./Portrait";
 import { PortraitFrame } from "./PortraitFrame";
 

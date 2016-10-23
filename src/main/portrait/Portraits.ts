@@ -4,7 +4,7 @@
  */
 
 import { Portrait } from "./Portrait";
-import { BinaryReader } from "./BinaryReader";
+import { BinaryReader } from "../io/BinaryReader";
 
 /**
  * Container for the portraits of an allpics file.

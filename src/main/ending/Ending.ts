@@ -3,19 +3,19 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "./PicImage";
-import { BinaryReader } from "./BinaryReader";
-import { decodeVxorInplace } from "./vxor";
-import { decodeHuffman } from "./huffman";
-import { EndAnimUpdate } from "./EndAnimUpdate";
+import { PicImage } from "../image/PicImage";
+import { BinaryReader } from "../io/BinaryReader";
+import { decodeVxorInplace } from "../io/vxor";
+import { decodeHuffman } from "../io/huffman";
+import { EndingUpdate } from "./EndingUpdate";
 
 /**
  * The end animation. Contains the base frame image but also provides methods to access the animation information.
- * To simply play the animation it is recommended to use the `EndAnimPlayer` class.
+ * To simply play the animation it is recommended to use the `EndingPlayer` class.
  */
-export class EndAnim extends PicImage {
+export class Ending extends PicImage {
     /** The animation frames. */
-    private updates: EndAnimUpdate[];
+    private updates: EndingUpdate[];
 
     /**
      * Creates a new end animation with the given image and animation data.
@@ -25,7 +25,7 @@ export class EndAnim extends PicImage {
      * @param frames
      *            The animation frames.
      */
-    private constructor(baseFrame: Uint8Array, updates: EndAnimUpdate[]) {
+    private constructor(baseFrame: Uint8Array, updates: EndingUpdate[]) {
         super(baseFrame, 288, 128);
         this.updates = updates;
     }
@@ -35,7 +35,7 @@ export class EndAnim extends PicImage {
      *
      * @return The animation frames
      */
-    public getFrames(): EndAnimUpdate[] {
+    public getFrames(): EndingUpdate[] {
         return this.updates.slice();
     }
 
@@ -46,7 +46,7 @@ export class EndAnim extends PicImage {
      *            Animation frame index.
      * @return The animation frame.
      */
-    public getFrame(index: number): EndAnimUpdate {
+    public getFrame(index: number): EndingUpdate {
         if (index < 0 || index >= this.updates.length) {
             throw new Error("Index out of bounds: " + index);
         }
@@ -69,7 +69,7 @@ export class EndAnim extends PicImage {
      *            The array containing the two encoded MSQ blocks with the base frame and animation data.
      * @return The parsed end animation.
      */
-    public static fromArray(array: Uint8Array): EndAnim {
+    public static fromArray(array: Uint8Array): Ending {
         const reader = new BinaryReader(array);
 
         // Parse base frame from first MSQ block
@@ -94,9 +94,9 @@ export class EndAnim extends PicImage {
         if (animSize2 !== animSize - 4) {
             throw new Error("Invalid animation data block size");
         }
-        const frames: EndAnimUpdate[] = [];
-        let frame: EndAnimUpdate | null;
-        while (frame = EndAnimUpdate.read(animReader)) {
+        const frames: EndingUpdate[] = [];
+        let frame: EndingUpdate | null;
+        while (frame = EndingUpdate.read(animReader)) {
             frames.push(frame);
         }
         if (animReader.readUint16() !== 0) {
@@ -104,7 +104,7 @@ export class EndAnim extends PicImage {
         }
 
         // Create the end animation
-        return new EndAnim(baseFrame, frames);
+        return new Ending(baseFrame, frames);
     }
 
     /**
@@ -114,12 +114,12 @@ export class EndAnim extends PicImage {
      *            The END.CPA blob.
      * @return The read end animation.
      */
-    public static fromBlob(blob: Blob): Promise<EndAnim> {
+    public static fromBlob(blob: Blob): Promise<Ending> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(EndAnim.fromArray(new Uint8Array(reader.result)));
+                    resolve(Ending.fromArray(new Uint8Array(reader.result)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read end animation from blob: " + event.error));

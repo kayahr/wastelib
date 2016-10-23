@@ -4,8 +4,8 @@
  */
 
 import { Sprite } from "./Sprite";
-import { createCanvas } from "./canvas";
-import { createImage } from "./image";
+import { createCanvas } from "../sys/canvas";
+import { createImage } from "../sys/image";
 
 /**
  * Container for the 10 sprites defined in the ic0_9.wlf and masks.wlf files.

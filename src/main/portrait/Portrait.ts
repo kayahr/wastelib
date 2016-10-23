@@ -3,10 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "./PicImage";
-import { BinaryReader } from "./BinaryReader";
-import { decodeVxorInplace } from "./vxor";
-import { decodeHuffman } from "./huffman";
+import { PicImage } from "../image/PicImage";
+import { BinaryReader } from "../io/BinaryReader";
+import { decodeVxorInplace } from "../io/vxor";
+import { decodeHuffman } from "../io/huffman";
 import { PortraitUpdate } from "./PortraitUpdate";
 import { PortraitScript } from "./PortraitScript";
 

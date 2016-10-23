@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "./BaseImage";
-import { COLOR_PALETTE, TRANSPARENCY } from "./colors";
+import { BaseImage } from "../image/BaseImage";
+import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors";
 
 /**
  * Container for a single mouse cursor image.

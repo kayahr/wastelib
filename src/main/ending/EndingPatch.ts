@@ -3,13 +3,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "./BinaryReader";
-import { COLOR_PALETTE } from "./colors";
+import { BinaryReader } from "../io/BinaryReader";
+import { COLOR_PALETTE } from "../image/colors";
 
 /**
  * Image update of an end animation frame.
  */
-export class EndAnimPatch {
+export class EndingPatch {
     /** The image offset to update. */
     private offset: number;
 
@@ -91,13 +91,13 @@ export class EndAnimPatch {
      *            The readet to read the image update from.
      * @return The read image update or null if end of animation frame is reached.
      */
-    public static read(reader: BinaryReader): EndAnimPatch | null {
+    public static read(reader: BinaryReader): EndingPatch | null {
         const offset = reader.readUint16();
         if (offset === 0xffff) {
             return null;
         }
         const pixels = reader.readUint8s(4);
-        return new EndAnimPatch(offset, pixels);
+        return new EndingPatch(offset, pixels);
     }
 
     /**

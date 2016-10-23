@@ -3,8 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { WebAssets } from "../main/WebAssets";
-import { PortraitPlayer } from "../main/PortraitPlayer";
+import { WebAssets, PortraitPlayer } from "../main/wastelib";
 
 /**
  * Shows the installer panel and let the user select the Wasteland files. These selected files are then returned

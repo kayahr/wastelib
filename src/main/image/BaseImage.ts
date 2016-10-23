@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "./canvas";
-import { createImage } from "./image";
+import { createCanvas } from "../sys/canvas";
+import { createImage } from "../sys/image";
 
 /**
  * Base class for all images.

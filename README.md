@@ -11,7 +11,6 @@ TODO
 
 This library is currently under development and the following features are not yet implemented:
 
-* Read encounter animations
 * Read game data (Maps, shop item lists, savegame)
 * Create namespaced bundle for simple web deployment
 * Write unit tests
@@ -44,13 +43,13 @@ And then simply require it:
 
 ```javascript
 var wastelib = require("wastelib");
-// Use wastelib.TitlePic class for example
+// Use wastelib.EndingPlayer class for example
 ```
 
 You can also use ES6 imports if you are using *TypeScript* or some other transpiler supporting it::
 
 ```javascript
-import { EndAnim, EndAnimPlayer } from "wastelib";
+import { Ending, EndingPlayer } from "wastelib";
 ```
 
 
@@ -69,11 +68,12 @@ Parsing assets
 There are classes for each asset type of the game:
 
 * `Cursors` - For parsing the mouse cursor images from the `CURS` file.
-* `EndAnim` - For parsing the end animation from the `END.CPA` file.
+* `Ending` - For parsing the end animation from the `END.CPA` file.
 * `Font` - For parsing the color font from the `COLORF.FNT` file.
+* `Portraits` - For parsing the portrait animations from the `ALLPICS1` and `ALLPICS2` files.
 * `Sprites` - For parsing the sprites from the `IC0_9.WLF` and `MASKS.WLF` files.
 * `Tilesets` - For parsing the tilesets from the `ALLHTDS1` and `ALLHTDS2` files.
-* `TitlePic` - For parsing the title image from the `TITLE.PIC` file.
+* `Title` - For parsing the title image from the `TITLE.PIC` file.
 
 There are always two types of static methods to parse the files. The `fromBlob()` (and/or `fromBlobs()`) method
 can be used with `Blob` or `File` objects which can be created by a file selector in the browser. The methods
@@ -82,7 +82,7 @@ asynchronously return the parsed assets (Using the Promise API). Example:
 ```javascript
 const file = document.getElementById("selector").files[0];
 
-TitlePic.fromBlob(file).then(titlePic => {
+Title.fromBlob(file).then(title => {
     ...
 });
 ```
@@ -93,7 +93,7 @@ are returned synchronously. Example:
 
 ```javascript
 const data = fs.readFileSync("title.pic");
-const titlePic = TitlePic.fromArray(data);
+const title = Title.fromArray(data);
 ```
 
 
@@ -128,7 +128,7 @@ function installer(filenames) {
 }
 
 WebAssets.create(installer).then(function(assets) {
-    assets.readTitlePic().then(function(titlePic) {
+    assets.readTitle().then(function(title) {
         // Do something with the title image
     });
     assets.readTilesets().then(function(tilesets) {

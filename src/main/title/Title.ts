@@ -3,50 +3,50 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "./PicImage";
-import { decodeVxor, decodeVxorInplace } from "./vxor";
+import { PicImage } from "../image/PicImage";
+import { decodeVxor, decodeVxorInplace } from "../io/vxor";
 
 /**
- * Container for the title pic image.
+ * Container for the title image.
  */
-export class TitlePic extends PicImage {
+export class Title extends PicImage {
     /**
-     * Creates a new title pic image with the given EGA image data.
+     * Creates a new title image with the given image data.
      *
      * @param data
-     *            The (vxor-decoded) EGA image data of the title.pic image.
+     *            The (vxor-decoded) image data of the title.pic image (Each byte contains two 4-bit colors).
      */
     private constructor(data: Uint8Array) {
         super(data, 288, 128);
     }
 
     /**
-     * Parses a title pic image from the given array and returns it.
+     * Parses a title image from the given array and returns it.
      *
      * @param data
      *            The vxor encoded array.
      * @return The parsed title.pic image.
      */
-    public static fromArray(array: Uint8Array): TitlePic {
-        return new TitlePic(decodeVxor(array, 144));
+    public static fromArray(array: Uint8Array): Title {
+        return new Title(decodeVxor(array, 144));
     }
 
     /**
-     * Reads the tile image from the given blob and returns it.
+     * Reads the title image from the given blob and returns it.
      *
      * @param blob
      *            The TITLE.PIC blob to read.
      * @return The read title image.
      */
-    public static fromBlob(blob: Blob): Promise<TitlePic> {
+    public static fromBlob(blob: Blob): Promise<Title> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(new TitlePic(decodeVxorInplace(new Uint8Array(reader.result), 144)));
+                    resolve(new Title(decodeVxorInplace(new Uint8Array(reader.result), 144)));
                 };
                 reader.onerror = event => {
-                    reject(new Error("Unable to read title pic image from blob: " + event.error));
+                    reject(new Error("Unable to read title image from blob: " + event.error));
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {

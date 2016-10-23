@@ -3,16 +3,16 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "./PicImage";
-import { EndAnim } from "./EndAnim";
-import { EndAnimUpdate } from "./EndAnimUpdate";
+import { PicImage } from "../image/PicImage";
+import { Ending } from "./Ending";
+import { EndingUpdate } from "./EndingUpdate";
 
-export class EndAnimFrame extends PicImage {
-    public constructor(endAnim: EndAnim) {
-        super(endAnim.getData(), endAnim.getWidth(), endAnim.getHeight());
+export class EndingFrame extends PicImage {
+    public constructor(ending: Ending) {
+        super(ending.getData(), ending.getWidth(), ending.getHeight());
     }
 
-    public update(update: EndAnimUpdate): void {
+    public update(update: EndingUpdate): void {
         update.getUpdates().forEach(patch => {
             const offset = patch.getOffset();
             patch.getUpdate().forEach((value, index) => {

@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "./BinaryReader";
+import { BinaryReader } from "../io/BinaryReader";
 import { PortraitPatch } from "./PortraitPatch";
 
 /**
