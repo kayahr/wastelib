@@ -15,6 +15,7 @@
         "strictNullChecks": true,
         "noImplicitThis": true
     },
+    "compileOnSave": true,
     "exclude": [
         "node_modules",
         "lib"
