@@ -19,10 +19,8 @@ export abstract class BaseImage {
     /**
      * Creates a new image with the given size.
      *
-     * @param width
-     *            The image width in pixels.
-     * @param height
-     *            The image height in pixels.
+     * @param width   The image width in pixels.
+     * @param height  The image height in pixels.
      */
     protected constructor(width: number, height: number) {
         this.width = width;
@@ -50,10 +48,8 @@ export abstract class BaseImage {
     /**
      * Returns the RGBA color at the specified position.
      *
-     * @param x
-     *            The horizontal pixel position.
-     * @param y
-     *            The vertical pixel position.
+     * @param x  The horizontal pixel position.
+     * @param y  The vertical pixel position.
      * @return The RGBA color at the specified position.
      */
     public abstract getColor(x: number, y: number): number;
@@ -61,12 +57,9 @@ export abstract class BaseImage {
     /**
      * Draws the image onto the given rendering context.
      *
-     * @param ctx
-     *            The rendering context to draw the image to.
-     * @param x
-     *            Optional horizontal target position. Defaults to 0.
-     * @param y
-     *            Optional vertical target position. Defaults to 0.
+     * @param ctx  The rendering context to draw the image to.
+     * @param x    Optional horizontal target position. Defaults to 0.
+     * @param y    Optional vertical target position. Defaults to 0.
      */
     public draw(ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0): void {
         const width = this.width;
@@ -104,11 +97,9 @@ export abstract class BaseImage {
     /**
      * Creates and returns an image data URL.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created data URL.
      */
     public toDataUrl(type?: string, ...args: any[]): string {
@@ -118,11 +109,9 @@ export abstract class BaseImage {
     /**
      * Creates and returns a HTML image.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {

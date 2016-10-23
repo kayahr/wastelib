@@ -10,8 +10,8 @@ import { decodeHuffman } from "../io/huffman";
 import { EndingUpdate } from "./EndingUpdate";
 
 /**
- * The end animation. Contains the base frame image but also provides methods to access the animation information.
- * To simply play the animation it is recommended to use the `EndingPlayer` class.
+ * Contains the base frame of the ending animation but also provides methods to access the animation information.
+ * To simply play the animation it is recommended to use the [[EndingPlayer]] class.
  */
 export class Ending extends PicImage {
     /** The animation updates. */
@@ -20,10 +20,8 @@ export class Ending extends PicImage {
     /**
      * Creates a new end animation with the given image and animation data.
      *
-     * @param baseFrame
-     *            The (vxor-decoded) image data of the base frame of the end animation.
-     * @param updates
-     *            The animation updates.
+     * @param baseFrame  The (vxor-decoded) image data of the base frame of the end animation.
+     * @param updates    The animation updates.
      */
     private constructor(baseFrame: Uint8Array, updates: EndingUpdate[]) {
         super(baseFrame, 288, 128);
@@ -42,8 +40,7 @@ export class Ending extends PicImage {
     /**
      * Returns the animation update with the given index.
      *
-     * @param index
-     *            Animation update index.
+     * @param index  Animation update index.
      * @return The animation update.
      */
     public getUpdate(index: number): EndingUpdate {
@@ -65,8 +62,7 @@ export class Ending extends PicImage {
     /**
      * Parses a end animation from the given array and returns it.
      *
-     * @param data
-     *            The array containing the two encoded MSQ blocks with the base frame and animation data.
+     * @param data  The array containing the two encoded MSQ blocks with the base frame and animation data.
      * @return The parsed end animation.
      */
     public static fromArray(array: Uint8Array): Ending {
@@ -110,8 +106,7 @@ export class Ending extends PicImage {
     /**
      * Reads the end animation from the given blob and returns it.
      *
-     * @param blob
-     *            The END.CPA blob.
+     * @param blob  The END.CPA blob.
      * @return The read end animation.
      */
     public static fromBlob(blob: Blob): Promise<Ending> {

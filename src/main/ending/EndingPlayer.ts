@@ -17,11 +17,9 @@ export class EndingPlayer extends AnimationPlayer<Ending, EndingFrame> {
     /**
      * Creates a new player for the given ending animation.
      *
-     * @param ending
-     *            The end animation to play
-     * @param onDraw
-     *            Callback to call on each frame update. This callback is responsible for actually showing the
-     *            animation frame to the user.
+     * @param ending  The end animation to play
+     * @param onDraw  Callback to call on each frame update. This callback is responsible for actually showing the
+     *                animation frame to the user.
      */
     public constructor(ending: Ending, onDraw: (frame: EndingFrame) => void) {
         super(ending, onDraw);

@@ -20,10 +20,8 @@ export class Tileset {
     /**
      * Creates a new tileset with the given tiles.
      *
-     * @param tiles
-     *           The tiles in this set.
-     * @param disk
-     *           The disk number.
+     * @param tiles  The tiles in this set.
+     * @param disk   The disk number.
      */
     public constructor(tiles: Tile[], disk: number) {
         this.tiles = tiles;
@@ -60,8 +58,7 @@ export class Tileset {
     /**
      * Returns the tile with the given index.
      *
-     * @param index
-     *            The index of the tile image to return.
+     * @param index  The index of the tile image to return.
      * @return The tile image.
      */
     public getTile(index: number): Tile {
@@ -93,11 +90,9 @@ export class Tileset {
     /**
      * Creates and returns a tileset image data URL. 16 tiles per row.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created data URL.
      */
     public toDataUrl(type?: string, ...args: any[]): string {
@@ -107,11 +102,9 @@ export class Tileset {
     /**
      * Creates and returns a HTML image of the tileset. 16 tiles per row.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {

@@ -13,8 +13,7 @@ export class Title extends PicImage {
     /**
      * Creates a new title image with the given image data.
      *
-     * @param data
-     *            The (vxor-decoded) image data of the title.pic image (Each byte contains two 4-bit colors).
+     * @param data  The (vxor-decoded) image data of the title.pic image (Each byte contains two 4-bit colors).
      */
     private constructor(data: Uint8Array) {
         super(data, 288, 128);
@@ -23,8 +22,7 @@ export class Title extends PicImage {
     /**
      * Parses a title image from the given array and returns it.
      *
-     * @param data
-     *            The vxor encoded array.
+     * @param data  The vxor encoded array.
      * @return The parsed title.pic image.
      */
     public static fromArray(array: Uint8Array): Title {
@@ -34,8 +32,7 @@ export class Title extends PicImage {
     /**
      * Reads the title image from the given blob and returns it.
      *
-     * @param blob
-     *            The TITLE.PIC blob to read.
+     * @param blob  The TITLE.PIC blob to read.
      * @return The read title image.
      */
     public static fromBlob(blob: Blob): Promise<Title> {

@@ -6,10 +6,8 @@
 /**
  * Creates a canvas with the given optional size. In Node.js a node-canvas is created and returned.
  *
- * @param width
- *            Optional width in pixels.
- * @param height
- *            Optional height in pixels.
+ * @param width  Optional width in pixels.
+ * @param height Optional height in pixels.
  * @return The created canvas.
  */
 export function createCanvas(width?: number, height?: number): HTMLCanvasElement {

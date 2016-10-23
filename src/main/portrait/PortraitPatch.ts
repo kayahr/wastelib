@@ -18,10 +18,8 @@ export class PortraitPatch {
     /**
      * Creates a portrait animation patch.
      *
-     * @param offset
-     *            The image offset where to apply the patch.
-     * @param data
-     *            The patch data (XOR values to apply at the image offset).
+     * @param offset  The image offset where to apply the patch.
+     * @param data    The patch data (XOR values to apply at the image offset).
      */
     private constructor(delay: number, data: number[]) {
         this.offset = delay;
@@ -30,8 +28,8 @@ export class PortraitPatch {
 
     /**
      * Returns the image offset to patch. This is the raw offset value from the allpics file measured in bytes
-     * relative to the 96 pixels (48 bytes) wide portrait image. It's recommended to use the `getX()` and
-     * `getY()` methods which converts this offset into pixel coordinates.
+     * relative to the 96 pixels (48 bytes) wide portrait image. It's recommended to use the [[getX]]() and
+     * [[getY]]() methods which converts this offset into pixel coordinates.
      *
      * @return The image offset to patch.
      */
@@ -70,8 +68,7 @@ export class PortraitPatch {
      * Reads a portrait animation patch from the given reader and returns it. If the end of an animation update
      * has been reached then `null` is returned
      *
-     * @param reader
-     *            The reader to read the animation patch from.
+     * @param reader  The reader to read the animation patch from.
      * @return The read portrait animation patch or `null` if end of animation update has been reached.
      */
     public static read(reader: BinaryReader): PortraitPatch | null {

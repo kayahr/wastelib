@@ -19,10 +19,8 @@ export class EndingUpdate {
     /**
      * Creates an end animation update with the given delay and patches.
      *
-     * @param delay
-     *            The delay before applying this update.
-     * @param patches
-     *            The set of update patches.
+     * @param delay    The delay before applying this update.
+     * @param patches  The set of update patches.
      */
     private constructor(delay: number, patches: EndingPatch[]) {
         this.delay = delay;
@@ -51,8 +49,7 @@ export class EndingUpdate {
     /**
      * Returns the update patch with the given index.
      *
-     * @param index
-     *            Update patch index.
+     * @param index  Update patch index.
      * @return The animation patch.
      */
     public getPatch(index: number): EndingPatch {
@@ -75,8 +72,7 @@ export class EndingUpdate {
      * Reads an animation update from the given reader. If the end of the animation has been reached then `null` is
      * returned.
      *
-     * @param reader
-     *            The reader to read the animation frame from.
+     * @param reader  The reader to read the animation frame from.
      * @return The read animation update or null if end of animation has been reached.
      */
     public static read(reader: BinaryReader): EndingUpdate | null {

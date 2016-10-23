@@ -7,11 +7,24 @@ import { PicImage } from "../image/PicImage";
 import { Portrait } from "./Portrait";
 import { PortraitUpdate } from "./PortraitUpdate";
 
+/**
+ * Updatable portrait animation frame.
+ */
 export class PortraitFrame extends PicImage {
+    /**
+     * Creates a new updatable portrait animation frame initialized to the base frame of the given portrait image.
+     *
+     * @param portrait  The portrait image to initialize this frame with.
+     */
     public constructor(portrait: Portrait) {
         super(portrait.getData(), 96, 84);
     }
 
+    /**
+     * Updates the animation frame.
+     *
+     * @param update  The update to apply.
+     */
     public update(update: PortraitUpdate): void {
         update.getPatches().forEach(patch => {
             const offset = patch.getOffset();

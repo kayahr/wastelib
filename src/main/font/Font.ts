@@ -17,8 +17,7 @@ export class Font {
     /**
      * Creates a new font container with the given font characters.
      *
-     * @param chars
-     *           The font character images.
+     * @param chars  The font character images.
      */
     private constructor(chars: FontChar[]) {
         this.chars = chars;
@@ -36,8 +35,7 @@ export class Font {
     /**
      * Returns the font character image with the given index.
      *
-     * @param index
-     *            The index of the font character.
+     * @param index  The index of the font character.
      * @return The font character image.
      */
     public getChar(index: number): FontChar {
@@ -50,7 +48,7 @@ export class Font {
     /**
      * Returns the number of characters.
      *
-     * @return THe number of characters.
+     * @return The number of characters.
      */
     public getNumChars(): number {
         return this.chars.length;
@@ -59,8 +57,7 @@ export class Font {
     /**
      * Parses a font from the given array and returns it.
      *
-     * @param buffer
-     *            The array with the colorf.fnt file content to parse.
+     * @param buffer  The array with the colorf.fnt file content to parse.
      * @return The parsed font.
      */
     public static fromArray(array: Uint8Array): Font {
@@ -74,8 +71,7 @@ export class Font {
     /**
      * Reads the color font from the given blob and returns it.
      *
-     * @param blob
-     *            The COLORF.FNT blob to read.
+     * @param blob  The COLORF.FNT blob to read.
      * @return The read font.
      */
     public static fromBlob(blob: Blob): Promise<Font> {
@@ -117,11 +113,9 @@ export class Font {
     /**
      * Creates and returns a font image data URL. 16 font characters per row.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created data URL.
      */
     public toDataUrl(type?: string, ...args: any[]): string {
@@ -131,11 +125,9 @@ export class Font {
     /**
      * Creates and returns a HTML image of the font. 16 font characters per row.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {

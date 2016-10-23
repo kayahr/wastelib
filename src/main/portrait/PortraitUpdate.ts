@@ -16,8 +16,7 @@ export class PortraitUpdate {
     /**
      * Creates an animation update with the given image patches.
      *
-     * @param patches
-     *            The patches to apply on the image when this update is applied.
+     * @param patches  The patches to apply on the image when this update is applied.
      */
     private constructor(patches: PortraitPatch[]) {
         this.patches = patches;
@@ -35,8 +34,7 @@ export class PortraitUpdate {
     /**
      * Returns the patch with the given index.
      *
-     * @param index
-     *            The index of the patch to return.
+     * @param index  The index of the patch to return.
      * @return The patch.
      */
     public getPatch(index: number): PortraitPatch {
@@ -59,8 +57,7 @@ export class PortraitUpdate {
      * Reads an animation update from the given reader. If the end of the animation has been reached then `null` is
      * returned.
      *
-     * @param reader
-     *            The reader to read the animation update from.
+     * @param reader  The reader to read the animation update from.
      * @return The read animation update or null if end of animation has been reached.
      */
     public static read(reader: BinaryReader): PortraitUpdate {

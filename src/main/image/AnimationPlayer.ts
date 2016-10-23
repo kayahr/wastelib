@@ -28,11 +28,9 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
      * Creates a new animation player for the given animation and calling the given draw callback for each
      * animation frame.
      *
-     * @param animation
-     *            The animation to play.
-     * @param onDraw
-     *            Callback to call on each frame update. This callback is responsible for actually showing the
-     *            animation frame to the user.
+     * @param animation  The animation to play.
+     * @param onDraw     Callback to call on each frame update. This callback is responsible for actually showing the
+     *                   animation frame to the user.
      */
     protected constructor(animation: A, onDraw: (frame: T) => void) {
         this.animation = animation;
@@ -43,8 +41,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     /**
      * Initializes the player. Called for initialization when player is created and each time it is reset.
      *
-     * @param animation
-     *            The animation to play.
+     * @param animation  The animation to play.
      * @return The base frame to start the animation with.
      */
     protected abstract init(animation: A): T;
@@ -71,10 +68,8 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
      *
      * TODO Do we need a return value here?
      *
-     * @param animation
-     *            The animation to play.
-     * @param currentFrame
-     *            The current frame.
+     * @param animation     The animation to play.
+     * @param currentFrame  The current frame.
      * @return The next frame.
      */
     protected abstract nextFrame(animation: A, currentFrame: T): T;
@@ -89,8 +84,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     /**
      * Returns the number of time units to wait before rendering the next frame.
      *
-     * @param animation
-     *            The animation to play.
+     * @param animation  The animation to play.
      * @return The next delay in time units.
      */
     protected abstract getNextDelay(animation: A): number;
@@ -139,8 +133,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     /**
      * Sets the animation speed in milliseconds per time unit. Default is 50.
      *
-     * @param speed
-     *            The animation speed to set.
+     * @param speed  The animation speed to set.
      */
     public setSpeed(speed: number): void {
         this.speed = speed;
@@ -149,7 +142,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     /**
      * Returns the animation width in pixels.
      *
-     * @return the animation width in pixels.
+     * @return The animation width in pixels.
      */
     public getWidth(): number {
         return this.animation.getWidth();
@@ -158,7 +151,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     /**
      * Returns the animation height in pixels.
      *
-     * @return the animation height in pixels.
+     * @return The animation height in pixels.
      */
     public getHeight(): number {
         return this.animation.getHeight();

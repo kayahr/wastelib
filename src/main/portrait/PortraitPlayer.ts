@@ -20,11 +20,9 @@ export class PortraitPlayer extends AnimationPlayer<Portrait, PortraitFrame> {
     /**
      * Creates a new player for the given portrait animation.
      *
-     * @param portrait
-     *            The portrait animation to play.
-     * @param onDraw
-     *            Callback to call on each frame update. This callback is responsible for actually showing the
-     *            animation frame to the user.
+     * @param portrait  The portrait animation to play.
+     * @param onDraw    Callback to call on each frame update. This callback is responsible for actually showing the
+     *                  animation frame to the user.
      */
     public constructor(portrait: Portrait, onDraw: (frame: PortraitFrame) => void) {
         super(portrait, onDraw);

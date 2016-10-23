@@ -16,10 +16,8 @@ export class PortraitScriptLine {
     /**
      * Creates a portrait animation script line.
      *
-     * @param delay
-     *            The delay in time units.
-     * @param update
-     *            The index of the animation update to apply.
+     * @param delay   The delay in time units.
+     * @param update  The index of the animation update to apply.
      */
     public constructor(delay: number, update: number) {
         this.delay = delay;

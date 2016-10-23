@@ -13,6 +13,7 @@
 [Tt]humbs.db
 
 # Build output
+/doc/api/
 /node_modules/
 /typings/
 /lib/

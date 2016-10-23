@@ -13,8 +13,7 @@ export class Tile extends PicImage {
     /**
      * Creates a new tile with the given image data.
      *
-     * @param data
-     *            The image data.
+     * @param data  The image data.
      */
     private constructor(data: Uint8Array) {
         super(data, 16, 16);
@@ -23,10 +22,8 @@ export class Tile extends PicImage {
     /**
      * Parses a tile from the given array buffer.
      *
-     * @param array
-     *            The array buffer containing the image data.
-     * @param offset
-     *            Optional data offset. Defaults to 0.
+     * @param array   The array buffer containing the image data.
+     * @param offset  Optional data offset. Defaults to 0.
      * @return The parsed tile.
      */
     public static fromArray(array: Uint8Array, offset?: number): Tile {

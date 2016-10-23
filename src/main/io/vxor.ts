@@ -6,14 +6,10 @@
 /**
  * Decodes a vertical xor encoded data block.
  *
- * @param data
- *            The array containing the data to decode.
- * @param width
- *            The line width in bytes (not pixels) for decoding.
- * @param size
- *            The number of bytes to decode.
- * @param offset
- *            Optional start offset in the data array to decode. Defaults to 0.
+ * @param data    The array containing the data to decode.
+ * @param width   The line width in bytes (not pixels) for decoding.
+ * @param size    The number of bytes to decode.
+ * @param offset  Optional start offset in the data array to decode. Defaults to 0.
  * @return A new array with the decoded bytes.
  */
 export function decodeVxor(data: ArrayLike<number>, width: number, size: number = data.length,
@@ -28,14 +24,10 @@ export function decodeVxor(data: ArrayLike<number>, width: number, size: number 
 /**
  * Decodes a vertical xor encoded data block inplace.
  *
- * @param data
- *            The array containing the data to decode.
- * @param width
- *            The line width in bytes (not pixels) for decoding.
- * @param size
- *            The number of bytes to decode.
- * @param offset
- *            Optional start offset in the data array to decode. Defaults to 0.
+ * @param data    The array containing the data to decode.
+ * @param width   The line width in bytes (not pixels) for decoding.
+ * @param size    The number of bytes to decode.
+ * @param offset  Optional start offset in the data array to decode. Defaults to 0.
  * @return Reference to the passed data array now containing the decoded bytes.
  */
 export function decodeVxorInplace(data: Uint8Array, width: number, size: number = data.length,

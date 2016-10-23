@@ -16,8 +16,7 @@ export class PortraitScript {
     /**
      * Creates a portrait animation script.
      *
-     * @param lines
-     *            The script lines.
+     * @param lines  The script lines.
      */
     private constructor(lines: PortraitScriptLine[]) {
         this.lines = lines;
@@ -35,8 +34,7 @@ export class PortraitScript {
     /**
      * Returns the animation script line with the given index.
      *
-     * @param index
-     *            The index of the animation script line.
+     * @param index  The index of the animation script line.
      * @return The animation script line.
      */
     public getLine(index: number): PortraitScriptLine {
@@ -58,8 +56,7 @@ export class PortraitScript {
     /**
      * Reads a portrait animation script.
      *
-     * @param reader
-     *            The reader to read the script from.
+     * @param reader  The reader to read the script from.
      * @return The read portrait animation script.
      */
     public static read(reader: BinaryReader): PortraitScript {

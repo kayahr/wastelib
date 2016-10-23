@@ -21,8 +21,7 @@ export class FontChar extends BaseImage {
     /**
      * Creates a new font character image for the given image data.
      *
-     * @param data
-     *            The image data.
+     * @param data  The image data.
      */
     private constructor(data: ArrayLike<number>) {
         super(8, 8);
@@ -45,10 +44,8 @@ export class FontChar extends BaseImage {
     /**
      * Parses a single font character from the given array and returns it.
      *
-     * @param buffer
-     *            The array with the content of the colorf.fnt file.
-     * @param offset
-     *            The offset in the array pointing to the font character.
+     * @param buffer  The array with the content of the colorf.fnt file.
+     * @param offset  The offset in the array pointing to the font character.
      * @return The parsed font character.
      */
     public static fromArray(array: Uint8Array, offset: number = 0): FontChar {

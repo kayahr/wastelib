@@ -22,12 +22,9 @@ export class BinaryReader {
     /**
      * Creates a new binary reader for the given data.
      *
-     * @param data
-     *            The data array to read from.
-     * @param offset
-     *            Optional start offset. Defaults to 0.
-     * @param size
-     *            Optional maximum number of bytes to read from data array. Defaults to size of data array.
+     * @param data    The data array to read from.
+     * @param offset  Optional start offset. Defaults to 0.
+     * @param size    Optional maximum number of bytes to read from data array. Defaults to size of data array.
      */
     public constructor(data: ArrayLike<number>, offset = 0, size = data.length) {
         this.data = data;
@@ -114,8 +111,7 @@ export class BinaryReader {
     /**
      * Reads the specified number of unsigned 8 bit values and returns it.
      *
-     * @param len
-     *            The number of bytes to read.
+     * @param len  The number of bytes to read.
      * @return The read bytes.
      */
     public readUint8s(len: number): number[] {

@@ -12,7 +12,7 @@ import { PortraitScript } from "./PortraitScript";
 
 /**
  * An animated portrait image. Contains the base frame image but also provides methods to access the animation
- * information. To simply play the animation it is recommended to use the `PortraitPlayer` class.
+ * information. To simply play the animation it is recommended to use the [[PortraitPlayer]] class.
  */
 export class Portrait extends PicImage {
     /** The animation scripts. */
@@ -24,12 +24,9 @@ export class Portrait extends PicImage {
     /**
      * Creates a new portrait with the given base frame, animation scripts and animation updates.
      *
-     * @param baseFrame
-     *            The image data of the base frame.
-     * @param scripts
-     *            The animation scripts.
-     * @param updates
-     *            The animation updates.
+     * @param baseFrame  The image data of the base frame.
+     * @param scripts    The animation scripts.
+     * @param updates    The animation updates.
      */
     private constructor(baseFrame: Uint8Array, scripts: PortraitScript[], updates: PortraitUpdate[]) {
         super(baseFrame, 96, 84);
@@ -49,8 +46,7 @@ export class Portrait extends PicImage {
     /**
      * Returns the animation script with the given index.
      *
-     * @param index
-     *            Animation script index.
+     * @param index  Animation script index.
      * @return The animation script.
      */
     public getScript(index: number): PortraitScript {
@@ -81,8 +77,7 @@ export class Portrait extends PicImage {
     /**
      * Returns the animation update with the given index.
      *
-     * @param index
-     *            Animation update index.
+     * @param index  Animation update index.
      * @return The animation update.
      */
     public getUpdate(index: number): PortraitUpdate {
@@ -104,8 +99,7 @@ export class Portrait extends PicImage {
     /**
      * Reads a portrait from the given reader and returns it.
      *
-     * @param reader
-     *            The reader to read the two encoded MSQ blocks with the base frame and animation data from.
+     * @param reader  The reader to read the two encoded MSQ blocks with the base frame and animation data from.
      * @return The parsed portrait.
      */
     public static read(reader: BinaryReader): Portrait {

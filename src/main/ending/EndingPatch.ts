@@ -19,10 +19,8 @@ export class EndingPatch {
     /**
      * Creates a new update patch,
      *
-     * @param offset
-     *            The image update offset.
-     * @param data
-     *            The patch data (Four bytes with eight 4-bit colors).
+     * @param offset  The image update offset.
+     * @param data    The patch data (Four bytes with eight 4-bit colors).
      */
     private constructor(offset: number, data: number[]) {
         this.offset = offset;
@@ -32,8 +30,8 @@ export class EndingPatch {
     /**
      * Returns the raw offset to update. This is the raw offset value from the END.CPA file measured in 8 byte
      * blocks relative to a 320 pixels wide screen. Too complex to use. So it's recommended to use the
-     * `getX()` and `getY()` methods which converts this offset into pixel coordinates relative to
-     * the image. Or use the `getOffset()` method which returns the offset byte address in the image data.
+     * [[getX]]() and [[getY]]() methods which converts this offset into pixel coordinates relative to
+     * the image. Or use the [[getOffset]]() method which returns the offset byte address in the image data.
      *
      * @return The raw image update offset.
      */
@@ -80,8 +78,7 @@ export class EndingPatch {
     /**
      * Returns the RGBA color at the specified position.
      *
-     * @param x
-     *            The horizontal pixel position.
+     * @param x  The horizontal pixel position.
      * @return The RGBA color at the specified position.
      */
     public getColor(x: number): number {
@@ -94,8 +91,7 @@ export class EndingPatch {
      * Reads an update patch from the given reader. If end of animation update block is reached then `null` is
      * returned.
      *
-     * @param reader
-     *            The reader to read the update patch from.
+     * @param reader  The reader to read the update patch from.
      * @return The read update patch or null if end of update block is reached.
      */
     public static read(reader: BinaryReader): EndingPatch | null {

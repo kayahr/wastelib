@@ -37,8 +37,7 @@ const filenames: WastelandFilename[] = [
 /**
  * Checks wether the given filename is a wasteland filename.
  *
- * @param filename
- *            The filename to check.
+ * @param filename  The filename to check.
  * @return True if filename is a wasteland filename, false if not.
  */
 function isWastelandFilename(filename: string): filename is WastelandFilename {
@@ -74,20 +73,18 @@ function openDB(): Promise<IDBDatabase> {
 /**
  * Returns a Wasteland file from the database.
  *
- * @param db
- *            The database.
- * @param name
- *            The name of the file to return.
+ * @param db    The database.
+ * @param name  The name of the file to return.
  * @return The file read from the database. If file is not found then undefined is returned.
  */
 function getFile(db: IDBDatabase, name: WastelandFilename): Promise<File | undefined> {
-    return new Promise((resolve, reject) => {
+    return new Promise<File | undefined>((resolve, reject) => {
         try {
             const trans = db.transaction(["files"]);
             const store = trans.objectStore("files");
             const request = store.get(name);
             request.addEventListener("success", () => {
-                const file: File = request.result;
+                const file: File | undefined = request.result;
                 resolve(file);
             });
             request.addEventListener("error", event => {
@@ -102,17 +99,15 @@ function getFile(db: IDBDatabase, name: WastelandFilename): Promise<File | undef
 /**
  * Stores a file in the database. None-Wasteland files are ignored.
  *
- * @param db
- *            The database.
- * @param file
- *            The file to store.
+ * @param db    The database.
+ * @param file  The file to store.
  */
 function putFile(db: IDBDatabase, file: File): Promise<void> {
     const fileName = file.name.toUpperCase();
     if (!isWastelandFilename(fileName)) {
-        return Promise.resolve();
+        return Promise.resolve<void>();
     }
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         try {
             const trans = db.transaction(["files"], "readwrite");
             const store = trans.objectStore("files");
@@ -132,12 +127,10 @@ function putFile(db: IDBDatabase, file: File): Promise<void> {
 /**
  * Stores multiple files in the database. None-Wasteland files are ignored.
  *
- * @param db
- *            The database.
- * @param files
- *            The files to store.
+ * @param db     The database.
+ * @param files  The files to store.
  */
-function putFiles(db: IDBDatabase, files: File[]): Promise<void> {
+function putFiles(db: IDBDatabase, files: File[]): Promise<void[]> {
     return Promise.all(files.map(file => putFile(db, file)));
 }
 
@@ -148,10 +141,8 @@ function putFiles(db: IDBDatabase, files: File[]): Promise<void> {
  *
  * This function calls itself recursively until all files are present in the database.
  *
- * @param db
- *            The database.
- * @param installFiles
- *            The installation callback to call if not all Wasteland files were found in the database.
+ * @param db            The database.
+ * @param installFiles  The installation callback to call if not all Wasteland files were found in the database.
  * @return The file map with all Wasteland files.
  */
 function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]) => Promise<File[]>):
@@ -189,8 +180,7 @@ export class WebAssets {
     /**
      * Creates the web assets factory with the given file map.
      *
-     * @param files
-     *            The file map mapping filenames to Wasteland files installed in the browser.
+     * @param files  The file map mapping filenames to Wasteland files installed in the browser.
      */
     private constructor(files: { [name: string]: File }) {
         this.files = files;
@@ -199,11 +189,11 @@ export class WebAssets {
     /**
      * Creates the web assets factory.
      *
-     * @param installFiles
-     *            Callback called when not all files are found in the browser. The callback must do some UI work
-     *            to let the user select the missing files (filenames of the missing files are passed to the callback)
-     *            and then the list of selected files must be returned asynchronously. None-Wasteland files in the
-     *            returned list are ignored. The callback is called again if files are still missing.
+     * @param installFiles  Callback called when not all files are found in the browser. The callback must do some UI
+     *                      work to let the user select the missing files (filenames of the missing files are passed to
+     *                      the callback) and then the list of selected files must be returned asynchronously.
+     *                      None-Wasteland files in the returned list are ignored. The callback is called again if
+     *                      files are still missing.
      * @return The created web assets factory.
      */
     public static create(installFiles: (filenames: WastelandFilename[]) => Promise<Blob[]>): Promise<WebAssets> {
@@ -215,8 +205,7 @@ export class WebAssets {
     /**
      * Returns the wasteland file with the given filename.
      *
-     * @param filename
-     *            The name of the file to return.
+     * @param filename  The name of the file to return.
      * @return The file.
      */
     private getFile(filename: WastelandFilename): File {

@@ -17,8 +17,7 @@ export class Cursors {
     /**
      * Creates a new mouse cursor container with the given cursors.
      *
-     * @param chars
-     *           The mouse cursor images.
+     * @param chars  The mouse cursor images.
      */
     private constructor(cursors: Cursor[]) {
         this.cursors = cursors;
@@ -36,8 +35,7 @@ export class Cursors {
     /**
      * Returns the mouse cursor image with the given index.
      *
-     * @param index
-     *            The index of the mouse cursor image.
+     * @param index  The index of the mouse cursor image.
      * @return The mouse cursor image.
      */
     public getCursor(index: number): Cursor {
@@ -59,8 +57,7 @@ export class Cursors {
     /**
      * Parses the mouse cursor images from the given array and returns it.
      *
-     * @param buffer
-     *            The array with the CURS file content to parse.
+     * @param buffer  The array with the CURS file content to parse.
      * @return The parsed mouse cursors.
      */
     public static fromArray(array: Uint8Array): Cursors {
@@ -74,8 +71,7 @@ export class Cursors {
     /**
      * Reads mouse cursor images from the given blob and returns it.
      *
-     * @param file
-     *            The CURS blob to read.
+     * @param file  The CURS blob to read.
      * @return The read mouse cursors.
      */
     public static fromBlob(blob: Blob): Promise<Cursors> {
@@ -117,11 +113,9 @@ export class Cursors {
     /**
      * Creates and returns an image data URL of an image with all mouse cursors.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created data URL.
      */
     public toDataUrl(type?: string, ...args: any[]): string {
@@ -131,11 +125,9 @@ export class Cursors {
     /**
      * Creates and returns a HTML image with all mouse cursors.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {

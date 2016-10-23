@@ -15,8 +15,7 @@ export class EndingFrame extends PicImage {
      * Creates a new updatable ending animation frame initialized to the base frame of the given ending
      * animation.
      *
-     * @param ending
-     *            The ending animation to initialize this frame with.
+     * @param ending  The ending animation to initialize this frame with.
      */
     public constructor(ending: Ending) {
         super(ending.getData(), ending.getWidth(), ending.getHeight());
@@ -25,8 +24,7 @@ export class EndingFrame extends PicImage {
     /**
      * Updates the animation frame.
      *
-     * @param update
-     *            The update apply.
+     * @param update  The update to apply.
      */
     public update(update: EndingUpdate): void {
         update.getPatches().forEach(patch => {

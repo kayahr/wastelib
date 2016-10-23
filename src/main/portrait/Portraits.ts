@@ -16,10 +16,8 @@ export class Portraits {
     /**
      * Creates a new set of portraits.
      *
-     * @param portraits
-     *           The portraits.
-     * @param disk
-     *           The disk number.
+     * @param portraits  The portraits.
+     * @param disk       The disk number.
      */
     public constructor(...portraits: Portrait[]) {
         this.portraits = portraits;
@@ -46,8 +44,7 @@ export class Portraits {
     /**
      * Returns the portrait with the given index.
      *
-     * @param index
-     *            The index of the portrait to return.
+     * @param index  The index of the portrait to return.
      * @return The portrait.
      */
     public getPortrait(index: number): Portrait {
@@ -60,8 +57,7 @@ export class Portraits {
     /**
      * Reads portraits from the given array.
      *
-     * @param array
-     *            The array to read the portraits from.
+     * @param array  The array to read the portraits from.
      * @return The read portraits.
      */
     public static fromArray(array: Uint8Array): Portraits {
@@ -77,8 +73,7 @@ export class Portraits {
     /**
      * Reads portraits from the given blob.
      *
-     * @param blob
-     *            The ALLPICS1 or ALLPICS2 blob to read.
+     * @param blob  The ALLPICS1 or ALLPICS2 blob to read.
      * @return The read portraits.
      */
     public static fromBlob(blob: Blob): Promise<Portraits> {
@@ -101,10 +96,8 @@ export class Portraits {
     /**
      * Reads portraits from the two given arrays.
      *
-     * @param array1
-     *            The array with the ALLPICS1 file content.
-     * @param array2
-     *            The array with the ALLPICS2 file content.
+     * @param array1  The array with the ALLPICS1 file content.
+     * @param array2  The array with the ALLPICS2 file content.
      * @return The read portraits.
      */
     public static fromArrays(array1: Uint8Array, array2: Uint8Array): Portraits {
@@ -114,10 +107,8 @@ export class Portraits {
     /**
      * Reads portraits from the two given blobs.
      *
-     * @param blob1
-     *            The ALLPICS1 blob to read.
-     * @param blob2
-     *            The ALLPICS2 blob to read
+     * @param blob1  The ALLPICS1 blob to read.
+     * @param blob2  The ALLPICS2 blob to read
      * @return The read portraits.
      */
     public static fromBlobs(blob1: Blob, blob2: Blob): Promise<Portraits> {

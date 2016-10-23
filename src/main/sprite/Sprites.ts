@@ -17,8 +17,7 @@ export class Sprites {
     /**
      * Creates a new sprite set with the given sprites.
      *
-     * @param sprites
-     *           The sprite images.
+     * @param sprites  The sprite images.
      */
     private constructor(sprites: Sprite[]) {
         this.sprites = sprites;
@@ -36,8 +35,7 @@ export class Sprites {
     /**
      * Returns the sprite image with the given index.
      *
-     * @param index
-     *            The index of the sprite.
+     * @param index  The index of the sprite.
      * @return The sprite image.
      */
     public getSprite(index: number): Sprite {
@@ -59,10 +57,8 @@ export class Sprites {
     /**
      * Parses sprites from the given arrays and returns it.
      *
-     * @param imageArray
-     *            The image data array with the ico0_9.wlf file content to parse.
-     * @param maskArray
-     *            The transparency mask array with the masks.wlf file content to parse.
+     * @param imageArray  The image data array with the ico0_9.wlf file content to parse.
+     * @param maskArray   The transparency mask array with the masks.wlf file content to parse.
      * @return The parsed sprites.
      */
     public static fromArrays(imageArray: Uint8Array, maskArray: Uint8Array): Sprites {
@@ -76,10 +72,8 @@ export class Sprites {
     /**
      * Reads sprites from the given blobs and returns it.
      *
-     * @param imagesBlob
-     *            The IC0_9.WLF blob to read.
-     * @param masksFile
-     *            The MASKS.WLF blob to read.
+     * @param imagesBlob  The IC0_9.WLF blob to read.
+     * @param masksFile   The MASKS.WLF blob to read.
      * @return The read sprites.
      */
     public static fromBlobs(imagesBlob: Blob, masksBlob: Blob): Promise<Sprites> {
@@ -133,11 +127,9 @@ export class Sprites {
     /**
      * Creates and returns an image data URL of an image with all sprites.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created data URL.
      */
     public toDataUrl(type?: string, ...args: any[]): string {
@@ -147,11 +139,9 @@ export class Sprites {
     /**
      * Creates and returns a HTML image with all sprites.
      *
-     * @param type
-     *            Optional image mime type. Defaults to image/png.
-     * @param args
-     *            Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *            with a default value of 0.92.
+     * @param type  Optional image mime type. Defaults to image/png.
+     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
+     *              with a default value of 0.92.
      * @return The created HTML image.
      */
     public toImage(type?: string, ...args: any[]): HTMLImageElement {

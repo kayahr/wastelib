@@ -16,12 +16,9 @@ export abstract class PicImage extends BaseImage {
     /**
      * Creates a new tile image with the given image data.
      *
-     * @param data
-     *            The image data (Each byte contains two 4-bit colors).
-     * @param width
-     *            The image width in pixels.
-     * @param height
-     *            The image height in pixels.
+     * @param data    The image data (Each byte contains two 4-bit colors).
+     * @param width   The image width in pixels.
+     * @param height  The image height in pixels.
      */
     protected constructor(data: Uint8Array, width: number, height: number) {
         super(width, height);

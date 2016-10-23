@@ -16,8 +16,7 @@ export class Cursor extends BaseImage {
     /**
      * Creates a new mouse cursor image with the give image data.
      *
-     * @param data
-     *            The image data.
+     * @param data  The image data.
      */
     private constructor(data: ArrayLike<number>) {
         super(16, 16);
@@ -49,10 +48,8 @@ export class Cursor extends BaseImage {
     /**
      * Parses a mouse cursor image from the given array.
      *
-     * @param array
-     *            The array containing the image data.
-     * @param offset
-     *            Optional start offset within the array. Defaults to 0.
+     * @param array   The array containing the image data.
+     * @param offset  Optional start offset within the array. Defaults to 0.
      * @return The parsed mouse cursor image.
      */
     public static fromArray(array: Uint8Array, offset: number = 0): Cursor {

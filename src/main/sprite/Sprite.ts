@@ -19,10 +19,8 @@ export class Sprite extends BaseImage {
     /**
      * Creates a new sprite image for the given image and mask data.
      *
-     * @param data
-     *            The image data.
-     * @param maskData
-     *            The transparency mask data.
+     * @param data      The image data.
+     * @param maskData  The transparency mask data.
      */
     private constructor(data: ArrayLike<number>, maskData: ArrayLike<number>) {
         super(16, 16);
@@ -50,14 +48,10 @@ export class Sprite extends BaseImage {
     /**
      * Parses a sprite from the given arrays.
      *
-     * @param dataArray
-     *            The array containing the image data.
-     * @param maskArray
-     *            The array containing the mask data.
-     * @param dataOffset
-     *            Optional data offset. Defaults to 0.
-     * @param maskOffset
-     *            Optional mask offset. Defaults to 0.
+     * @param dataArray   The array containing the image data.
+     * @param maskArray   The array containing the mask data.
+     * @param dataOffset  Optional data offset. Defaults to 0.
+     * @param maskOffset  Optional mask offset. Defaults to 0.
      * @return The parsed sprite.
      */
     public static fromArray(dataArray: Uint8Array, maskArray: Uint8Array, dataOffset: number = 0,

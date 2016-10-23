@@ -18,8 +18,7 @@ export class Tilesets {
     /**
      * Creates a new tilesets container with the given tilesets.
      *
-     * @param chars
-     *           The tilesets.
+     * @param chars  The tilesets.
      */
     private constructor(...tilesets: Tileset[]) {
         this.tilesets = tilesets;
@@ -46,8 +45,7 @@ export class Tilesets {
     /**
      * Returns the tileset with the given index.
      *
-     * @param index
-     *            The tileset index.
+     * @param index  The tileset index.
      * @return The tileset.
      */
     public getTileset(index: number): Tileset {
@@ -60,8 +58,7 @@ export class Tilesets {
     /**
      * Reads tilesets from the given array.
      *
-     * @param buffer
-     *            The array to read the tilesets from.
+     * @param buffer  The array to read the tilesets from.
      * @return The read tilesets.
      */
     public static fromArray(array: Uint8Array): Tilesets {
@@ -89,8 +86,7 @@ export class Tilesets {
     /**
      * Reads tilesets from the given blob.
      *
-     * @param blob
-     *            The ALLHTDS1 or ALLHTDS2 blob to read.
+     * @param blob  The ALLHTDS1 or ALLHTDS2 blob to read.
      * @return The read tilesets.
      */
     public static fromBlob(blob: Blob): Promise<Tilesets> {
@@ -113,10 +109,8 @@ export class Tilesets {
     /**
      * Reads tilesets from the two given arrays.
      *
-     * @param array1
-     *            The array with the ALLHTDS1 file content.
-     * @param array2
-     *            The array with the ALLHTDS2 file content.
+     * @param array1  The array with the ALLHTDS1 file content.
+     * @param array2  The array with the ALLHTDS2 file content.
      * @return The read tilesets.
      */
     public static fromArrays(array1: Uint8Array, array2: Uint8Array): Tilesets {
@@ -126,10 +120,8 @@ export class Tilesets {
     /**
      * Reads tilesets from the two given blobs.
      *
-     * @param blob1
-     *            The ALLHTDS1 blob to read.
-     * @param blob2
-     *            The ALLHTDS2 blob to read
+     * @param blob1  The ALLHTDS1 blob to read.
+     * @param blob2  The ALLHTDS2 blob to read
      * @return The read tilesets.
      */
     public static fromBlobs(blob1: Blob, blob2: Blob): Promise<Tilesets> {
