@@ -15,7 +15,7 @@ interface Node {
 }
 
 /**
- * Recursivly reads a huffman node (or payload byte) from the given reader and returns it.
+ * Recursively reads a huffman node (or payload byte) from the given reader and returns it.
  *
  * @param reader
  *            The reader to read the huffman node from.
@@ -33,7 +33,7 @@ function readNode(reader: BinaryReader): Node | number {
 }
 
 /**
- * Decodes huffman endocded data read from the given reader and returns the decoded data.
+ * Decodes huffman encoded data read from the given reader and returns the decoded data.
  *
  * @param reader
  *            The reader to read the encoded data from. The current position of the reader must point to the

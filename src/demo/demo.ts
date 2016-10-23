@@ -35,7 +35,7 @@ WebAssets.create(installer).then(assets => {
     // This is the output element used to show the various assets when the corresponding button is clicked.
     const output = document.querySelector("#output");
 
-    // Mouse cursors as seperate images
+    // Mouse cursors as separate images
     document.querySelector("#cursors").addEventListener("click", () => {
         assets.readCursors().then(cursors => {
             output.innerHTML = "";
@@ -107,7 +107,7 @@ WebAssets.create(installer).then(assets => {
         });
     });
 
-    // Sprites as seperate images
+    // Sprites as separate images
     document.querySelector("#sprites").addEventListener("click", () => {
         assets.readSprites().then(sprites => {
             output.innerHTML = "";

@@ -17,7 +17,7 @@ export class Font {
     /**
      * Creates a new font container with the given font characters.
      *
-     * @parm chars
+     * @param chars
      *           The font character images.
      */
     private constructor(chars: FontChar[]) {

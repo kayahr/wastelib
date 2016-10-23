@@ -32,7 +32,7 @@ WebAssets.create(installer).then(assets => {
     const output = <HTMLCanvasElement>document.querySelector("#output");
     const ctx = <CanvasRenderingContext2D>output.getContext("2d");
 
-    // Mouse cursors as seperate images
+    // Mouse cursors as separate images
     assets.readPortraits().then(portraits => {
         const player = new PortraitPlayer(portraits.getPortrait(8), frame => frame.draw(ctx));
         (<any>window).player = player;

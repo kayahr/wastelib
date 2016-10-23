@@ -118,7 +118,7 @@ export class Portrait extends PicImage {
         }
         const baseFrame = decodeVxorInplace(decodeHuffman(reader, imageSize), 48);
 
-        // Parse animation frames from second MSQ bloack
+        // Parse animation frames from second MSQ block
         const animSize = reader.readUint32();
         const animMsq = reader.readString(3);
         const animDisk = reader.readUint8();

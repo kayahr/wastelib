@@ -31,7 +31,7 @@ export abstract class PicImage extends BaseImage {
     /**
      * Returns a copy of the image data. Each byte contains two 4-bit colors.
      *
-     * @eturn The image data.
+     * @return The image data.
      */
     public getData(): Uint8Array {
         return this.data.slice();

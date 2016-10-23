@@ -19,7 +19,7 @@ This library is currently under development and the following features are not y
 Build
 -----
 
-To build the project simply run `npm install`. This downloads the dependencies and then transpiles the typescript
+To build the project simply run `npm install`. This downloads the dependencies and then compiles the typescript
 sources in the `src` directory to JavaScript in the `lib` directory.
 
 
@@ -46,7 +46,7 @@ var wastelib = require("wastelib");
 // Use wastelib.EndingPlayer class for example
 ```
 
-You can also use ES6 imports if you are using *TypeScript* or some other transpiler supporting it::
+You can also use ES6 imports if you are using *TypeScript* or some other compiler supporting it::
 
 ```javascript
 import { Ending, EndingPlayer } from "wastelib";

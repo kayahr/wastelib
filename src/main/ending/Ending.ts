@@ -58,7 +58,7 @@ export class Ending extends PicImage {
      *
      * @return The number of animation updates.
      */
-    public getNumUpdatess(): number {
+    public getNumUpdates(): number {
         return this.updates.length;
     }
 
@@ -81,7 +81,7 @@ export class Ending extends PicImage {
         }
         const baseFrame = decodeVxorInplace(decodeHuffman(reader, imageSize), 144);
 
-        // Parse animation updates from second MSQ bloack
+        // Parse animation updates from second MSQ block
         const animSize = reader.readUint32();
         const [ m, s, q ] = reader.readUint8s(3);
         const animDisk = reader.readUint8();

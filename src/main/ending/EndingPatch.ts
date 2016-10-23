@@ -95,7 +95,7 @@ export class EndingPatch {
      * returned.
      *
      * @param reader
-     *            The readet to read the update patch from.
+     *            The reader to read the update patch from.
      * @return The read update patch or null if end of update block is reached.
      */
     public static read(reader: BinaryReader): EndingPatch | null {

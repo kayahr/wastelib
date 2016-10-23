@@ -41,7 +41,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     }
 
     /**
-     * Initializes the player. Called for initialization when player is created and each time it is resetted.
+     * Initializes the player. Called for initialization when player is created and each time it is reset.
      *
      * @param animation
      *            The animation to play.
@@ -137,7 +137,7 @@ export abstract class AnimationPlayer<A extends BaseImage, T extends BaseImage> 
     }
 
     /**
-     * Sets the animation speed in milliseconds per time uinit. Default is 50.
+     * Sets the animation speed in milliseconds per time unit. Default is 50.
      *
      * @param speed
      *            The animation speed to set.

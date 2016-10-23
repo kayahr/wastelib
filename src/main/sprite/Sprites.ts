@@ -17,7 +17,7 @@ export class Sprites {
     /**
      * Creates a new sprite set with the given sprites.
      *
-     * @parm sprites
+     * @param sprites
      *           The sprite images.
      */
     private constructor(sprites: Sprite[]) {
@@ -48,7 +48,7 @@ export class Sprites {
     }
 
     /**
-     * Returns the number of srpites.
+     * Returns the number of sprites.
      *
      * @return The number of sprites.
      */

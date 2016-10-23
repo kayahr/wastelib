@@ -17,7 +17,7 @@ export class Cursors {
     /**
      * Creates a new mouse cursor container with the given cursors.
      *
-     * @parm chars
+     * @param chars
      *           The mouse cursor images.
      */
     private constructor(cursors: Cursor[]) {

@@ -117,7 +117,7 @@ export class Portraits {
      * @param blob1
      *            The ALLPICS1 blob to read.
      * @param blob2
-     *            The ALLPICS2 blop to read
+     *            The ALLPICS2 blob to read
      * @return The read portraits.
      */
     public static fromBlobs(blob1: Blob, blob2: Blob): Promise<Portraits> {

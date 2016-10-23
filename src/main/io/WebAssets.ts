@@ -54,17 +54,17 @@ function openDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
         try {
             const request = indexedDB.open("wastelib", dbVersion);
-            request.onsuccess = () => {
+            request.addEventListener("success", () => {
                 const db: IDBDatabase = request.result;
                 resolve(db);
-            };
-            request.onerror = event => {
+            });
+            request.addEventListener("error", event => {
                 reject(event.error);
-            };
-            request.onupgradeneeded = event => {
+            });
+            request.addEventListener("upgradeneeded", event => {
                 const db: IDBDatabase = request.result;
                 db.createObjectStore("files");
-            };
+            });
         } catch (e) {
             reject(e);
         }
@@ -86,13 +86,13 @@ function getFile(db: IDBDatabase, name: WastelandFilename): Promise<File | undef
             const trans = db.transaction(["files"]);
             const store = trans.objectStore("files");
             const request = store.get(name);
-            request.onsuccess = () => {
+            request.addEventListener("success", () => {
                 const file: File = request.result;
                 resolve(file);
-            };
-            request.onerror = event => {
+            });
+            request.addEventListener("error", event => {
                 reject(event.error);
-            };
+            });
         } catch (e) {
             reject(e);
         }
@@ -117,12 +117,12 @@ function putFile(db: IDBDatabase, file: File): Promise<void> {
             const trans = db.transaction(["files"], "readwrite");
             const store = trans.objectStore("files");
             const request = store.put(file, fileName);
-            request.onsuccess = () => {
+            request.addEventListener("success", () => {
                 resolve();
-            };
-            request.onerror = event => {
+            });
+            request.addEventListener("error", event => {
                 reject(event.error);
-            };
+            });
         } catch (e) {
             reject(e);
         }
@@ -251,7 +251,7 @@ export class WebAssets {
     }
 
     /**
-     * Reads the portraits from the ALLPIC1 and ALLPICS2 files and returns them.
+     * Reads the portraits from the ALLPICS1 and ALLPICS2 files and returns them.
      *
      * @return The portraits.
      */

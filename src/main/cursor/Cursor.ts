@@ -35,7 +35,7 @@ export class Cursor extends BaseImage {
 
         // The multi-component transparency mask can't be converted into RGBA but fortunately the game doesn't use
         // this feature anyway and all components in the cursor masks are set to the same value. So we simply check
-        // for the blue component mask bit to decide if pixel is tranparent or not.
+        // for the blue component mask bit to decide if pixel is transparent or not.
         if (((data[i - 2] >> b) & 1)) {
             const pixel = ((data[i] >> b) & 1)       // Blue
                 | (((data[i + 64] >> b) & 1) << 1)   // Green

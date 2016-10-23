@@ -18,7 +18,7 @@ export class Tilesets {
     /**
      * Creates a new tilesets container with the given tilesets.
      *
-     * @parm chars
+     * @param chars
      *           The tilesets.
      */
     private constructor(...tilesets: Tileset[]) {
@@ -129,7 +129,7 @@ export class Tilesets {
      * @param blob1
      *            The ALLHTDS1 blob to read.
      * @param blob2
-     *            The ALLHTDS2 blop to read
+     *            The ALLHTDS2 blob to read
      * @return The read tilesets.
      */
     public static fromBlobs(blob1: Blob, blob2: Blob): Promise<Tilesets> {
