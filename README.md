@@ -140,6 +140,13 @@ WebAssets.create(installer).then(function(assets) {
 });
 ```
 
+See also
+--------
+
+* [GitHub repository](https://github.com/kayahr/wastelib/)
+* [NPM repository](https://www.npmjs.com/package/wastelib/)
+* [API documentation](https://kayahr.github.io/wastelib/api/)
+
 [TypeScript]: https://www.typescriptlang.org/
 [Wasteland]: https://en.wikipedia.org/wiki/Wasteland_(video_game)
 [node-canvas]: https://www.npmjs.com/package/canvas
