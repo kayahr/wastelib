@@ -119,7 +119,8 @@ export class Cursors {
      * @return The created data URL.
      */
     public toDataUrl(type?: string, ...args: any[]): string {
-        return this.toCanvas().toDataURL(type, ...args);
+        const canvas = this.toCanvas();
+        return canvas.toDataURL(type, ...args);
     }
 
     /**

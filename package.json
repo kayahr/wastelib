@@ -2,11 +2,16 @@
   "$schema": "http://json.schemastore.org/package",
   "name": "wastelib",
   "version": "0.0.1",
-  "private": true,
   "description": "Library to read Wasteland game files",
   "keywords": [
     "wasteland"
   ],
+  "homepage": "https://github.com/kayahr/wastelib",
+  "author": {
+    "name": "Klaus Reimer",
+    "email": "k@ailis.de",
+    "url": "https://github.com/kayahr/"
+  },
   "license": "MIT",
   "main": "lib/main",
   "typings": "lib/main/wastelib",
@@ -20,22 +25,28 @@
     "watch": "tsc -w",
     "check": "cd src && jasmine",
     "doc": "typedoc --excludeNotExported --excludePrivate --mode file --out doc/api/ src/main node_modules/@types/",
+    "webpack": "webpack",
     "lint": "tslint --project .",
-    "prepublish": "npm run -s clean && npm run -s compile",
+    "prepublish": "npm run -s clean && npm run -s compile && npm run -s webpack",
     "test": "npm run -s lint && npm run -s check"
   },
   "files": [
-    "lib",
-    "src"
+    "lib/main",
+    "src/main"
   ],
+  "directories": {
+    "lib": "./lib/"
+  },
   "devDependencies": {
     "@types/es6-promise": "0.0.32",
     "@types/node": "^6.0.45",
     "del-cli": "^0.2.0",
     "jasmine": "~2.4.1",
+    "source-map-loader": "^0.1.5",
     "systemjs": "^0.19.38",
     "tslint": "^3.15.1",
     "typedoc": "^0.5.0",
-    "typescript": "^2.0.3"
+    "typescript": "^2.0.3",
+    "webpack": "^1.13.2"
   }
 }

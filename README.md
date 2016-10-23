@@ -12,15 +12,17 @@ TODO
 This library is currently under development and the following features are not yet implemented:
 
 * Read game data (Maps, shop item lists, savegame)
-* Create namespaced bundle for simple web deployment
 * Write unit tests
 
 
 Build
 -----
 
-To build the project simply run `npm install`. This downloads the dependencies and then compiles the typescript
-sources in the `src` directory to JavaScript in the `lib` directory.
+To build the project simply run `npm install`.
+
+This downloads the dependencies and then compiles the typescript sources in the `src` directory to JavaScript in the `lib` directory for usage in Node.js applications.
+
+It also creates a UMD bundle `lib/wastelib.js` which can be used in web applications.
 
 
 Usage
@@ -29,7 +31,7 @@ Usage
 ### Web:
 
 Copy the `wastelib.js` bundle from the `lib` directory to your website and include it. It provides the `wastelib`
-namespace with all the classes and functions of the library. **TODO: This bundle doesn't exist yet!**
+namespace with all the classes and functions of the library.
 
 ### Node.js:
 
