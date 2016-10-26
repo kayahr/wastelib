@@ -10,6 +10,9 @@ export class BinaryReader {
     /** Wrapped array to read from. */
     private data: ArrayLike<number>;
 
+    /** The first byte index in the array. */
+    private first: number;
+
     /** The last byte index in the array. */
     private last: number;
 
@@ -22,25 +25,46 @@ export class BinaryReader {
     /**
      * Creates a new binary reader for the given data.
      *
+     * 0   <- First = 0    <- Byte = 0
+     * 1
+     * 2
+     * 3
+     * 4
+     *     <- Last = 5
+     *
+     * last - byte
+     *
      * @param data    The data array to read from.
      * @param offset  Optional start offset. Defaults to 0.
      * @param size    Optional maximum number of bytes to read from data array. Defaults to size of data array.
      */
     public constructor(data: ArrayLike<number>, offset = 0, size = data.length) {
         this.data = data;
+        this.first = offset;
         this.last = offset + size;
         this.byte = offset;
         this.bit = 0;
     }
 
+    public getSize(): number {
+        return this.last - this.first;
+    }
+
     /**
      * Synchronizes the reader so it points to a full byte if it currently doesn't.
      */
-    public sync(): void {
+    public sync(): this {
         if (this.bit) {
             this.byte++;
             this.bit = 0;
         }
+        return this;
+    }
+
+    public seek(offset: number): this {
+        this.byte = offset;
+        this.bit = 0;
+        return this;
     }
 
     /**
@@ -49,8 +73,8 @@ export class BinaryReader {
      *
      * @return True if there is still data to read, false if not.
      */
-    public hasData(): boolean {
-        return this.byte < this.last;
+    public hasData(bits: number = 8): boolean {
+        return (this.last - this.byte) * 8 - this.bit >= bits;
     }
 
     /**
@@ -76,15 +100,30 @@ export class BinaryReader {
      *
      * @return The read bit.
      */
-    public readBit(): number {
+    public readBit(reverse: boolean = false): number {
         if (this.byte >= this.last) {
             throw new Error("End of data");
         }
-        const result = this.data[this.byte] >> (7 - this.bit) & 1;
+        const result = (reverse
+            ? (this.data[this.byte] >> (this.bit))
+            : (this.data[this.byte] >> (7 - this.bit))) & 1;
         this.bit++;
         if (this.bit > 7) {
             this.bit = 0;
             this.byte++;
+        }
+        return result;
+    }
+
+    public readBits(count: number, reverse: boolean = false): number {
+        let result = 0;
+        for (let i = 0; i < count; i++) {
+            const bit = this.readBit(reverse);
+            if (reverse) {
+                result = result | (bit << i);
+            } else {
+                result = (result << 1) | bit;
+            }
         }
         return result;
     }
