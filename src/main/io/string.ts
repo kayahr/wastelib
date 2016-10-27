@@ -78,7 +78,7 @@ function decodeStringGroup(dictionary: string, reader: BinaryReader): StringGrou
                 high = false;
         }
     }
-    return stringGroup;
+    return Object.freeze(stringGroup);
 }
 
 /**
@@ -93,5 +93,5 @@ export function decodeStringGroups(data: Uint8Array, offset: number, size: numbe
     const reader = new BinaryReader(data, offset, size);
     const dictionary = readDictionary(reader);
     const pointers = readPointers(reader);
-    return pointers.map(pointer => decodeStringGroup(dictionary, reader.seek(offset + 60 + pointer)));
+    return Object.freeze(pointers.map(pointer => decodeStringGroup(dictionary, reader.seek(offset + 60 + pointer))));
 }
