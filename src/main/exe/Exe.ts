@@ -14,34 +14,34 @@ const SEG2 = 0xd020;
  */
 export class Exe {
     /** The intro strings. */
-    private introStrings: StringGroups;
+    private readonly introStrings: StringGroups;
 
     /** Various unsorted strings. */
-    private messageStrings: StringGroups;
+    private readonly messageStrings: StringGroups;
 
     /** Various strings mostly used in inventory, skills and attribute screens. */
-    private inventoryStrings: StringGroups;
+    private readonly inventoryStrings: StringGroups;
 
     /** Character creation strings. */
-    private characterCreationStrings: StringGroups;
+    private readonly characterCreationStrings: StringGroups;
 
     /** Promition strings. */
-    private promotionStrings: StringGroups;
+    private readonly promotionStrings: StringGroups;
 
     /** Library strings. */
-    private libraryStrings: StringGroups;
+    private readonly libraryStrings: StringGroups;
 
     /** Shop strings. */
-    private shopStrings: StringGroups;
+    private readonly shopStrings: StringGroups;
 
     /** Infirmary strings. */
-    private infirmaryStrings: StringGroups;
+    private readonly infirmaryStrings: StringGroups;
 
     /** The map sizes of the maps in the two GAME files. */
-    private mapSizes: Uint8Array;
+    private readonly mapSizes: Uint8Array;
 
     /** The map offsets of the maps in the two GAME files. */
-    private mapOffsets: Uint32Array;
+    private readonly mapOffsets: Uint32Array;
 
     /**
      * Creates a new Exe information object from the given packed EXE content.
