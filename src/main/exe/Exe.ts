@@ -62,7 +62,7 @@ export class Exe {
         this.infirmaryStrings = decodeStringGroups(unpacked, SEG2 + 0xdced, 369);
 
         // Read the map sizes of the maps in the two GAME files.
-        this.mapSizes = new Uint8Array(unpacked.buffer, SEG2 + 0xbf1c, 42);
+        this.mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 42);
 
         // Read the map offsets of the maps in the two GAME files.
         this.mapOffsets = new Uint32Array(unpacked.slice(SEG2 + 0xbc7a, SEG2 + 0xbc7a + 42 * 4).buffer);
