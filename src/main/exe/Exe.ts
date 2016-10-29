@@ -43,6 +43,12 @@ export class Exe {
     /** The map offsets of the maps in the two GAME files. */
     private readonly mapOffsets: Uint32Array;
 
+    /** The mapping from location index to disk+map index. */
+    private readonly locationMapping: Uint8Array;
+
+    /** The offsets to the tile maps. */
+    private readonly tileMapOffsets: Uint16Array;
+
     /**
      * Creates a new Exe information object from the given packed EXE content.
      *
@@ -62,10 +68,16 @@ export class Exe {
         this.infirmaryStrings = decodeStringGroups(unpacked, SEG2 + 0xdced, 369);
 
         // Read the map sizes of the maps in the two GAME files.
-        this.mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 42);
+        this.mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 50);
 
         // Read the map offsets of the maps in the two GAME files.
         this.mapOffsets = new Uint32Array(unpacked.slice(SEG2 + 0xbc7a, SEG2 + 0xbc7a + 42 * 4).buffer);
+
+        // Read the location to disk+map mapping
+        this.locationMapping = unpacked.slice(SEG2 + 0xbec9, SEG2 + 0xbec9 + 50);
+
+        // Read the offsets to the tile maps
+        this.tileMapOffsets = new Uint16Array(unpacked.slice(SEG2 + 0xbd22, SEG2 + 0xbd22 + 50 * 2).buffer);
     }
 
     /**
@@ -183,7 +195,11 @@ export class Exe {
      * @return The map size.
      */
     public getMapSize(disk: number, map: number) {
-        return this.mapSizes[disk * 20 + map];
+        return this.mapSizes[this.getLocation(disk, map)];
+    }
+
+    public getTileMapOffset(disk: number, map: number) {
+        return this.tileMapOffsets[this.getLocation(disk, map)];
     }
 
     /**
@@ -195,5 +211,44 @@ export class Exe {
      */
     public getMapOffset(disk: number, map: number) {
         return this.mapOffsets[disk * 20 + map];
+    }
+
+    /**
+     * Returns the location index of the given map.
+     *
+     * @param disk  The disk index (0 or 1).
+     * @param map   The map index (0-19 for disk 0 and 0-21 for disk 1)
+     * @return The location index (0-49)
+     */
+    public getLocation(disk: number, map: number): number {
+        return this.locationMapping.indexOf((disk + 1 ^ 3) << 6 | map);
+    }
+
+    /**
+     * Returns the disk index of the specified location.
+     *
+     * @param location  The location (0-49, but there are also invalid locations within this range).
+     * @return The disk index (0 or 1).
+     */
+    public getLocationDisk(location: number): number {
+        const value = this.locationMapping[location] >> 6;
+        if (!value) {
+            throw new Error("Invalid location: " + location);
+        }
+        return (value ^ 3) - 1;
+    }
+
+    /**
+     * Returns the map index of the specified location.
+     *
+     * @param location  The location index (0-49, but there are also invalid locations within this range).
+     * @return The map index (0-19 for disk 0 and 0-21 for disk 1).
+     */
+    public getLocationMap(location: number): number {
+        const value = this.locationMapping[location];
+        if (!value) {
+            throw new Error("Invalid location: " + location);
+        }
+        return value & 0x3f;
     }
 }
