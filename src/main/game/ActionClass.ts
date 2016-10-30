@@ -4,7 +4,9 @@
  */
 
 /**
- * Enum with the 16 possible action classes as far as they are known.
+ * Enum with the 16 possible action classes for a map tile.
+ *
+ * @see http://wasteland.gamepedia.com/Map_Tile_Action_Classes
  */
 export enum ActionClass {
     /** No action. */
@@ -35,7 +37,7 @@ export enum ActionClass {
     SPECIAL = 6,
 
     /** Unused? */
-    UNKNOWN_1 = 7,
+    UNKNOWN$07 = 7,
 
     /** Used for all popup window dialogue. Contains refs to valid responses and n/bb pairs on pass/fail. */
     DIALOG = 8,
@@ -53,10 +55,10 @@ export enum ActionClass {
     ALTER = 12,
 
     /** Unused? */
-    UNKNOWN_2 = 13,
+    UNKNOWN$0D = 13,
 
     /** Unused? */
-    UNKNOWN_3 = 14,
+    UNKNOWN$0E = 14,
 
     /** Pointer to random encounter header which holds the pointers to the random encounter data. */
     RANDOM_ECOUNTER = 15

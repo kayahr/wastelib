@@ -5,6 +5,9 @@ A JavaScript library (Written in [TypeScript]) for reading the assets of the gam
 or Node.js applications to easily parse all the images, animations, maps and other game data from the original
 Wasteland files.
 
+The library is based on the valuable information gathered by the members of the
+[Wasteland Deconstruction Wiki].
+
 
 TODO
 ----
@@ -140,6 +143,15 @@ WebAssets.create(installer).then(function(assets) {
 });
 ```
 
+
+Unknown data
+------------
+
+Even though we deciphered most of the data there is still unknown stuff especially in the game maps. Wastelib exports
+the unknown data with methods like `getUnknown$03()` where the number after the dollar sign indicates the hexadecimal
+index in the data block. If you find out the purpose of this data then please let me know!
+
+
 See also
 --------
 
@@ -147,6 +159,7 @@ See also
 * [NPM repository](https://www.npmjs.com/package/wastelib/)
 * [API documentation](https://kayahr.github.io/wastelib/api/)
 
+[Wasteland Deconstruction Wiki]: http://wasteland.gamepedia.com/Wasteland:_The_Definitive_Deconstruction
 [TypeScript]: https://www.typescriptlang.org/
 [Wasteland]: https://en.wikipedia.org/wiki/Wasteland_(video_game)
 [node-canvas]: https://www.npmjs.com/package/canvas

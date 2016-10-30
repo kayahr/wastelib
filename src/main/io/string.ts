@@ -74,7 +74,7 @@ export function readStrings(reader: BinaryReader): string[] {
             reader.seek(base + pointer);
             for (let i = 0; i < 4; ++i) {
                 const string = readString(dictionary, reader);
-                if (string) {
+                if (string != null) {
                     strings.push(string);
                 }
             }

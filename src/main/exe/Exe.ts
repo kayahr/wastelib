@@ -189,7 +189,8 @@ export class Exe {
     }
 
     /**
-     * Returns the map size of the given map.
+     * Returns the map size of the given map. This information is needed to load a map because the maps itself
+     * do not know their size until the map info is read which is only available AFTER the map data has been parsed.
      *
      * @param disk  The disk index (0 or 1).
      * @param map   The map index (0-19 for disk 0 and 0-21 for disk 1).
@@ -199,6 +200,14 @@ export class Exe {
         return this.mapSizes[this.getLocation(disk, map)];
     }
 
+    /**
+     * Returns the offset from the beginning of the huffman compressed tile map within the map data. This information
+     * is needed to load a map because the maps itself do not know where the tile map section begins.
+     *
+     * @param disk  The disk index (0 or 1).
+     * @param map   The map index (0-19 for disk 0 and 0-21 for disk 1).
+     * @return The tile map offset.
+     */
     public getTileMapOffset(disk: number, map: number) {
         return this.tileMapOffsets[this.getLocation(disk, map)];
     }
