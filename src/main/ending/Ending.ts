@@ -86,9 +86,9 @@ export class Ending extends PicImage implements Animation {
 
         // Parse animation updates from second MSQ block
         const animSize = reader.readUint32();
-        const [ m, s, q ] = reader.readUint8s(3);
+        const msq = reader.readUint8s(3);
         const animDisk = reader.readUint8();
-        if (m !== 0x08 || s !== 0x67 || q !== 0x01 || animDisk !== 0) {
+        if (msq[0] !== 0x08 || msq[1] !== 0x67 || msq[2] !== 0x01 || animDisk !== 0) {
             throw new Error("Invalid animation data block");
         }
         const animData = decodeHuffman(reader, animSize);

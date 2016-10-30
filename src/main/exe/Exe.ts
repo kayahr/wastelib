@@ -4,7 +4,8 @@
  */
 
 import { unpackExe } from "./exepack";
-import { StringGroups, decodeStringGroups } from "../io/string";
+import { readStrings } from "../io/string";
+import { BinaryReader } from "../io/BinaryReader";
 
 /** The offset of segment 2 in the unpacked WL.EXE file. */
 const SEG2 = 0xd020;
@@ -14,28 +15,28 @@ const SEG2 = 0xd020;
  */
 export class Exe {
     /** The intro strings. */
-    private readonly introStrings: StringGroups;
+    private readonly introStrings: string[];
 
     /** Various unsorted strings. */
-    private readonly messageStrings: StringGroups;
+    private readonly messageStrings: string[];
 
     /** Various strings mostly used in inventory, skills and attribute screens. */
-    private readonly inventoryStrings: StringGroups;
+    private readonly inventoryStrings: string[];
 
     /** Character creation strings. */
-    private readonly characterCreationStrings: StringGroups;
+    private readonly characterCreationStrings: string[];
 
     /** Promition strings. */
-    private readonly promotionStrings: StringGroups;
+    private readonly promotionStrings: string[];
 
     /** Library strings. */
-    private readonly libraryStrings: StringGroups;
+    private readonly libraryStrings: string[];
 
     /** Shop strings. */
-    private readonly shopStrings: StringGroups;
+    private readonly shopStrings: string[];
 
     /** Infirmary strings. */
-    private readonly infirmaryStrings: StringGroups;
+    private readonly infirmaryStrings: string[];
 
     /** The map sizes of the maps in the two GAME files. */
     private readonly mapSizes: Uint8Array;
@@ -58,14 +59,14 @@ export class Exe {
         const unpacked = unpackExe(data);
 
         // Decode global strings
-        this.introStrings = decodeStringGroups(unpacked, SEG2 + 0xa703, 527);
-        this.messageStrings = decodeStringGroups(unpacked, SEG2 + 0xab3e, 1661);
-        this.inventoryStrings = decodeStringGroups(unpacked, SEG2 + 0xb270, 1845);
-        this.characterCreationStrings = decodeStringGroups(unpacked, SEG2 + 0xce4B, 210);
-        this.promotionStrings = decodeStringGroups(unpacked, SEG2 + 0xd622, 1136);
-        this.libraryStrings = decodeStringGroups(unpacked, SEG2 + 0xdacc, 277);
-        this.shopStrings = decodeStringGroups(unpacked, SEG2 + 0xdbf8, 229);
-        this.infirmaryStrings = decodeStringGroups(unpacked, SEG2 + 0xdced, 369);
+        this.introStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xa703, 527));
+        this.messageStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xab3e, 1661));
+        this.inventoryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xb270, 1845));
+        this.characterCreationStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xce4B, 210));
+        this.promotionStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xd622, 1136));
+        this.libraryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdacc, 277));
+        this.shopStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdbf8, 229));
+        this.infirmaryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdced, 369));
 
         // Read the map sizes of the maps in the two GAME files.
         this.mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 50);
@@ -119,7 +120,7 @@ export class Exe {
      *
      * @return The intro strings.
      */
-    public getIntroStrings(): StringGroups {
+    public getIntroStrings(): string[] {
         return this.introStrings;
     }
 
@@ -128,7 +129,7 @@ export class Exe {
      *
      * @return Various unsorted strings.
      */
-    public getMessageStrings(): StringGroups {
+    public getMessageStrings(): string[] {
         return this.messageStrings;
     }
 
@@ -138,7 +139,7 @@ export class Exe {
      *
      * @return Various strings mostly used in inventory, skills and attribute screens.
      */
-    public getInventoryStrings(): StringGroups {
+    public getInventoryStrings(): string[] {
         return this.inventoryStrings;
     }
 
@@ -147,7 +148,7 @@ export class Exe {
      *
      * @return Character creation strings.
      */
-    public getCharacterCreationStrings(): StringGroups {
+    public getCharacterCreationStrings(): string[] {
         return this.characterCreationStrings;
     }
 
@@ -156,7 +157,7 @@ export class Exe {
      *
      * @return Promition strings.
      */
-    public getPromotionStrings(): StringGroups {
+    public getPromotionStrings(): string[] {
         return this.promotionStrings;
     }
 
@@ -165,7 +166,7 @@ export class Exe {
      *
      * @return Library strings.
      */
-    public getLibraryStrings(): StringGroups {
+    public getLibraryStrings(): string[] {
         return this.libraryStrings;
     }
 
@@ -174,7 +175,7 @@ export class Exe {
      *
      * @return Shop strings.
      */
-    public getShopStrings(): StringGroups {
+    public getShopStrings(): string[] {
         return this.shopStrings;
     }
 
@@ -183,7 +184,7 @@ export class Exe {
      *
      * @return Infirmary strings.
      */
-    public getInfirmaryStrings(): StringGroups {
+    public getInfirmaryStrings(): string[] {
         return this.infirmaryStrings;
     }
 

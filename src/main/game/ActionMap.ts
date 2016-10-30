@@ -1,4 +1,4 @@
-import { InputStream } from "../io/InputStream";
+import { BinaryReader } from "../io/BinaryReader";
 
 export class ActionMap {
     private readonly actions: Uint8Array[];
@@ -7,10 +7,10 @@ export class ActionMap {
         this.actions = actions;
     }
 
-    public static fromStream(stream: InputStream, size: number) {
+    public static read(reader: BinaryReader, size: number) {
         const actions: Uint8Array[] = [];
         for (let y = 0; y < size; ++y) {
-            actions.push(stream.readBytes(size));
+            actions.push(reader.readUint8s(size));
         }
         return new ActionMap(actions);
     }

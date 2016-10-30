@@ -1,14 +1,19 @@
-import { InputStream } from "../io/InputStream";
+/*
+ * Copyright (C) 2016 Klaus Reimer <k@ailis.de>
+ * See LICENSE.md for licensing information.
+ */
 
-export class CombatStringsMap {
+import { BinaryReader } from "../io/BinaryReader";
+
+export class CombatStringMap {
     private readonly ids: number[];
 
     private constructor(ids: Uint8Array) {
         this.ids = Array.prototype.slice.call(ids);
     }
 
-    public static fromStream(stream: InputStream): CombatStringsMap {
-        return new CombatStringsMap(stream.readBytes(37));
+    public static read(reader: BinaryReader): CombatStringMap {
+        return new CombatStringMap(reader.readUint8s(37));
     }
 
     public toString(): string {

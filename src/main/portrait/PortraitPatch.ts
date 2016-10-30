@@ -13,7 +13,7 @@ export class PortraitPatch {
     private readonly offset: number;
 
     /** The patch data (XOR values to apply at the image offset). */
-    private readonly data: number[];
+    private readonly data: Uint8Array;
 
     /**
      * Creates a portrait animation patch.
@@ -21,7 +21,7 @@ export class PortraitPatch {
      * @param offset  The image offset where to apply the patch.
      * @param data    The patch data (XOR values to apply at the image offset).
      */
-    private constructor(delay: number, data: number[]) {
+    private constructor(delay: number, data: Uint8Array) {
         this.offset = delay;
         this.data = data;
     }
@@ -60,7 +60,7 @@ export class PortraitPatch {
      *
      * @return The patch data.
      */
-    public getData(): number[] {
+    public getData(): Uint8Array {
         return this.data.slice();
     }
 

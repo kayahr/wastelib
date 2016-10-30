@@ -22,3 +22,6 @@
 # Crash logs and backups
 /*.log
 *~
+
+# Sandbox
+/src/sandbox

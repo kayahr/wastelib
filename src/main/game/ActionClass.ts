@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2016 Klaus Reimer <k@ailis.de>
+ * See LICENSE.md for licensing information.
+ */
+
+/**
+ * Enum with the 16 possible action classes as far as they are known.
+ */
 export enum ActionClass {
     /** No action. */
     NONE = 0,

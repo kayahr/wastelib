@@ -14,7 +14,7 @@ export class EndingPatch {
     private offset: number;
 
     /** The patch data (Four bytes with eight 4-bit colors). */
-    private data: number[];
+    private data: Uint8Array;
 
     /**
      * Creates a new update patch,
@@ -22,7 +22,7 @@ export class EndingPatch {
      * @param offset  The image update offset.
      * @param data    The patch data (Four bytes with eight 4-bit colors).
      */
-    private constructor(offset: number, data: number[]) {
+    private constructor(offset: number, data: Uint8Array) {
         this.offset = offset;
         this.data = data;
     }
@@ -71,7 +71,7 @@ export class EndingPatch {
      *
      * @return The patch data.
      */
-    public getData(): number[] {
+    public getData(): Uint8Array {
         return this.data.slice();
     }
 
