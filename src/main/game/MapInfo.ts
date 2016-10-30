@@ -15,37 +15,21 @@ import { BinaryReader } from "../io/BinaryReader";
  * @see http://wasteland.gamepedia.com/Map_Info
  */
 export class MapInfo {
-    private readonly unknown$00: number;
-    private readonly unknown$01: number;
-    private readonly mapSize: number;
-    private readonly unknown$03: number;
-    private readonly unknown$04: number;
-    private readonly encounterFrequency: number;
-    private readonly tileset: number;
-    private readonly randomMonsterTypes: number;
-    private readonly maxRandomEncounters: number;
-    private readonly borderTile: number;
-    private readonly timePerStep: number;
-    private readonly healRate: number;
-    private readonly combatStringIDs: number[];
-
-    private constructor(unknown$00: number, unknown$01: number, mapSize: number, unknown$03: number, unknown$04: number,
-            encounterFrequency: number, tileset: number, randomMonsterTypes: number, maxRandomEncounters: number,
-            borderTile: number, timePerStep: number, healRate: number, combatStringsIDs: number[]) {
-        this.unknown$00 = unknown$00;
-        this.unknown$01 = unknown$01;
-        this.mapSize = mapSize;
-        this.unknown$03 = unknown$03;
-        this.unknown$04 = unknown$04;
-        this.encounterFrequency = encounterFrequency;
-        this.tileset = tileset;
-        this.randomMonsterTypes = randomMonsterTypes;
-        this.maxRandomEncounters = maxRandomEncounters;
-        this.borderTile = borderTile;
-        this.timePerStep = timePerStep;
-        this.healRate = healRate;
-        this.combatStringIDs = combatStringsIDs;
-    }
+    private constructor(
+        private readonly unknown$00: number,
+        private readonly unknown$01: number,
+        private readonly mapSize: number,
+        private readonly unknown$03: number,
+        private readonly unknown$04: number,
+        private readonly encounterFrequency: number,
+        private readonly tileset: number,
+        private readonly randomMonsterTypes: number,
+        private readonly maxRandomEncounters: number,
+        private readonly borderTile: number,
+        private readonly timePerStep: number,
+        private readonly healRate: number,
+        private readonly combatStringIDs: number[]
+    ) {}
 
     /**
      * Reads map information from the given reader.

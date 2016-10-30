@@ -8,6 +8,7 @@ import { MapTile } from "./MapTile";
 import { MapInfo } from "./MapInfo";
 import { readStrings } from "../io/string";
 import { decodeHuffman } from "../io/huffman";
+import { Mob } from "./Mob";
 
 /**
  * Container for a single map from on of the GAME files.
@@ -15,22 +16,15 @@ import { decodeHuffman } from "../io/huffman";
  * @see http://wasteland.gamepedia.com/GameX
  */
 export class Map {
-    private disk: number;
-    private info: MapInfo;
-    private strings: string[];
-    private tiles: MapTile[][];
-    private unknown$strings: number;
-    private unknown$tilemap: number;
-
-    private constructor(disk: number, mapInfo: MapInfo, strings: string[], tiles: MapTile[][],
-            unknown$strings: number, unknown$tilemap: number) {
-        this.disk = disk;
-        this.info = mapInfo;
-        this.strings = strings;
-        this.tiles = tiles;
-        this.unknown$strings = unknown$strings;
-        this.unknown$tilemap = unknown$tilemap;
-    }
+    private constructor(
+        private disk: number,
+        private info: MapInfo,
+        private mobs: Mob[],
+        private strings: string[],
+        private tiles: MapTile[][],
+        private unknown$strings: number,
+        private unknown$tilemap: number
+    ) {}
 
     /**
      * Reads a game map from the given array and offset. Unforunately maps are not completely self-contained and
@@ -91,8 +85,8 @@ export class Map {
 
         // Read central directory
         const stringsOffset = reader.readUint16();
-        const monsterNamesOffset = reader.readUint16();
-        const monsterDataOffset = reader.readUint16();
+        const mobNamesOffset = reader.readUint16();
+        const mobDataOffset = reader.readUint16();
         const actionClassOffsets = reader.readUint16s(16);
         const specialsOffset = reader.readUint16();
         const npcOffset = reader.readUint16();
@@ -102,6 +96,13 @@ export class Map {
         if (mapInfo.getMapSize() !== mapSize) {
             throw new Error("Map size mismatch: " + mapInfo.getMapSize() + " != " + mapSize);
         }
+
+        // Read mob data
+        const numMobs = (stringsOffset - mobDataOffset) >> 3;
+        reader.seek(mobNamesOffset);
+        const mobNames = reader.readNullStrings(numMobs);
+        reader.seek(mobDataOffset);
+        const mobs = mobNames.map(name => Mob.read(reader, name));
 
         // Read the strings
         reader.seek(stringsOffset);
@@ -118,7 +119,7 @@ export class Map {
             mapTiles.push(row);
         }
 
-        return new Map(disk, mapInfo, strings, mapTiles, unknown$strings, unknown$tilemap);
+        return new Map(disk, mapInfo, mobs, strings, mapTiles, unknown$strings, unknown$tilemap);
     }
 
     /**
@@ -153,12 +154,52 @@ export class Map {
     }
 
     /**
+     * Returns the number of strings in this map.
+     *
+     * @return The number of strings.
+     */
+    public getNumStrings(): number {
+        return this.strings.length;
+    }
+
+    /**
      * Returns all strings defined in this map.
      *
      * @return All map strings.
      */
     public getStrings(): string[] {
         return this.strings.slice();
+    }
+
+    /**
+     * Returns the mob with the given index.
+     *
+     * @param index  The mob index.
+     * @return       The mob.
+     */
+    public getMob(index: number): Mob {
+        if (index < 0 || index >= this.mobs.length) {
+            throw new Error("Index out of bounds: " + index);
+        }
+        return this.mobs[index];
+    }
+
+    /**
+     * Returns the number of mobs in this map.
+     *
+     * @return The number of mobs.
+     */
+    public getNumMobs(): number {
+        return this.mobs.length;
+    }
+
+    /**
+     * Returns all mobs defined in this map.
+     *
+     * @return All mobs.
+     */
+    public getMobs(): Mob[] {
+        return this.mobs.slice();
     }
 
     /**

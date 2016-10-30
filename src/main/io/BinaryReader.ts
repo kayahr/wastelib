@@ -264,4 +264,32 @@ export class BinaryReader {
         }
         return result;
     }
+
+    /**
+     * Reads a null-terminated string and returns it.
+     *
+     * @return The read string.
+     */
+    public readNullString(): string {
+        let result = "";
+        let c: number;
+        while ((c = this.readUint8())) {
+            result += String.fromCharCode(c);
+        }
+        return result;
+    }
+
+    /**
+     * Reads the specified number of null-terminated strings and returns them.
+     *
+     * @param num  The number of null-terminated strings to read.
+     * @return     The read strings.
+     */
+    public readNullStrings(num: number): string[] {
+        let result: string[] = [];
+        for (let i = 0; i < num; ++i) {
+            result.push(this.readNullString());
+        }
+        return result;
+    }
 }
