@@ -148,8 +148,9 @@ Unknown data
 ------------
 
 Even though we deciphered most of the data there is still unknown stuff especially in the game maps. Wastelib exports
-the unknown data with methods like `getUnknown$03()` where the number after the dollar sign indicates the hexadecimal
-index in the data block. If you find out the purpose of this data then please let me know!
+the unknown data with methods like `getUnknown$03()` where the part after the dollar sign is the hexadecimal
+index in the data block or some human readable identifier if there is no fixed offset. If you find out the purpose of
+this data then please let me know!
 
 
 See also
