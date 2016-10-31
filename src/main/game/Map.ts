@@ -9,6 +9,7 @@ import { MapInfo } from "./MapInfo";
 import { readStrings } from "../io/string";
 import { decodeHuffman } from "../io/huffman";
 import { Mob } from "./Mob";
+import { Character } from "./Character";
 
 /**
  * Container for a single map from on of the GAME files.
@@ -19,6 +20,7 @@ export class Map {
     private constructor(
         private disk: number,
         private info: MapInfo,
+        private npcs: Character[],
         private mobs: Mob[],
         private strings: string[],
         private tiles: MapTile[][],
@@ -97,6 +99,25 @@ export class Map {
             throw new Error("Map size mismatch: " + mapInfo.getMapSize() + " != " + mapSize);
         }
 
+        // Read NPC pointers until the lowest pointer is reached. First pointer must always be 0. If it is not
+        // then the map has no NPCs.
+        reader.seek(npcOffset);
+        const npcPointers: number[] = [];
+        if (reader.readUint16() === 0) {
+            let firstNpcPointer = NaN;
+            do {
+                const npcPointer = reader.readUint16();
+                npcPointers.push(npcPointer);
+                if (!(firstNpcPointer < npcPointer)) {
+                    firstNpcPointer = npcPointer;
+                }
+            } while (reader.getByteIndex() < firstNpcPointer);
+        }
+
+        // Read NPCs
+        const npcs = npcPointers.map(pointer => Character.read(reader.seek(pointer)));
+        console.log(npcs);
+
         // Read mob data
         const numMobs = (stringsOffset - mobDataOffset) >> 3;
         reader.seek(mobNamesOffset);
@@ -119,7 +140,7 @@ export class Map {
             mapTiles.push(row);
         }
 
-        return new Map(disk, mapInfo, mobs, strings, mapTiles, unknown$strings, unknown$tilemap);
+        return new Map(disk, mapInfo, npcs, mobs, strings, mapTiles, unknown$strings, unknown$tilemap);
     }
 
     /**
@@ -200,6 +221,37 @@ export class Map {
      */
     public getMobs(): Mob[] {
         return this.mobs.slice();
+    }
+
+    /**
+     * Returns the NPC with the given index.
+     *
+     * @param index  The NPC index.
+     * @return       The NPC.
+     */
+    public getNPC(index: number): Character {
+        if (index < 0 || index >= this.npcs.length) {
+            throw new Error("Index out of bounds: " + index);
+        }
+        return this.npcs[index];
+    }
+
+    /**
+     * Returns the number of NPCs in this map.
+     *
+     * @return The number of NPCs.
+     */
+    public getNumNPcs(): number {
+        return this.npcs.length;
+    }
+
+    /**
+     * Returns all NPCs defined in this map.
+     *
+     * @return All NPCs.
+     */
+    public getNPCs(): Character[] {
+        return this.npcs.slice();
     }
 
     /**

@@ -51,7 +51,7 @@ export class BinaryReader {
      * Seeks to the given index.
      *
      * @param byte         The byte index to set. Must not be outside of the data array range.
-     * @param bit          Optional bit index (0-7) to set. Defaults to 0.
+     * @param bit          Optional bit index to set. Defaults to 0.
      * @return             This reader for method chaining.
      * @throws RangeError  If index is out of range.
      */
@@ -69,6 +69,18 @@ export class BinaryReader {
         this.byte = byte;
         this.bit = bit;
         return this;
+    }
+
+    /**
+     * Skips the specified number of bytes and bits.
+     *
+     * @param byte         The bytes to skip.
+     * @param bit          The bits to skip. Defaults to 0.
+     * @return             This reader for method chaining.
+     * @throws RangeError  If index is out of range.
+     */
+    public skip(byte: number, bit: number = 0): this {
+        return this.seek(this.byte + byte, this.bit + bit);
     }
 
     /**
@@ -241,6 +253,16 @@ export class BinaryReader {
     }
 
     /**
+     * Reads an unsigned 24 bit value and returns it.
+     *
+     * @return             The read value.
+     * @throws RangeError  If reached the end of the data.
+     */
+    public readUint24(): number {
+        return this.readUint16() | this.readUint8() << 16;
+    }
+
+    /**
      * Reads a single character and returns it.
      *
      * @return             The read character.
@@ -268,13 +290,27 @@ export class BinaryReader {
     /**
      * Reads a null-terminated string and returns it.
      *
+     * @param len  Optional string length. If not specified then bytes are read until a null-byte is found. If
+     *             specified then reading stops at this length or (if null-byte was found before) the reader skips the
+     *             remaining bytes so it is guaranteed that the reader read `len` bytes.
      * @return The read string.
      */
-    public readNullString(): string {
+    public readNullString(len?: number): string {
         let result = "";
-        let c: number;
-        while ((c = this.readUint8())) {
+        let read = 0;
+        while (true) {
+            const c = this.readUint8();
+            read++;
+            if (c === 0) {
+                if (len != null) {
+                    this.skip(len - read);
+                }
+                break;
+            }
             result += String.fromCharCode(c);
+            if (len != null && read >= len) {
+                break;
+            }
         }
         return result;
     }
