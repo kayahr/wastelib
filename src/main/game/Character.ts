@@ -6,6 +6,45 @@
 import { Gender } from "./Gender";
 import { Nationality } from "./Nationality";
 import { BinaryReader } from "../io/BinaryReader";
+import { Skill } from "./Skill";
+import { Item } from "./Item";
+
+/**
+ * Reads the skill list from the given reader. Reads 60 bytes in total but only returns the occupied skill slots.
+ *
+ * @param reader  The reader to read the skills from.
+ * @return        The read skills.
+ */
+function readSkills(reader: BinaryReader): Skill[] {
+    const skills: Skill[] = [];
+    for (let i = 0; i < 30; ++i) {
+        const id = reader.readUint8();
+        const level = reader.readUint8();
+        if (id) {
+            skills.push(new Skill(id, level));
+        }
+    }
+    return skills;
+}
+
+/**
+ * Reads the item list from the given reader. Reads 60 bytes in total but only returns the occupied item slots.
+ *
+ * @param reader  The reader to read the items from.
+ * @return        The read items.
+ */
+function readItems(reader: BinaryReader): Item[] {
+    const items: Item[] = [];
+    for (let i = 0; i < 30; ++i) {
+        const id = reader.readUint8();
+        const load = reader.readUint8();
+        const jammed = false; // TODO This is the high bit but from which byte?
+        if (id) {
+            items.push(new Item(id, load, jammed));
+        }
+    }
+    return items;
+}
 
 /**
  * Character data used for player characters and NPCs.
@@ -50,11 +89,13 @@ export class Character {
         private gameWon: boolean,
         private specialPromotion: boolean,
         private unknown$4d: Uint8Array,
-        private skills: Uint16Array,
+        private skills: Skill[],
         private unknown$bc: number,
-        private items: Uint16Array,
+        private items: Item[],
         private unknown$f9: Uint8Array
-    ) {}
+    ) {
+        console.log(this);
+    }
 
     /**
      * Reads character data from the given reader and returns it.
@@ -97,9 +138,9 @@ export class Character {
         const gameWon = reader.readUint8() === 1;
         const specialPromotion = reader.readUint8() === 1;
         const unknown$4d = reader.readUint8s(51);
-        const skills = reader.readUint16s(30);
+        const skills = readSkills(reader);
         const unknown$bc = reader.readUint8();
-        const items = reader.readUint16s(30);
+        const items = readItems(reader);
         const unknown$f9 = reader.readUint8s(7);
         return new Character(name, strength, iq, luck, speed, agility, dexterity, charisma, money, gender,
             nationality, armorClass, maxCon, curCon, weapon, skillPoints, experience, level, armor,
@@ -429,11 +470,9 @@ export class Character {
     /**
      * Returns the skills.
      *
-     * TODO Create Skill class and return an array of actual skills.
-     *
      * @return The skills.
      */
-    public getSkills(): Uint16Array {
+    public getSkills(): Skill[] {
         return this.skills;
     }
 
@@ -449,11 +488,9 @@ export class Character {
     /**
      * Returns the items.
      *
-     * TODO Create Item class and return an array of actual items.
-     *
      * @return The items.
      */
-    public getItems(): Uint16Array {
+    public getItems(): Item[] {
         return this.items;
     }
 
