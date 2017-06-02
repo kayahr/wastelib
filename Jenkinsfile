@@ -3,7 +3,16 @@ pipeline {
   stages {
     stage('Initialize') {
       steps {
-        echo 'Test'
+        parallel(
+          "Initialize": {
+            echo 'Test'
+            
+          },
+          "sdkjhskdf": {
+            sh 'npm --version'
+            
+          }
+        )
       }
     }
   }
