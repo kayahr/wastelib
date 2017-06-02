@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    node {
+      label 'bender'
+    }
+    
+  }
   stages {
     stage('Initialize') {
       steps {
