@@ -58,7 +58,7 @@ function openDB(): Promise<IDBDatabase> {
                 resolve(db);
             });
             request.addEventListener("error", event => {
-                reject(event.error);
+                reject(request.error);
             });
             request.addEventListener("upgradeneeded", event => {
                 const db: IDBDatabase = request.result;
@@ -88,7 +88,7 @@ function getFile(db: IDBDatabase, name: WastelandFilename): Promise<File | undef
                 resolve(file);
             });
             request.addEventListener("error", event => {
-                reject(event.error);
+                reject(request.error);
             });
         } catch (e) {
             reject(e);
@@ -105,7 +105,7 @@ function getFile(db: IDBDatabase, name: WastelandFilename): Promise<File | undef
 function putFile(db: IDBDatabase, file: File): Promise<void> {
     const fileName = file.name.toUpperCase();
     if (!isWastelandFilename(fileName)) {
-        return Promise.resolve<void>();
+        return Promise.resolve();
     }
     return new Promise<void>((resolve, reject) => {
         try {
@@ -116,7 +116,7 @@ function putFile(db: IDBDatabase, file: File): Promise<void> {
                 resolve();
             });
             request.addEventListener("error", event => {
-                reject(event.error);
+                reject(request.error);
             });
         } catch (e) {
             reject(e);
