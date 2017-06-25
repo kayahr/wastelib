@@ -4,8 +4,19 @@
   "version": "0.0.2",
   "description": "JavaScript library (Written in TypeScript) for reading the assets of the game Wasteland.",
   "keywords": [
-    "Wasteland", "ALLHTDS1", "ALLHTDS2", "ALLPICS1", "ALLPICS2", "COLORF.FNT", "CURS", "END.CPA",
-    "GAME1", "GAME2", "IC0_9.WLF", "MASKS.WLF", "TITLE.PIC"
+    "Wasteland",
+    "ALLHTDS1",
+    "ALLHTDS2",
+    "ALLPICS1",
+    "ALLPICS2",
+    "COLORF.FNT",
+    "CURS",
+    "END.CPA",
+    "GAME1",
+    "GAME2",
+    "IC0_9.WLF",
+    "MASKS.WLF",
+    "TITLE.PIC"
   ],
   "homepage": "https://github.com/kayahr/wastelib",
   "author": {
