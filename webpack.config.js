@@ -1,31 +1,31 @@
-var pkg = require('./package.json');
-var webpack = require("webpack");
+const path = require("path");
+const webpack = require("webpack");
+const pkg = require('./package.json');
 
 module.exports = {
     entry: `./lib/main/${pkg.name}.js`,
     output: {
         libraryTarget: "umd",
         library: pkg.name,
-        filename: `./lib/${pkg.name}.js`
+        filename: `${pkg.name}.js`,
+        path: path.join(__dirname, "lib")
     },
+    devtool: "source-map",
     plugins: [
-        new webpack.optimize.UglifyJsPlugin({
+        new webpack.LoaderOptionsPlugin({
             minimize: true,
-            mangle: true
+            debug: false
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: false,
+            output: {
+                comments: false
+            }
         }),
         new webpack.BannerPlugin(
             `${pkg.name} ${pkg.version}\n` +
             `Copyright (C) 2016 ${pkg.author.name} <${pkg.author.email}>\n` +
             `${pkg.homepage}`
         )
-    ],
-    devtool: "source-map",
-    module: {
-        preLoaders: [
-            {
-                test: /\.js$/,
-                loader: "source-map-loader"
-            }
-        ]
-    }
+    ]
 }
