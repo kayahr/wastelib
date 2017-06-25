@@ -10,16 +10,17 @@ import { Font } from "../font/Font";
 import { Sprites } from "../sprite/Sprites";
 import { Ending } from "../ending/Ending";
 import { Portraits } from "../portrait/Portraits";
+import { Exe } from "../exe/Exe";
 
 /** The version of the indexed DB used to store the Wasteland files in the browser. */
 const dbVersion = 1;
 
 /** A type for wasteland filenames to ensure they are all written correctly. */
-export type WastelandFilename = "ALLHTDS1" | "ALLHTDS2" | "ALLPICS1" | "ALLPICS2" | "COLORF.FNT" | "CURS" | "END.CPA" |
-    "GAME1" | "GAME2" | "IC0_9.WLF" | "MASKS.WLF" | "TITLE.PIC";
+export type WastelandFilename = "ALLHTDS1" | "ALLHTDS2" | "ALLPICS1" | "ALLPICS2" | "COLORF.FNT" | "CURS" | "END.CPA"
+    | "GAME1" | "GAME2" | "IC0_9.WLF" | "MASKS.WLF" | "TITLE.PIC" | "WL.EXE";
 
 /** The names of the Wasteland files which must be installed in the browser. */
-const filenames: WastelandFilename[] = [
+const ALL_FILES: WastelandFilename[] = [
     "ALLHTDS1",
     "ALLHTDS2",
     "ALLPICS1",
@@ -31,7 +32,8 @@ const filenames: WastelandFilename[] = [
     "GAME2",
     "IC0_9.WLF",
     "MASKS.WLF",
-    "TITLE.PIC"
+    "TITLE.PIC",
+    "WL.EXE"
 ];
 
 /**
@@ -41,7 +43,7 @@ const filenames: WastelandFilename[] = [
  * @return True if filename is a wasteland filename, false if not.
  */
 function isWastelandFilename(filename: string): filename is WastelandFilename {
-    return (<string[]>filenames).indexOf(filename) >= 0;
+    return (<string[]>ALL_FILES).indexOf(filename) >= 0;
 }
 
 /**
@@ -137,7 +139,8 @@ function putFiles(db: IDBDatabase, files: File[]): Promise<void[]> {
 /**
  * Fetches all Wasteland files from the database and returns a map with the filename as key and the file as value.
  * If not all files are found in the database then the specified callback is called with the names of the missing
- * files. This callback is responsible for letting the user select the missing files and return them asynchronously.
+ * files and the present files. This callback is responsible for letting the user select the missing files and return
+ * them asynchronously.
  *
  * This function calls itself recursively until all files are present in the database.
  *
@@ -145,10 +148,12 @@ function putFiles(db: IDBDatabase, files: File[]): Promise<void[]> {
  * @param installFiles  The installation callback to call if not all Wasteland files were found in the database.
  * @return The file map with all Wasteland files.
  */
-function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]) => Promise<File[]>):
-        Promise<{ [name: string]: File }> {
+function getFiles(db: IDBDatabase,
+        installFiles: (missing: WastelandFilename[], present: WastelandFilename[]) => Promise<File[]>,
+        filenames: WastelandFilename[] = ALL_FILES): Promise<{ [name: string]: File }> {
     return Promise.all(filenames.map(filename => getFile(db, filename))).then(files => {
         const missing: WastelandFilename[] = [];
+        const present: WastelandFilename[] = [];
         const fileMap: { [name: string]: File } = {};
         for (let i = 0; i < filenames.length; ++i) {
             const file = files[i];
@@ -156,10 +161,11 @@ function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]
                 missing.push(filenames[i]);
             } else {
                 fileMap[filenames[i]] = file;
+                present.push(filenames[i]);
             }
         }
         if (missing.length) {
-            return installFiles(missing).then(files => {
+            return installFiles(missing, present).then(files => {
                 return putFiles(db, files).then(() => {
                     return getFiles(db, installFiles);
                 });
@@ -190,15 +196,19 @@ export class WebAssets {
      * Creates the web assets factory.
      *
      * @param installFiles  Callback called when not all files are found in the browser. The callback must do some UI
-     *                      work to let the user select the missing files (filenames of the missing files are passed to
-     *                      the callback) and then the list of selected files must be returned asynchronously.
-     *                      None-Wasteland files in the returned list are ignored. The callback is called again if
-     *                      files are still missing.
+     *                      work to let the user select the missing files (filenames of the missing files and the
+     *                      present files are passed to the callback) and then the list of selected files must be
+     *                      returned asynchronously. None-Wasteland files in the returned list are ignored. The
+     *                      callback is called again if files are still missing.
+     * @param filenames     Optional list of filenames to install. If not specified then all supported Wasteland
+     *                      files are installed.
      * @return The created web assets factory.
      */
-    public static create(installFiles: (filenames: WastelandFilename[]) => Promise<Blob[]>): Promise<WebAssets> {
+    public static create(
+            installFiles: (missing: WastelandFilename[], present: WastelandFilename[]) => Promise<Blob[]>,
+            filenames: WastelandFilename[] = ALL_FILES): Promise<WebAssets> {
         return openDB().then(db => {
-            return getFiles(db, installFiles).then(fileMap => new WebAssets(fileMap));
+            return getFiles(db, installFiles, filenames).then(fileMap => new WebAssets(fileMap));
         });
     }
 
@@ -273,5 +283,14 @@ export class WebAssets {
      */
     public readTitle(): Promise<Title> {
         return Title.fromBlob(this.getFile("TITLE.PIC"));
+    }
+
+    /**
+     * Reads the game information from the WL.EXE file and returns it.
+     *
+     * @return The global game data from the WL.EXE file.
+     */
+    public readExe(): Promise<Exe> {
+        return Exe.fromBlob(this.getFile("WL.EXE"));
     }
 }

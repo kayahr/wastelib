@@ -12,6 +12,8 @@ export * from "./ending/EndingPlayer";
 export * from "./ending/Ending";
 export * from "./ending/EndingUpdate";
 
+export * from "./exe/Exe";
+
 export * from "./font/FontChar";
 export * from "./font/Font";
 

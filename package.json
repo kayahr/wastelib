@@ -25,7 +25,7 @@
     "url": "https://github.com/kayahr/"
   },
   "license": "MIT",
-  "main": "lib/main",
+  "main": "lib/main/wastelib",
   "typings": "lib/main/wastelib",
   "repository": {
     "type": "git",
