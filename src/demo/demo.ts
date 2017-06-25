@@ -57,10 +57,10 @@ WebAssets.create(installer).then(assets => {
     (<HTMLElement>document.querySelector("#demo")).style.display = "block";
 
     // This is the output element used to show the various assets when the corresponding button is clicked.
-    const output = document.querySelector("#output");
+    const output = <HTMLDivElement>document.querySelector("#output");
 
     // Mouse cursors as separate images
-    document.querySelector("#cursors").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#cursors")).addEventListener("click", () => {
         assets.readCursors().then(cursors => {
             output.innerHTML = "";
             cursors.getCursors().forEach(cursor => {
@@ -70,7 +70,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Mouse cursors as single image (All in one row)
-    document.querySelector("#cursors-map").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#cursors-map")).addEventListener("click", () => {
         assets.readCursors().then(cursors => {
             output.innerHTML = "";
             output.appendChild(cursors.toImage());
@@ -78,7 +78,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // End animation
-    document.querySelector("#end").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#end")).addEventListener("click", () => {
         assets.readEnding().then(ending => {
             const image = ending.toImage();
             image.onclick = () => {
@@ -92,7 +92,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Font characters as separate images
-    document.querySelector("#font").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#font")).addEventListener("click", () => {
         assets.readFont().then(font => {
             output.innerHTML = "";
             font.getChars().forEach(char => {
@@ -102,7 +102,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Font as single image (16 characters per row)
-    document.querySelector("#font-map").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#font-map")).addEventListener("click", () => {
         assets.readFont().then(font => {
             output.innerHTML = "";
             output.appendChild(font.toImage());
@@ -110,7 +110,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Sprites as separate images
-    document.querySelector("#sprites").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#sprites")).addEventListener("click", () => {
         assets.readSprites().then(sprites => {
             output.innerHTML = "";
             sprites.getSprites().forEach(sprite => {
@@ -120,7 +120,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Sprites as single image (All in one row)
-    document.querySelector("#sprites-map").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#sprites-map")).addEventListener("click", () => {
         assets.readSprites().then(sprites => {
             output.innerHTML = "";
             output.appendChild(sprites.toImage());
@@ -128,7 +128,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Portraits
-    document.querySelector("#portraits").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#portraits")).addEventListener("click", () => {
         assets.readPortraits().then(sprites => {
             output.innerHTML = "";
             sprites.getPortraits().forEach(portrait => {
@@ -144,7 +144,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Tilesets as separate tile images
-    document.querySelector("#tilesets").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#tilesets")).addEventListener("click", () => {
         assets.readTilesets().then(tilesets => {
             output.innerHTML = "";
             let index = 0;
@@ -162,7 +162,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Tilesets as separate images per tileset (16 tiles per row)
-    document.querySelector("#tilesets-map").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#tilesets-map")).addEventListener("click", () => {
         assets.readTilesets().then(tilesets => {
             output.innerHTML = "";
             let index = 0;
@@ -176,7 +176,7 @@ WebAssets.create(installer).then(assets => {
     });
 
     // Title image
-    document.querySelector("#title").addEventListener("click", () => {
+    (<HTMLButtonElement>document.querySelector("#title")).addEventListener("click", () => {
         assets.readTitle().then(title => {
             output.innerHTML = "";
             output.appendChild(title.toImage());
