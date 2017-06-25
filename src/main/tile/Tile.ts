@@ -26,7 +26,7 @@ export class Tile extends PicImage {
      * @param offset  Optional data offset. Defaults to 0.
      * @return The parsed tile.
      */
-    public static fromArray(array: Uint8Array, offset?: number): Tile {
+    public static fromArray(array: Uint8Array, offset: number = 0): Tile {
         return new Tile(decodeVxorInplace(array.slice(offset, offset + 128), 8));
     }
 }
