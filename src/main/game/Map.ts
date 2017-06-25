@@ -89,8 +89,10 @@ export class Map {
         const stringsOffset = reader.readUint16();
         const mobNamesOffset = reader.readUint16();
         const mobDataOffset = reader.readUint16();
-        const actionClassOffsets = reader.readUint16s(16);
-        const specialsOffset = reader.readUint16();
+        /* const actionClassOffsets = */
+        reader.readUint16s(16);
+        /* const specialsOffset = */
+        reader.readUint16();
         const npcOffset = reader.readUint16();
 
         // Read map info
