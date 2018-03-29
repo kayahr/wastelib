@@ -196,7 +196,7 @@ export class WebAssets {
      *                      files are still missing.
      * @return The created web assets factory.
      */
-    public static create(installFiles: (filenames: WastelandFilename[]) => Promise<Blob[]>): Promise<WebAssets> {
+    public static create(installFiles: (filenames: WastelandFilename[]) => Promise<File[]>): Promise<WebAssets> {
         return openDB().then(db => {
             return getFiles(db, installFiles).then(fileMap => new WebAssets(fileMap));
         });

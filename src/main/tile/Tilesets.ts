@@ -97,7 +97,7 @@ export class Tilesets {
                     resolve(Tilesets.fromArray(new Uint8Array(reader.result)));
                 };
                 reader.onerror = event => {
-                    reject(new Error("Unable to read tilesets from blob: " + event.error));
+                    reject(new Error("Unable to read tilesets from blob: " + reader.error));
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {

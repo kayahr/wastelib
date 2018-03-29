@@ -124,7 +124,7 @@ export class Ending extends PicImage implements Animation {
                     resolve(Ending.fromArray(new Uint8Array(reader.result)));
                 };
                 reader.onerror = event => {
-                    reject(new Error("Unable to read end animation from blob: " + event.error));
+                    reject(new Error("Unable to read end animation from blob: " + reader.error));
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {

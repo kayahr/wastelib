@@ -88,7 +88,7 @@ export class Sprites {
                                 new Uint8Array(masksReader.result)));
                         };
                         masksReader.onerror = event => {
-                            reject(new Error("Unable to read sprite masks from blob: " + event.error));
+                            reject(new Error("Unable to read sprite masks from blob: " + reader.error));
                         };
                         masksReader.readAsArrayBuffer(masksBlob);
                     } catch (e) {
@@ -96,7 +96,7 @@ export class Sprites {
                     }
                 };
                 reader.onerror = event => {
-                    reject(new Error("Unable to read sprite images from blob: " + event.error));
+                    reject(new Error("Unable to read sprite images from blob: " + reader.error));
                 };
                 reader.readAsArrayBuffer(imagesBlob);
             } catch (e) {
