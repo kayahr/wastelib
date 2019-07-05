@@ -81,7 +81,7 @@ export class Portraits {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Portraits.fromArray(new Uint8Array(reader.result)));
+                    resolve(Portraits.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read portraits from blob: " + reader.error));

@@ -40,7 +40,7 @@ export class Title extends PicImage {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(new Title(decodeVxorInplace(new Uint8Array(reader.result), 144)));
+                    resolve(new Title(decodeVxorInplace(new Uint8Array(<ArrayBuffer>reader.result), 144)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read title image from blob: " + reader.error));

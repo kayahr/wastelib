@@ -7,20 +7,19 @@ module.exports = {
     output: {
         libraryTarget: "umd",
         library: pkg.name,
+        path: path.join(__dirname, "dist"),
         filename: `${pkg.name}.js`,
-        path: path.join(__dirname, "lib")
+        globalObject: "typeof self !== 'undefined' ? self : this"
+    },
+    mode: "production",
+    externals: {
+        canvas: "empty"
     },
     devtool: "source-map",
     plugins: [
         new webpack.LoaderOptionsPlugin({
             minimize: true,
             debug: false
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: false,
-            output: {
-                comments: false
-            }
         }),
         new webpack.BannerPlugin(
             `${pkg.name} ${pkg.version}\n` +

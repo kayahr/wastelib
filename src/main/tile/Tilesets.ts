@@ -94,7 +94,7 @@ export class Tilesets {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Tilesets.fromArray(new Uint8Array(reader.result)));
+                    resolve(Tilesets.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read tilesets from blob: " + reader.error));

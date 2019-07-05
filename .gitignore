@@ -17,11 +17,12 @@
 /node_modules/
 /typings/
 /lib/
+/dist/
 /*.tgz
 
 # Crash logs and backups
 /*.log
 *~
-                                                                                                                                                                                        
-# Sandbox                                                                                                                                                                               
+
+# Sandbox
 /src/sandbox

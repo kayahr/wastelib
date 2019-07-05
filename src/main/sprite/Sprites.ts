@@ -84,8 +84,8 @@ export class Sprites {
                     try {
                         const masksReader = new FileReader();
                         masksReader.onload = event => {
-                            resolve(Sprites.fromArrays(new Uint8Array(reader.result),
-                                new Uint8Array(masksReader.result)));
+                            resolve(Sprites.fromArrays(new Uint8Array(<ArrayBuffer>reader.result),
+                                new Uint8Array(<ArrayBuffer>masksReader.result)));
                         };
                         masksReader.onerror = event => {
                             reject(new Error("Unable to read sprite masks from blob: " + reader.error));

@@ -3,5 +3,21 @@
     "files.exclude": {
         "lib": true,
         "node_modules": true
-    }
+    },
+    "cSpell.words": [
+        "ALLHTDS",
+        "COLORF",
+        "Inplace",
+        "Reimer",
+        "Tileset",
+        "Tilesets",
+        "Vxor",
+        "ailis",
+        "allpics",
+        "devtool",
+        "readwrite",
+        "tslib",
+        "typedoc",
+        "wastelib"
+    ]
 }

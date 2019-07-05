@@ -79,7 +79,7 @@ export class Cursors {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Cursors.fromArray(new Uint8Array(reader.result)));
+                    resolve(Cursors.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read cursors from blob: " + reader.error));

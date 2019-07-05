@@ -121,7 +121,7 @@ export class Ending extends PicImage implements Animation {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Ending.fromArray(new Uint8Array(reader.result)));
+                    resolve(Ending.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read end animation from blob: " + reader.error));

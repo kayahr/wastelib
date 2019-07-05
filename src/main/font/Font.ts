@@ -79,7 +79,7 @@ export class Font {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Font.fromArray(new Uint8Array(reader.result)));
+                    resolve(Font.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read color font from blob: " + reader.error));
