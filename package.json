@@ -38,8 +38,8 @@
     "doc": "typedoc --excludeNotExported --excludePrivate --mode file --out doc/api/ src/main node_modules/@types/",
     "dist": "webpack",
     "lint": "tslint --project .",
-    "prepare": "npm run -s clean && npm run -s compile && npm run -s dist",
-    "test": "npm run -s lint"
+    "prepare": "npm run clean && npm run compile && npm run dist",
+    "test": "npm run lint"
   },
   "files": [
     "lib/main",
