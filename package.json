@@ -44,6 +44,7 @@
         "test": "npm run cspell && npm run lint"
     },
     "files": [
+        "dist",
         "lib/main",
         "src/main"
     ],

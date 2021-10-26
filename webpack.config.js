@@ -1,14 +1,15 @@
+/* eslint-disable */
 const path = require("path");
 const webpack = require("webpack");
-const pkg = require('./package.json');
+const pkg = require("./package.json");
 
 module.exports = {
-    entry: `./lib/main/${pkg.name}.js`,
+    entry: `./lib/main/wastelib.js`,
     output: {
         libraryTarget: "umd",
-        library: pkg.name,
+        library: "wastelib",
         path: path.join(__dirname, "dist"),
-        filename: `${pkg.name}.js`,
+        filename: `wastelib.js`,
         globalObject: "typeof self !== 'undefined' ? self : this"
     },
     mode: "production",
@@ -16,13 +17,12 @@ module.exports = {
         canvas: "empty"
     },
     devtool: "source-map",
+    optimization: {
+        minimize: true
+    },
     plugins: [
-        new webpack.LoaderOptionsPlugin({
-            minimize: true,
-            debug: false
-        }),
         new webpack.BannerPlugin(
-            `${pkg.name} ${pkg.version}\n` +
+            `wastelib ${pkg.version}\n` +
             `Copyright (C) 2016 ${pkg.author.name} <${pkg.author.email}>\n` +
             `${pkg.homepage}`
         )
