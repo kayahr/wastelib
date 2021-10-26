@@ -1,7 +1,7 @@
 {
     "$schema": "http://json.schemastore.org/package",
     "name": "@kayahr/wastelib",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "JavaScript library (Written in TypeScript) for reading the assets of the game Wasteland.",
     "keywords": [
         "Wasteland",
