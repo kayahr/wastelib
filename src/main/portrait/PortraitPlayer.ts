@@ -30,8 +30,8 @@ export class PortraitPlayer extends BaseAnimationPlayer<Portrait, PortraitFrame>
 
     protected init(portrait: Portrait): PortraitFrame {
         const numScripts = portrait.getNumScripts();
-        this.scriptPointers = new Array(numScripts);
-        this.scriptDelays = new Array(numScripts);
+        this.scriptPointers = new Array<number>(numScripts);
+        this.scriptDelays = new Array<number>(numScripts);
         for (let i = 0; i < numScripts; ++i) {
             this.scriptPointers[i] = 0;
             this.scriptDelays[i] = portrait.getScript(i).getLine(0).getDelay();

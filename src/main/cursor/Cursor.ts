@@ -11,7 +11,7 @@ import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors";
  */
 export class Cursor extends BaseImage {
     /** The image data. */
-    private data: ArrayLike<number>;
+    private readonly data: ArrayLike<number>;
 
     /**
      * Creates a new mouse cursor image with the give image data.
@@ -35,7 +35,7 @@ export class Cursor extends BaseImage {
         // The multi-component transparency mask can't be converted into RGBA but fortunately the game doesn't use
         // this feature anyway and all components in the cursor masks are set to the same value. So we simply check
         // for the blue component mask bit to decide if pixel is transparent or not.
-        if (((data[i - 2] >> b) & 1)) {
+        if ((((data[i - 2] >> b) & 1) === 1)) {
             const pixel = ((data[i] >> b) & 1)       // Blue
                 | (((data[i + 64] >> b) & 1) << 1)   // Green
                 | (((data[i + 128] >> b) & 1) << 2)  // Red

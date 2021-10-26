@@ -21,7 +21,7 @@ interface Node {
  * @return The huffman node. Can also be the payload byte of a node.
  */
 function readNode(reader: BinaryReader): Node | number {
-    if (reader.readBit()) {
+    if (reader.readBit() !== 0) {
         return reader.readUint8();
     } else {
         const left = readNode(reader);
@@ -46,7 +46,7 @@ export function decodeHuffman(reader: BinaryReader, size: number): Uint8Array {
     for (let i = 0; i < size; ++i) {
         let node = rootNode;
         while (typeof node !== "number") {
-            node = reader.readBit() ? node.right : node.left;
+            node = reader.readBit() !== 0 ? node.right : node.left;
         }
         data[i] = node;
     }

@@ -3,13 +3,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Title } from "../title/Title";
-import { Tilesets } from "../tile/Tilesets";
 import { Cursors } from "../cursor/Cursors";
-import { Font } from "../font/Font";
-import { Sprites } from "../sprite/Sprites";
 import { Ending } from "../ending/Ending";
+import { Font } from "../font/Font";
 import { Portraits } from "../portrait/Portraits";
+import { Sprites } from "../sprite/Sprites";
+import { Tilesets } from "../tile/Tilesets";
+import { Title } from "../title/Title";
 
 /** The version of the indexed DB used to store the Wasteland files in the browser. */
 const dbVersion = 1;
@@ -41,7 +41,7 @@ const filenames: WastelandFilename[] = [
  * @return True if filename is a wasteland filename, false if not.
  */
 function isWastelandFilename(filename: string): filename is WastelandFilename {
-    return (<string[]>filenames).indexOf(filename) >= 0;
+    return (filenames as string[]).indexOf(filename) >= 0;
 }
 
 /**
@@ -80,11 +80,11 @@ function openDB(): Promise<IDBDatabase> {
 function getFile(db: IDBDatabase, name: WastelandFilename): Promise<File | undefined> {
     return new Promise<File | undefined>((resolve, reject) => {
         try {
-            const trans = db.transaction(["files"]);
+            const trans = db.transaction([ "files" ]);
             const store = trans.objectStore("files");
             const request = store.get(name);
             request.addEventListener("success", () => {
-                const file: File | undefined = request.result;
+                const file = request.result as File | undefined;
                 resolve(file);
             });
             request.addEventListener("error", event => {
@@ -109,7 +109,7 @@ function putFile(db: IDBDatabase, file: File): Promise<void> {
     }
     return new Promise<void>((resolve, reject) => {
         try {
-            const trans = db.transaction(["files"], "readwrite");
+            const trans = db.transaction([ "files" ], "readwrite");
             const store = trans.objectStore("files");
             const request = store.put(file, fileName);
             request.addEventListener("success", () => {
@@ -130,8 +130,10 @@ function putFile(db: IDBDatabase, file: File): Promise<void> {
  * @param db     The database.
  * @param files  The files to store.
  */
-function putFiles(db: IDBDatabase, files: File[]): Promise<void[]> {
-    return Promise.all(files.map(file => putFile(db, file)));
+async function putFiles(db: IDBDatabase, files: File[]): Promise<void> {
+    for (const file of files) {
+        await putFile(db, file);
+    }
 }
 
 /**
@@ -143,31 +145,26 @@ function putFiles(db: IDBDatabase, files: File[]): Promise<void[]> {
  *
  * @param db            The database.
  * @param installFiles  The installation callback to call if not all Wasteland files were found in the database.
- * @return The file map with all Wasteland files.
+ * @return Array with all Wasteland files.
  */
-function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]) => Promise<File[]>):
+async function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]) => Promise<File[]>):
         Promise<{ [name: string]: File }> {
-    return Promise.all(filenames.map(filename => getFile(db, filename))).then(files => {
-        const missing: WastelandFilename[] = [];
-        const fileMap: { [name: string]: File } = {};
-        for (let i = 0; i < filenames.length; ++i) {
-            const file = files[i];
-            if (!file) {
-                missing.push(filenames[i]);
-            } else {
-                fileMap[filenames[i]] = file;
-            }
-        }
-        if (missing.length) {
-            return installFiles(missing).then(files => {
-                return putFiles(db, files).then(() => {
-                    return getFiles(db, installFiles);
-                });
-            });
+    const files = await Promise.all(filenames.map(filename => getFile(db, filename)));
+    const missing: WastelandFilename[] = [];
+    const fileMap: { [name: string]: File } = {};
+    for (let i = 0; i < filenames.length; ++i) {
+        const file = files[i];
+        if (file == null) {
+            missing.push(filenames[i]);
         } else {
-            return fileMap;
+            fileMap[filenames[i]] = file;
         }
-    });
+    }
+    if (missing.length > 0) {
+        return installFiles(missing).then(files => putFiles(db, files).then(() => getFiles(db, installFiles)));
+    } else {
+        return fileMap;
+    }
 }
 
 /**
@@ -175,7 +172,7 @@ function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]
  */
 export class WebAssets {
     /** The file map (Mapping filenames to actual Wasteland files). */
-    private files: { [name: string]: File };
+    private readonly files: { [name: string]: File };
 
     /**
      * Creates the web assets factory with the given file map.
@@ -197,9 +194,7 @@ export class WebAssets {
      * @return The created web assets factory.
      */
     public static create(installFiles: (filenames: WastelandFilename[]) => Promise<File[]>): Promise<WebAssets> {
-        return openDB().then(db => {
-            return getFiles(db, installFiles).then(fileMap => new WebAssets(fileMap));
-        });
+        return openDB().then(db => getFiles(db, installFiles).then(fileMap => new WebAssets(fileMap)));
     }
 
     /**

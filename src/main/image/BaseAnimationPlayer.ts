@@ -3,27 +3,27 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "./BaseImage";
 import { AnimationPlayer } from "./AnimationPlayer";
+import { BaseImage } from "./BaseImage";
 
 /**
  * Abstract base class for animation player implementations.
  */
 export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseImage> implements AnimationPlayer {
     /** The played animation. */
-    private animation: A;
+    private readonly animation: A;
 
     /** The current frame. */
     private frame: T;
 
     /** The timer handle if animation is playing. Null otherwise, */
-    private timer: any = null;
+    private timer: unknown = null;
 
     /** The playing speed in milliseconds per time unit. */
     private speed: number = 50;
 
     /** Callback to call on each frame update. */
-    private onDraw: (frame: T) => void;
+    private readonly onDraw: (frame: T) => void;
 
     /**
      * Creates a new animation player for the given animation and calling the given draw callback for each
@@ -104,7 +104,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      */
     public start(): void {
         if (this.timer == null) {
-            const animate = () => {
+            const animate = (): void => {
                 this.next();
                 this.timer = setTimeout(animate, this.getNextDelay());
             };
@@ -117,7 +117,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      */
     public stop(): void {
         if (this.timer != null) {
-            clearTimeout(this.timer);
+            clearTimeout(this.timer as number);
             this.timer = null;
         }
     }

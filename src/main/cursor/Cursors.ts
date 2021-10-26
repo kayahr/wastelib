@@ -3,16 +3,16 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Cursor } from "./Cursor";
 import { createCanvas } from "../sys/canvas";
 import { createImage } from "../sys/image";
+import { Cursor } from "./Cursor";
 
 /**
  * Container for the 8 mouse cursors in the CURS file.
  */
 export class Cursors {
     /** The mouse cursor images. */
-    private cursors: Cursor[];
+    private readonly cursors: Cursor[];
 
     /**
      * Creates a new mouse cursor container with the given cursors.
@@ -79,7 +79,7 @@ export class Cursors {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Cursors.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
+                    resolve(Cursors.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read cursors from blob: " + reader.error));
@@ -101,7 +101,7 @@ export class Cursors {
         const numCursors = cursors.length;
         const canvas = createCanvas(256, Math.ceil(numCursors / 16) * 16);
         const ctx = canvas.getContext("2d");
-        if (!ctx) {
+        if (ctx == null) {
             throw new Error("Unable to create 2D rendering context");
         }
         for (let i = 0; i < numCursors; ++i) {
@@ -113,27 +113,27 @@ export class Cursors {
     /**
      * Creates and returns an image data URL of an image with all mouse cursors.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created data URL.
      */
-    public toDataUrl(type?: string, ...args: any[]): string {
+    public toDataUrl(type?: string, quality?: unknown): string {
         const canvas = this.toCanvas();
-        return canvas.toDataURL(type, ...args);
+        return canvas.toDataURL(type, quality);
     }
 
     /**
      * Creates and returns a HTML image with all mouse cursors.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created HTML image.
      */
-    public toImage(type?: string, ...args: any[]): HTMLImageElement {
+    public toImage(type?: string, quality?: unknown): HTMLImageElement {
         const image = createImage();
-        image.src = this.toDataUrl(type, ...args);
+        image.src = this.toDataUrl(type, quality);
         return image;
     }
 }

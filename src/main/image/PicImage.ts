@@ -39,7 +39,7 @@ export abstract class PicImage extends BaseImage {
             throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
         }
         const pixelTuple = this.data[(x + y * this.width) >> 1];
-        const pixel = x & 1 ? pixelTuple & 0xf : pixelTuple >> 4;
+        const pixel = (x & 1) === 1 ? pixelTuple & 0xf : pixelTuple >> 4;
         return COLOR_PALETTE[pixel];
     }
 }

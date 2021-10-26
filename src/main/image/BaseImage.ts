@@ -87,7 +87,7 @@ export abstract class BaseImage {
     public toCanvas(): HTMLCanvasElement {
         const canvas = createCanvas(this.width, this.height);
         const ctx = canvas.getContext("2d");
-        if (!ctx) {
+        if (ctx == null) {
             throw new Error("Unable to create 2D rendering context");
         }
         this.draw(ctx);
@@ -97,27 +97,27 @@ export abstract class BaseImage {
     /**
      * Creates and returns an image data URL.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created data URL.
      */
-    public toDataUrl(type?: string, ...args: any[]): string {
+    public toDataUrl(type?: string, quality?: unknown): string {
         const canvas = this.toCanvas();
-        return canvas.toDataURL(type, ...args);
+        return canvas.toDataURL(type, quality);
     }
 
     /**
      * Creates and returns a HTML image.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created HTML image.
      */
-    public toImage(type?: string, ...args: any[]): HTMLImageElement {
+    public toImage(type?: string, quality?: unknown): HTMLImageElement {
         const image = createImage();
-        image.src = this.toDataUrl(type, ...args);
+        image.src = this.toDataUrl(type, quality);
         return image;
     }
 }

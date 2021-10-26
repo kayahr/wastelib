@@ -37,7 +37,7 @@
     "watch": "tsc -w",
     "doc": "typedoc --excludeNotExported --excludePrivate --mode file --out doc/api/ src/main node_modules/@types/",
     "dist": "webpack",
-    "lint": "tslint --project .",
+    "lint": "eslint --max-warnings 0 --ext .ts src",
     "prepare": "npm run clean && npm run compile && npm run dist",
     "test": "npm run lint"
   },
@@ -48,19 +48,33 @@
   "directories": {
     "lib": "./lib/"
   },
+  "steal": {
+        "format": "cjs",
+      "meta": {
+          "format": "cjs",
+          "./lib/main/image/Animation": {
+            "format": "cjs"
+          }
+    }
+  },
   "devDependencies": {
-    "@types/node": "=12.0.12",
-    "@types/source-map-support": "=0.5.0",
-    "rimraf": "=2.6.3",
-    "source-map-loader": "=0.2.4",
-    "steal": "=2.2.1",
-    "tslint": "=5.18.0",
-    "typedoc": "=0.14.2",
-    "typescript": "=3.5.2",
-    "webpack": "=4.35.2",
-    "webpack-cli": "=3.3.5"
+    "@kayahr/eslint-config": "1.6.1",
+    "@types/node": "16.11.6",
+    "@types/source-map-support": "0.5.4",
+    "@typescript-eslint/eslint-plugin": "5.2.0",
+    "@typescript-eslint/parser": "5.2.0",
+    "eslint": "7.32.0",
+    "eslint-plugin-deprecation": "1.2.1",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "rimraf": "3.0.2",
+    "source-map-loader": "3.0.0",
+    "steal": "2.2.4",
+    "typedoc": "0.22.7",
+    "typescript": "4.4.4",
+    "webpack": "5.60.0",
+    "webpack-cli": "4.9.1"
   },
   "dependencies": {
-    "tslib": "^1.10.0"
+    "tslib": "^2.3.1"
   }
 }

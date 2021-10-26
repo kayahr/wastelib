@@ -3,15 +3,15 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Portrait } from "./Portrait";
 import { BinaryReader } from "../io/BinaryReader";
+import { Portrait } from "./Portrait";
 
 /**
  * Container for the portraits of an allpics file.
  */
 export class Portraits {
     /** The portraits. */
-    private portraits: Portrait[];
+    private readonly portraits: Portrait[];
 
     /**
      * Creates a new set of portraits.
@@ -81,7 +81,7 @@ export class Portraits {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Portraits.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
+                    resolve(Portraits.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read portraits from blob: " + reader.error));
@@ -111,9 +111,10 @@ export class Portraits {
      * @param blob2  The ALLPICS2 blob to read
      * @return The read portraits.
      */
-    public static fromBlobs(blob1: Blob, blob2: Blob): Promise<Portraits> {
-        return Promise.all([this.fromBlob(blob1), this.fromBlob(blob2)]).then(portraits => {
-            return new Portraits(...portraits[0].portraits, ...portraits[1].portraits);
-        });
+    public static async fromBlobs(blob1: Blob, blob2: Blob): Promise<Portraits> {
+        return new Portraits(
+            ...(await this.fromBlob(blob1)).portraits,
+            ...(await this.fromBlob(blob2)).portraits
+        );
     }
 }

@@ -3,7 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { WebAssets, Animation, AnimationPlayer } from "../main/wastelib";
+import { Animation } from "../main/image/Animation";
+import { WebAssets } from "../main/io/WebAssets";
 
 /**
  * Shows the installer panel and let the user select the Wasteland files. These selected files are then returned
@@ -15,21 +16,20 @@ import { WebAssets, Animation, AnimationPlayer } from "../main/wastelib";
  */
 function installer(filenames: string[]): Promise<File[]> {
     return new Promise((resolve, reject) => {
-        const panel = <HTMLElement>document.querySelector("#installer");
-        const filenameList = <HTMLElement>panel.querySelector(".filenames");
+        const panel = document.querySelector("#installer") as HTMLElement;
+        const filenameList = panel.querySelector(".filenames") as HTMLElement;
         filenameList.innerHTML = filenames.join(", ");
-        const selector = <HTMLInputElement>panel.querySelector(".selector");
+        const selector = panel.querySelector(".selector") as HTMLInputElement;
         panel.style.display = "block";
         selector.onchange = files => {
             panel.style.display = "";
-            resolve(Array.prototype.slice.call(selector.files));
+            resolve(Array.from(selector.files ?? []));
         };
     });
 }
 
-function playAnimation(animation: Animation) {
+function playAnimation(animation: Animation): void {
     const playerDiv = document.createElement("div");
-    let player: AnimationPlayer;
     playerDiv.id = "player";
     playerDiv.onclick = () => {
         player.stop();
@@ -40,146 +40,136 @@ function playAnimation(animation: Animation) {
     const canvas = document.createElement("canvas");
     canvas.width = animation.getWidth();
     canvas.height = animation.getHeight();
-    const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
-    player = animation.createPlayer(frame => {
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const player = animation.createPlayer(frame => {
         frame.draw(ctx);
     });
     playerDiv.appendChild(canvas);
     player.start();
 
     playerDiv.appendChild(document.createTextNode("Click to stop animation"));
-
 }
 
 // Creates the web assets factory
-WebAssets.create(installer).then(assets => {
+(async () => {
+    const assets = await WebAssets.create(installer);
+
     // Show the demo HTML elements
-    (<HTMLElement>document.querySelector("#demo")).style.display = "block";
+    (document.querySelector("#demo") as HTMLElement).style.display = "block";
 
     // This is the output element used to show the various assets when the corresponding button is clicked.
-    const output = <HTMLDivElement>document.querySelector("#output");
+    const output = document.querySelector("#output") as HTMLDivElement;
 
     // Mouse cursors as separate images
-    (<HTMLButtonElement>document.querySelector("#cursors")).addEventListener("click", () => {
-        assets.readCursors().then(cursors => {
-            output.innerHTML = "";
-            cursors.getCursors().forEach(cursor => {
-                output.appendChild(cursor.toImage());
-            });
+    (document.querySelector("#cursors") as HTMLButtonElement).addEventListener("click", async () => {
+        const cursors = await assets.readCursors();
+        output.innerHTML = "";
+        cursors.getCursors().forEach(cursor => {
+            output.appendChild(cursor.toImage());
         });
     });
 
     // Mouse cursors as single image (All in one row)
-    (<HTMLButtonElement>document.querySelector("#cursors-map")).addEventListener("click", () => {
-        assets.readCursors().then(cursors => {
-            output.innerHTML = "";
-            output.appendChild(cursors.toImage());
-        });
+    (document.querySelector("#cursors-map") as HTMLButtonElement).addEventListener("click", async () => {
+        const cursors = await assets.readCursors();
+        output.innerHTML = "";
+        output.appendChild(cursors.toImage());
     });
 
     // End animation
-    (<HTMLButtonElement>document.querySelector("#end")).addEventListener("click", () => {
-        assets.readEnding().then(ending => {
-            const image = ending.toImage();
-            image.onclick = () => {
-                playAnimation(ending);
-            };
-            output.innerHTML = "";
-            output.appendChild(image);
-            output.appendChild(document.createElement("br"));
-            output.appendChild(document.createTextNode("Click image to start animation"));
-        });
+    (document.querySelector("#end") as HTMLButtonElement).addEventListener("click", async () => {
+        const ending = await assets.readEnding();
+        const image = ending.toImage();
+        image.onclick = () => {
+            playAnimation(ending);
+        };
+        output.innerHTML = "";
+        output.appendChild(image);
+        output.appendChild(document.createElement("br"));
+        output.appendChild(document.createTextNode("Click image to start animation"));
     });
 
     // Font characters as separate images
-    (<HTMLButtonElement>document.querySelector("#font")).addEventListener("click", () => {
-        assets.readFont().then(font => {
-            output.innerHTML = "";
-            font.getChars().forEach(char => {
-                output.appendChild(char.toImage());
-            });
+    (document.querySelector("#font") as HTMLButtonElement).addEventListener("click", async () => {
+        const font = await assets.readFont();
+        output.innerHTML = "";
+        font.getChars().forEach(char => {
+            output.appendChild(char.toImage());
         });
     });
 
     // Font as single image (16 characters per row)
-    (<HTMLButtonElement>document.querySelector("#font-map")).addEventListener("click", () => {
-        assets.readFont().then(font => {
-            output.innerHTML = "";
-            output.appendChild(font.toImage());
-        });
+    (document.querySelector("#font-map") as HTMLButtonElement).addEventListener("click", async () => {
+        const font = await assets.readFont();
+        output.innerHTML = "";
+        output.appendChild(font.toImage());
     });
 
     // Sprites as separate images
-    (<HTMLButtonElement>document.querySelector("#sprites")).addEventListener("click", () => {
-        assets.readSprites().then(sprites => {
-            output.innerHTML = "";
-            sprites.getSprites().forEach(sprite => {
-                output.appendChild(sprite.toImage());
-            });
+    (document.querySelector("#sprites") as HTMLButtonElement).addEventListener("click", async () => {
+        const sprites = await assets.readSprites();
+        output.innerHTML = "";
+        sprites.getSprites().forEach(sprite => {
+            output.appendChild(sprite.toImage());
         });
     });
 
     // Sprites as single image (All in one row)
-    (<HTMLButtonElement>document.querySelector("#sprites-map")).addEventListener("click", () => {
-        assets.readSprites().then(sprites => {
-            output.innerHTML = "";
-            output.appendChild(sprites.toImage());
-        });
+    (document.querySelector("#sprites-map") as HTMLButtonElement).addEventListener("click", async () => {
+        const sprites = await assets.readSprites();
+        output.innerHTML = "";
+        output.appendChild(sprites.toImage());
     });
 
     // Portraits
-    (<HTMLButtonElement>document.querySelector("#portraits")).addEventListener("click", () => {
-        assets.readPortraits().then(sprites => {
-            output.innerHTML = "";
-            sprites.getPortraits().forEach(portrait => {
-                const image = portrait.toImage();
-                image.onclick = () => {
-                    playAnimation(portrait);
-                };
-                output.appendChild(image);
-            });
-            output.appendChild(document.createElement("br"));
-            output.appendChild(document.createTextNode("Click image to start animation"));
+    (document.querySelector("#portraits") as HTMLButtonElement).addEventListener("click", async () => {
+        const sprites = await assets.readPortraits();
+        output.innerHTML = "";
+        sprites.getPortraits().forEach(portrait => {
+            const image = portrait.toImage();
+            image.onclick = () => {
+                playAnimation(portrait);
+            };
+            output.appendChild(image);
         });
+        output.appendChild(document.createElement("br"));
+        output.appendChild(document.createTextNode("Click image to start animation"));
     });
 
     // Tilesets as separate tile images
-    (<HTMLButtonElement>document.querySelector("#tilesets")).addEventListener("click", () => {
-        assets.readTilesets().then(tilesets => {
-            output.innerHTML = "";
-            let index = 0;
-            tilesets.getTilesets().forEach(tileset => {
-                const h1 = document.createElement("h2");
-                h1.innerHTML = `Tileset ${index++} (Disk ${tileset.getDisk()})`;
-                output.appendChild(h1);
-                tileset.getTiles().forEach(tile => {
-                    // Directly appending the canvas output instead of converting to images because creating all
-                    // these images is too slow
-                    output.appendChild(tile.toCanvas());
-                });
+    (document.querySelector("#tilesets") as HTMLButtonElement).addEventListener("click", async () => {
+        const tilesets = await assets.readTilesets();
+        output.innerHTML = "";
+        let index = 0;
+        tilesets.getTilesets().forEach(tileset => {
+            const h1 = document.createElement("h2");
+            h1.innerHTML = `Tileset ${index++} (Disk ${tileset.getDisk()})`;
+            output.appendChild(h1);
+            tileset.getTiles().forEach(tile => {
+                // Directly appending the canvas output instead of converting to images because creating all
+                // these images is too slow
+                output.appendChild(tile.toCanvas());
             });
         });
     });
 
     // Tilesets as separate images per tileset (16 tiles per row)
-    (<HTMLButtonElement>document.querySelector("#tilesets-map")).addEventListener("click", () => {
-        assets.readTilesets().then(tilesets => {
-            output.innerHTML = "";
-            let index = 0;
-            tilesets.getTilesets().forEach(tileset => {
-                const h1 = document.createElement("h2");
-                h1.innerHTML = `Tileset ${index++} (Disk ${tileset.getDisk()})`;
-                output.appendChild(h1);
-                output.appendChild(tileset.toImage());
-            });
+    (document.querySelector("#tilesets-map") as HTMLButtonElement).addEventListener("click", async () => {
+        const tilesets = await assets.readTilesets();
+        output.innerHTML = "";
+        let index = 0;
+        tilesets.getTilesets().forEach(tileset => {
+            const h1 = document.createElement("h2");
+            h1.innerHTML = `Tileset ${index++} (Disk ${tileset.getDisk()})`;
+            output.appendChild(h1);
+            output.appendChild(tileset.toImage());
         });
     });
 
     // Title image
-    (<HTMLButtonElement>document.querySelector("#title")).addEventListener("click", () => {
-        assets.readTitle().then(title => {
-            output.innerHTML = "";
-            output.appendChild(title.toImage());
-        });
+    (document.querySelector("#title") as HTMLButtonElement).addEventListener("click", async () => {
+        const title = await assets.readTitle();
+        output.innerHTML = "";
+        output.appendChild(title.toImage());
     });
-});
+})().catch(error => alert("" + error));

@@ -4,9 +4,9 @@
  */
 
 import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer";
+import { BaseImage } from "../image/BaseImage";
 import { Ending } from "./Ending";
 import { EndingFrame } from "./EndingFrame";
-import { BaseImage } from "../image/BaseImage";
 
 /**
  * Player for the ending animation.

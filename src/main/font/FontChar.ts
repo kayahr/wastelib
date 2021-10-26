@@ -16,7 +16,7 @@ export class FontChar extends BaseImage {
      * blue component bits, forth bit contains the intensity bits and the next four bytes do the same for the second
      * image row and so on.
      */
-    private data: ArrayLike<number>;
+    private readonly data: ArrayLike<number>;
 
     /**
      * Creates a new font character image for the given image data.

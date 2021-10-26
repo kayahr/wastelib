@@ -3,16 +3,16 @@
  * See LICENSE.md for licensing information.
  */
 
-import { FontChar } from "./FontChar";
 import { createCanvas } from "../sys/canvas";
 import { createImage } from "../sys/image";
+import { FontChar } from "./FontChar";
 
 /**
  * Container for the 172 font characters of the COLORF.FNT file.
  */
 export class Font {
     /** The character images of the font. */
-    private chars: FontChar[];
+    private readonly chars: FontChar[];
 
     /**
      * Creates a new font container with the given font characters.
@@ -79,7 +79,7 @@ export class Font {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Font.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
+                    resolve(Font.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read color font from blob: " + reader.error));
@@ -101,7 +101,7 @@ export class Font {
         const numChars = chars.length;
         const canvas = createCanvas(128, Math.ceil(numChars / 8) * 8);
         const ctx = canvas.getContext("2d");
-        if (!ctx) {
+        if (ctx == null) {
             throw new Error("Unable to create 2D rendering context");
         }
         for (let i = 0; i < numChars; ++i) {
@@ -113,27 +113,27 @@ export class Font {
     /**
      * Creates and returns a font image data URL. 16 font characters per row.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created data URL.
      */
-    public toDataUrl(type?: string, ...args: any[]): string {
+    public toDataUrl(type?: string, quality?: unknown): string {
         const canvas = this.toCanvas();
-        return canvas.toDataURL(type, ...args);
+        return canvas.toDataURL(type, quality);
     }
 
     /**
      * Creates and returns a HTML image of the font. 16 font characters per row.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created HTML image.
      */
-    public toImage(type?: string, ...args: any[]): HTMLImageElement {
+    public toImage(type?: string, quality?: unknown): HTMLImageElement {
         const image = createImage();
-        image.src = this.toDataUrl(type, ...args);
+        image.src = this.toDataUrl(type, quality);
         return image;
     }
 }

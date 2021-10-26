@@ -3,15 +3,15 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage";
-import { BinaryReader } from "../io/BinaryReader";
-import { decodeVxorInplace } from "../io/vxor";
-import { decodeHuffman } from "../io/huffman";
-import { PortraitUpdate } from "./PortraitUpdate";
-import { PortraitScript } from "./PortraitScript";
 import { Animation } from "../image/Animation";
 import { BaseImage } from "../image/BaseImage";
+import { PicImage } from "../image/PicImage";
+import { BinaryReader } from "../io/BinaryReader";
+import { decodeHuffman } from "../io/huffman";
+import { decodeVxorInplace } from "../io/vxor";
 import { PortraitPlayer } from "./PortraitPlayer";
+import { PortraitScript } from "./PortraitScript";
+import { PortraitUpdate } from "./PortraitUpdate";
 
 /**
  * An animated portrait image. Contains the base frame image but also provides methods to access the animation
@@ -19,10 +19,10 @@ import { PortraitPlayer } from "./PortraitPlayer";
  */
 export class Portrait extends PicImage implements Animation {
     /** The animation scripts. */
-    private scripts: PortraitScript[];
+    private readonly scripts: PortraitScript[];
 
     /** The animation updates. */
-    private updates: PortraitUpdate[];
+    private readonly updates: PortraitUpdate[];
 
     /**
      * Creates a new portrait with the given base frame, animation scripts and animation updates.

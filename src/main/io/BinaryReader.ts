@@ -8,10 +8,10 @@
  */
 export class BinaryReader {
     /** Wrapped array to read from. */
-    private data: ArrayLike<number>;
+    private readonly data: ArrayLike<number>;
 
     /** The last byte index in the array. */
-    private last: number;
+    private readonly last: number;
 
     /** The current byte index. */
     private byte: number;
@@ -37,7 +37,7 @@ export class BinaryReader {
      * Synchronizes the reader so it points to a full byte if it currently doesn't.
      */
     public sync(): void {
-        if (this.bit) {
+        if (this.bit !== 0) {
             this.byte++;
             this.bit = 0;
         }
@@ -95,7 +95,7 @@ export class BinaryReader {
      * @return The read value.
      */
     public readUint8(): number {
-        if (this.bit) {
+        if (this.bit !== 0) {
             if (this.byte + 1 >= this.last) {
                 throw new Error("End of data");
             }

@@ -3,17 +3,17 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Tileset } from "./Tileset";
-import { Tile } from "./Tile";
 import { BinaryReader } from "../io/BinaryReader";
 import { decodeHuffman } from "../io/huffman";
+import { Tile } from "./Tile";
+import { Tileset } from "./Tileset";
 
 /**
  * Container for the tilesets of the two allhtds files.
  */
 export class Tilesets {
     /** The tile sets. */
-    private tilesets: Tileset[];
+    private readonly tilesets: Tileset[];
 
     /**
      * Creates a new tilesets container with the given tilesets.
@@ -94,7 +94,7 @@ export class Tilesets {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Tilesets.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
+                    resolve(Tilesets.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read tilesets from blob: " + reader.error));
@@ -124,9 +124,10 @@ export class Tilesets {
      * @param blob2  The ALLHTDS2 blob to read
      * @return The read tilesets.
      */
-    public static fromBlobs(blob1: Blob, blob2: Blob): Promise<Tilesets> {
-        return Promise.all([this.fromBlob(blob1), this.fromBlob(blob2)]).then(tilesets => {
-            return new Tilesets(...tilesets[0].tilesets, ...tilesets[1].tilesets);
-        });
+    public static async fromBlobs(blob1: Blob, blob2: Blob): Promise<Tilesets> {
+        return new Tilesets(
+            ...(await this.fromBlob(blob1)).tilesets,
+            ...(await this.fromBlob(blob2)).tilesets
+        );
     }
 }

@@ -3,18 +3,18 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader";
 import { COLOR_PALETTE } from "../image/colors";
+import { BinaryReader } from "../io/BinaryReader";
 
 /**
  * Image update patch.
  */
 export class EndingPatch {
     /** The image offset to update. */
-    private offset: number;
+    private readonly offset: number;
 
     /** The patch data (Four bytes with eight 4-bit colors). */
-    private data: number[];
+    private readonly data: number[];
 
     /**
      * Creates a new update patch,
@@ -83,7 +83,7 @@ export class EndingPatch {
      */
     public getColor(x: number): number {
         const pixelTuple = this.data[x >> 1];
-        const pixel = x & 1 ? pixelTuple & 0xf : pixelTuple >> 4;
+        const pixel = (x & 1) === 1 ? pixelTuple & 0xf : pixelTuple >> 4;
         return COLOR_PALETTE[pixel];
     }
 

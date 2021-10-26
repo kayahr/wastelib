@@ -11,7 +11,7 @@ import { PortraitPatch } from "./PortraitPatch";
  */
 export class PortraitUpdate {
     /** The patches to apply to the image. */
-    private patches: PortraitPatch[];
+    private readonly patches: PortraitPatch[];
 
     /**
      * Creates an animation update with the given image patches.
@@ -62,8 +62,8 @@ export class PortraitUpdate {
      */
     public static read(reader: BinaryReader): PortraitUpdate {
         let update: PortraitPatch | null;
-        let updates: PortraitPatch[] = [];
-        while (update = PortraitPatch.read(reader)) {
+        const updates: PortraitPatch[] = [];
+        while ((update = PortraitPatch.read(reader)) != null) {
             updates.push(update);
         }
         return new PortraitUpdate(updates);

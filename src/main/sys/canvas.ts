@@ -13,11 +13,10 @@
 export function createCanvas(width?: number, height?: number): HTMLCanvasElement {
     let canvas: HTMLCanvasElement;
     if (typeof HTMLCanvasElement === "undefined") {
-        const Canvas: any = module.require("canvas");
+        const Canvas = module.require("canvas") as new () => HTMLCanvasElement;
         canvas = new Canvas();
     } else {
         canvas = document.createElement("canvas");
-
     }
     if (width != null && height != null) {
         canvas.width = width;

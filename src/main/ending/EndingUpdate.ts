@@ -11,10 +11,10 @@ import { EndingPatch } from "./EndingPatch";
  */
 export class EndingUpdate {
     /** The delay before applying this update. */
-    private delay: number;
+    private readonly delay: number;
 
     /** A set of update patches. */
-    private patches: EndingPatch[];
+    private readonly patches: EndingPatch[];
 
     /**
      * Creates an end animation update with the given delay and patches.
@@ -81,8 +81,8 @@ export class EndingUpdate {
             return null;
         }
         let update: EndingPatch | null;
-        let updates: EndingPatch[] = [];
-        while (update = EndingPatch.read(reader)) {
+        const updates: EndingPatch[] = [];
+        while ((update = EndingPatch.read(reader)) != null) {
             updates.push(update);
         }
         return new EndingUpdate(delay, updates);

@@ -11,7 +11,7 @@ import { PortraitScriptLine } from "./PortraitScriptLine";
  */
 export class PortraitScript {
     /** The script lines. */
-    private lines: PortraitScriptLine[];
+    private readonly lines: PortraitScriptLine[];
 
     /**
      * Creates a portrait animation script.

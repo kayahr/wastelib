@@ -11,10 +11,10 @@ import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors";
  */
 export class Sprite extends BaseImage {
     /** The image data. */
-    private data: ArrayLike<number>;
+    private readonly data: ArrayLike<number>;
 
     /** The transparency mask data. */
-    private maskData: ArrayLike<number>;
+    private readonly maskData: ArrayLike<number>;
 
     /**
      * Creates a new sprite image for the given image and mask data.
@@ -34,7 +34,7 @@ export class Sprite extends BaseImage {
         }
         const i = (y << 1) + (x >> 3);
         const b = 7 - (x % 8);
-        if ((this.maskData[i] >> b) & 1) {
+        if (((this.maskData[i] >> b) & 1) !== 0) {
             return TRANSPARENCY;
         }
         const data = this.data;

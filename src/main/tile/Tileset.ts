@@ -3,19 +3,19 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Tile } from "./Tile";
 import { createCanvas } from "../sys/canvas";
 import { createImage } from "../sys/image";
+import { Tile } from "./Tile";
 
 /**
  * Container for a set of tiles read from an allhtds file.
  */
 export class Tileset {
     /** The tiles in this set. */
-    private tiles: Tile[];
+    private readonly tiles: Tile[];
 
     /** The disk number. */
-    private disk: number;
+    private readonly disk: number;
 
     /**
      * Creates a new tileset with the given tiles.
@@ -78,7 +78,7 @@ export class Tileset {
         const numTiles = tiles.length;
         const canvas = createCanvas(256, Math.ceil(numTiles / 16) * 16);
         const ctx = canvas.getContext("2d");
-        if (!ctx) {
+        if (ctx == null) {
             throw new Error("Unable to create 2D rendering context");
         }
         for (let i = 0; i < numTiles; ++i) {
@@ -90,27 +90,27 @@ export class Tileset {
     /**
      * Creates and returns a tileset image data URL. 16 tiles per row.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created data URL.
      */
-    public toDataUrl(type?: string, ...args: any[]): string {
+    public toDataUrl(type?: string, quality?: unknown): string {
         const canvas = this.toCanvas();
-        return canvas.toDataURL(type, ...args);
+        return canvas.toDataURL(type, quality);
     }
 
     /**
      * Creates and returns a HTML image of the tileset. 16 tiles per row.
      *
-     * @param type  Optional image mime type. Defaults to image/png.
-     * @param args  Optional additional encoder parameters. For image/jpeg this is the image quality between 0 and 1
-     *              with a default value of 0.92.
+     * @param type    - Optional image mime type. Defaults to image/png.
+     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
+     *                  1 with a default value of 0.92.
      * @return The created HTML image.
      */
-    public toImage(type?: string, ...args: any[]): HTMLImageElement {
+    public toImage(type?: string, quality?: unknown): HTMLImageElement {
         const image = createImage();
-        image.src = this.toDataUrl(type, ...args);
+        image.src = this.toDataUrl(type, quality);
         return image;
     }
 }

@@ -3,14 +3,14 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage";
-import { BinaryReader } from "../io/BinaryReader";
-import { decodeVxorInplace } from "../io/vxor";
-import { decodeHuffman } from "../io/huffman";
-import { EndingUpdate } from "./EndingUpdate";
 import { Animation } from "../image/Animation";
 import { BaseImage } from "../image/BaseImage";
+import { PicImage } from "../image/PicImage";
+import { BinaryReader } from "../io/BinaryReader";
+import { decodeHuffman } from "../io/huffman";
+import { decodeVxorInplace } from "../io/vxor";
 import { EndingPlayer } from "./EndingPlayer";
+import { EndingUpdate } from "./EndingUpdate";
 
 /**
  * Contains the base frame of the ending animation but also provides methods to access the animation information.
@@ -18,7 +18,7 @@ import { EndingPlayer } from "./EndingPlayer";
  */
 export class Ending extends PicImage implements Animation {
     /** The animation updates. */
-    private updates: EndingUpdate[];
+    private readonly updates: EndingUpdate[];
 
     /**
      * Creates a new end animation with the given image and animation data.
@@ -99,7 +99,7 @@ export class Ending extends PicImage implements Animation {
         }
         const updates: EndingUpdate[] = [];
         let update: EndingUpdate | null;
-        while (update = EndingUpdate.read(animReader)) {
+        while ((update = EndingUpdate.read(animReader)) != null) {
             updates.push(update);
         }
         if (animReader.readUint16() !== 0) {
@@ -121,7 +121,7 @@ export class Ending extends PicImage implements Animation {
             try {
                 const reader = new FileReader();
                 reader.onload = event => {
-                    resolve(Ending.fromArray(new Uint8Array(<ArrayBuffer>reader.result)));
+                    resolve(Ending.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
                 };
                 reader.onerror = event => {
                     reject(new Error("Unable to read end animation from blob: " + reader.error));

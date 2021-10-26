@@ -11,7 +11,7 @@
  */
 export function createImage(): HTMLImageElement {
     if (typeof Image === "undefined") {
-        const Canvas: any = module.require("canvas");
+        const Canvas = module.require("canvas") as { Image: new () => HTMLImageElement };
         return new Canvas.Image();
     } else {
         return new Image();

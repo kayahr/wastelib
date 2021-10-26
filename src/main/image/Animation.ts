@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "./BaseImage";
-import { AnimationPlayer } from "./AnimationPlayer";
+import type { AnimationPlayer } from "./AnimationPlayer";
+import type { BaseImage } from "./BaseImage";
 
 /**
  * Shared interface for [[Ending]] and [[Portrait]] animation.
