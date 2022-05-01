@@ -11,7 +11,10 @@
  */
 export function createImage(): HTMLImageElement {
     if (typeof Image === "undefined") {
-        const Canvas = module.require("canvas") as { Image: new () => HTMLImageElement };
+        const Canvas = module.require("canvas") as {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            Image: new () => HTMLImageElement
+        };
         return new Canvas.Image();
     } else {
         return new Image();
