@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Animation } from "../main/image/Animation";
-import { WebAssets } from "../main/io/WebAssets";
+import { Animation } from "../main/image/Animation.js";
+import { WebAssets } from "../main/io/WebAssets.js";
 
 /**
  * Shows the installer panel and let the user select the Wasteland files. These selected files are then returned

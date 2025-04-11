@@ -3,9 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas";
-import { createImage } from "../sys/image";
-import { Cursor } from "./Cursor";
+import { createCanvas } from "../sys/canvas.js";
+import { toError } from "../sys/error.js";
+import { createImage } from "../sys/image.js";
+import { Cursor } from "./Cursor.js";
 
 /**
  * Container for the 8 mouse cursors in the CURS file.
@@ -57,7 +58,7 @@ export class Cursors {
     /**
      * Parses the mouse cursor images from the given array and returns it.
      *
-     * @param buffer  The array with the CURS file content to parse.
+     * @param array - The array with the CURS file content to parse.
      * @return The parsed mouse cursors.
      */
     public static fromArray(array: Uint8Array): Cursors {
@@ -71,7 +72,7 @@ export class Cursors {
     /**
      * Reads mouse cursor images from the given blob and returns it.
      *
-     * @param file  The CURS blob to read.
+     * @param blob - The CURS blob to read.
      * @return The read mouse cursors.
      */
     public static fromBlob(blob: Blob): Promise<Cursors> {
@@ -86,7 +87,7 @@ export class Cursors {
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {
-                reject(e);
+                reject(toError(e));
             }
         });
     }
@@ -118,7 +119,7 @@ export class Cursors {
      *                  1 with a default value of 0.92.
      * @return The created data URL.
      */
-    public toDataUrl(type?: string, quality?: unknown): string {
+    public toDataUrl(type?: string, quality?: number): string {
         const canvas = this.toCanvas();
         return canvas.toDataURL(type, quality);
     }
@@ -131,7 +132,7 @@ export class Cursors {
      *                  1 with a default value of 0.92.
      * @return The created HTML image.
      */
-    public toImage(type?: string, quality?: unknown): HTMLImageElement {
+    public toImage(type?: string, quality?: number): HTMLImageElement {
         const image = createImage();
         image.src = this.toDataUrl(type, quality);
         return image;

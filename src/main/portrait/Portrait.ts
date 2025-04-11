@@ -3,15 +3,15 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Animation } from "../image/Animation";
-import { BaseImage } from "../image/BaseImage";
-import { PicImage } from "../image/PicImage";
-import { BinaryReader } from "../io/BinaryReader";
-import { decodeHuffman } from "../io/huffman";
-import { decodeVxorInplace } from "../io/vxor";
-import { PortraitPlayer } from "./PortraitPlayer";
-import { PortraitScript } from "./PortraitScript";
-import { PortraitUpdate } from "./PortraitUpdate";
+import { Animation } from "../image/Animation.js";
+import { BaseImage } from "../image/BaseImage.js";
+import { PicImage } from "../image/PicImage.js";
+import { BinaryReader } from "../io/BinaryReader.js";
+import { decodeHuffman } from "../io/huffman.js";
+import { decodeVxorInplace } from "../io/vxor.js";
+import { PortraitPlayer } from "./PortraitPlayer.js";
+import { PortraitScript } from "./PortraitScript.js";
+import { PortraitUpdate } from "./PortraitUpdate.js";
 
 /**
  * An animated portrait image. Contains the base frame image but also provides methods to access the animation

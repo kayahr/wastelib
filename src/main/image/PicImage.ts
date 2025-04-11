@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "./BaseImage";
-import { COLOR_PALETTE } from "./colors";
+import { BaseImage } from "./BaseImage.js";
+import { COLOR_PALETTE } from "./colors.js";
 
 /**
  * Base class for images in pic layout (Each byte contains two 4-bit colors).
@@ -35,7 +35,7 @@ export abstract class PicImage extends BaseImage {
     }
 
     public getColor(x: number, y: number): number {
-        if (x < 0 || y < 0 || x > this.width && y > this.height) {
+        if (x < 0 || y < 0 || x > this.width || y > this.height) {
             throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
         }
         const pixelTuple = this.data[(x + y * this.width) >> 1];

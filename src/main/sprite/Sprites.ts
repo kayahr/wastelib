@@ -3,9 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas";
-import { createImage } from "../sys/image";
-import { Sprite } from "./Sprite";
+import { createCanvas } from "../sys/canvas.js";
+import { toError } from "../sys/error.js";
+import { createImage } from "../sys/image.js";
+import { Sprite } from "./Sprite.js";
 
 /**
  * Container for the 10 sprites defined in the ic0_9.wlf and masks.wlf files.
@@ -72,8 +73,8 @@ export class Sprites {
     /**
      * Reads sprites from the given blobs and returns it.
      *
-     * @param imagesBlob  The IC0_9.WLF blob to read.
-     * @param masksFile   The MASKS.WLF blob to read.
+     * @param imagesBlob - The IC0_9.WLF blob to read.
+     * @param masksBlob  - The MASKS.WLF blob to read.
      * @return The read sprites.
      */
     public static fromBlobs(imagesBlob: Blob, masksBlob: Blob): Promise<Sprites> {
@@ -92,7 +93,7 @@ export class Sprites {
                         };
                         masksReader.readAsArrayBuffer(masksBlob);
                     } catch (e) {
-                        reject(e);
+                        reject(toError(e));
                     }
                 };
                 reader.onerror = event => {
@@ -100,7 +101,7 @@ export class Sprites {
                 };
                 reader.readAsArrayBuffer(imagesBlob);
             } catch (e) {
-                reject(e);
+                reject(toError(e));
             }
         });
     }
@@ -132,7 +133,7 @@ export class Sprites {
      *                  1 with a default value of 0.92.
      * @return The created data URL.
      */
-    public toDataUrl(type?: string, quality?: unknown): string {
+    public toDataUrl(type?: string, quality?: number): string {
         const canvas = this.toCanvas();
         return canvas.toDataURL(type, quality);
     }
@@ -145,7 +146,7 @@ export class Sprites {
      *                  1 with a default value of 0.92.
      * @return The created HTML image.
      */
-    public toImage(type?: string, quality?: unknown): HTMLImageElement {
+    public toImage(type?: string, quality?: number): HTMLImageElement {
         const image = createImage();
         image.src = this.toDataUrl(type, quality);
         return image;

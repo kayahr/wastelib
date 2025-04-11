@@ -3,9 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas";
-import { createImage } from "../sys/image";
-import { FontChar } from "./FontChar";
+import { createCanvas } from "../sys/canvas.js";
+import { toError } from "../sys/error.js";
+import { createImage } from "../sys/image.js";
+import { FontChar } from "./FontChar.js";
 
 /**
  * Container for the 172 font characters of the COLORF.FNT file.
@@ -57,7 +58,7 @@ export class Font {
     /**
      * Parses a font from the given array and returns it.
      *
-     * @param buffer  The array with the colorf.fnt file content to parse.
+     * @param array - The array with the colorf.fnt file content to parse.
      * @return The parsed font.
      */
     public static fromArray(array: Uint8Array): Font {
@@ -86,7 +87,7 @@ export class Font {
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {
-                reject(e);
+                reject(toError(e));
             }
         });
     }
@@ -118,7 +119,7 @@ export class Font {
      *                  1 with a default value of 0.92.
      * @return The created data URL.
      */
-    public toDataUrl(type?: string, quality?: unknown): string {
+    public toDataUrl(type?: string, quality?: number): string {
         const canvas = this.toCanvas();
         return canvas.toDataURL(type, quality);
     }
@@ -131,7 +132,7 @@ export class Font {
      *                  1 with a default value of 0.92.
      * @return The created HTML image.
      */
-    public toImage(type?: string, quality?: unknown): HTMLImageElement {
+    public toImage(type?: string, quality?: number): HTMLImageElement {
         const image = createImage();
         image.src = this.toDataUrl(type, quality);
         return image;

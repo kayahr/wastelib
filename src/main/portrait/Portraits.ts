@@ -3,8 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader";
-import { Portrait } from "./Portrait";
+import { BinaryReader } from "../io/BinaryReader.js";
+import { toError } from "../sys/error.js";
+import { Portrait } from "./Portrait.js";
 
 /**
  * Container for the portraits of an allpics file.
@@ -17,7 +18,6 @@ export class Portraits {
      * Creates a new set of portraits.
      *
      * @param portraits  The portraits.
-     * @param disk       The disk number.
      */
     public constructor(...portraits: Portrait[]) {
         this.portraits = portraits;
@@ -88,7 +88,7 @@ export class Portraits {
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {
-                reject(e);
+                reject(toError(e));
             }
         });
     }

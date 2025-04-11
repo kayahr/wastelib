@@ -3,17 +3,17 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer";
-import { BaseImage } from "../image/BaseImage";
-import { Ending } from "./Ending";
-import { EndingFrame } from "./EndingFrame";
+import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer.js";
+import { BaseImage } from "../image/BaseImage.js";
+import { Ending } from "./Ending.js";
+import { EndingFrame } from "./EndingFrame.js";
 
 /**
  * Player for the ending animation.
  */
 export class EndingPlayer extends BaseAnimationPlayer<Ending, EndingFrame> {
     /** The current frame index. */
-    private frameIndex: number;
+    private frameIndex!: number;
 
     /**
      * Creates a new player for the given ending animation.

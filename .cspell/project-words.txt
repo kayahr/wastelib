@@ -1,0 +1,16 @@
+ailis
+ALLHTDS
+allpics
+COLORF
+devtool
+Inplace
+kayahr
+readwrite
+Reimer
+savegame
+Tileset
+Tilesets
+tslib
+typedoc
+Vxor
+wastelib

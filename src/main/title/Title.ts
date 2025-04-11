@@ -3,8 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage";
-import { decodeVxor, decodeVxorInplace } from "../io/vxor";
+import { PicImage } from "../image/PicImage.js";
+import { decodeVxor, decodeVxorInplace } from "../io/vxor.js";
+import { toError } from "../sys/error.js";
 
 /**
  * Container for the title image.
@@ -22,7 +23,7 @@ export class Title extends PicImage {
     /**
      * Parses a title image from the given array and returns it.
      *
-     * @param data  The vxor encoded array.
+     * @param array - The vxor encoded array.
      * @return The parsed title.pic image.
      */
     public static fromArray(array: Uint8Array): Title {
@@ -47,7 +48,7 @@ export class Title extends PicImage {
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {
-                reject(e);
+                reject(toError(e));
             }
         });
     }

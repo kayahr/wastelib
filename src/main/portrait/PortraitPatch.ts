@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader";
+import { BinaryReader } from "../io/BinaryReader.js";
 
 /**
  * A single portrait animation patch.

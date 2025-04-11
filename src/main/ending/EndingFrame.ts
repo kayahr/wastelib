@@ -3,9 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage";
-import { Ending } from "./Ending";
-import { EndingUpdate } from "./EndingUpdate";
+import { PicImage } from "../image/PicImage.js";
+import { Ending } from "./Ending.js";
+import { EndingUpdate } from "./EndingUpdate.js";
 
 /**
  * Updatable ending animation frame.

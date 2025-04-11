@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "../image/BaseImage";
-import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors";
+import { BaseImage } from "../image/BaseImage.js";
+import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors.js";
 
 /**
  * Container for a single sprite image.
@@ -29,7 +29,7 @@ export class Sprite extends BaseImage {
     }
 
     public getColor(x: number, y: number): number {
-        if (x < 0 || y < 0 || x > 15 && y > 15) {
+        if (x < 0 || y < 0 || x > 15 || y > 15) {
             throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
         }
         const i = (y << 1) + (x >> 3);

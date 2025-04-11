@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AnimationPlayer } from "./AnimationPlayer";
-import { BaseImage } from "./BaseImage";
+import { AnimationPlayer } from "./AnimationPlayer.js";
+import { BaseImage } from "./BaseImage.js";
 
 /**
  * Abstract base class for animation player implementations.
@@ -14,7 +14,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     private readonly animation: A;
 
     /** The current frame. */
-    private frame: T;
+    private frame!: T;
 
     /** The timer handle if animation is playing. Null otherwise, */
     private timer: unknown = null;

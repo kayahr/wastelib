@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader";
-import { EndingPatch } from "./EndingPatch";
+import { BinaryReader } from "../io/BinaryReader.js";
+import { EndingPatch } from "./EndingPatch.js";
 
 /**
  * A single ending animation update.

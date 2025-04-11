@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader";
-import { PortraitScriptLine } from "./PortraitScriptLine";
+import { BinaryReader } from "../io/BinaryReader.js";
+import { PortraitScriptLine } from "./PortraitScriptLine.js";
 
 /**
  * A portrait animation script.

@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader";
+import { BinaryReader } from "../io/BinaryReader.js";
 
 /**
  * Interface of a single huffman node with a left and right branch connected to other huffman nodes or payload

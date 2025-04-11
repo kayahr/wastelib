@@ -3,14 +3,15 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Animation } from "../image/Animation";
-import { BaseImage } from "../image/BaseImage";
-import { PicImage } from "../image/PicImage";
-import { BinaryReader } from "../io/BinaryReader";
-import { decodeHuffman } from "../io/huffman";
-import { decodeVxorInplace } from "../io/vxor";
-import { EndingPlayer } from "./EndingPlayer";
-import { EndingUpdate } from "./EndingUpdate";
+import { Animation } from "../image/Animation.js";
+import { BaseImage } from "../image/BaseImage.js";
+import { PicImage } from "../image/PicImage.js";
+import { BinaryReader } from "../io/BinaryReader.js";
+import { decodeHuffman } from "../io/huffman.js";
+import { decodeVxorInplace } from "../io/vxor.js";
+import { toError } from "../sys/error.js";
+import { EndingPlayer } from "./EndingPlayer.js";
+import { EndingUpdate } from "./EndingUpdate.js";
 
 /**
  * Contains the base frame of the ending animation but also provides methods to access the animation information.
@@ -69,7 +70,7 @@ export class Ending extends PicImage implements Animation {
     /**
      * Parses a end animation from the given array and returns it.
      *
-     * @param data  The array containing the two encoded MSQ blocks with the base frame and animation data.
+     * @param array - The array containing the two encoded MSQ blocks with the base frame and animation data.
      * @return The parsed end animation.
      */
     public static fromArray(array: Uint8Array): Ending {
@@ -128,7 +129,7 @@ export class Ending extends PicImage implements Animation {
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {
-                reject(e);
+                reject(toError(e));
             }
         });
     }

@@ -3,10 +3,11 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader";
-import { decodeHuffman } from "../io/huffman";
-import { Tile } from "./Tile";
-import { Tileset } from "./Tileset";
+import { BinaryReader } from "../io/BinaryReader.js";
+import { decodeHuffman } from "../io/huffman.js";
+import { toError } from "../sys/error.js";
+import { Tile } from "./Tile.js";
+import { Tileset } from "./Tileset.js";
 
 /**
  * Container for the tilesets of the two allhtds files.
@@ -58,7 +59,7 @@ export class Tilesets {
     /**
      * Reads tilesets from the given array.
      *
-     * @param buffer  The array to read the tilesets from.
+     * @param array - The array to read the tilesets from.
      * @return The read tilesets.
      */
     public static fromArray(array: Uint8Array): Tilesets {
@@ -101,7 +102,7 @@ export class Tilesets {
                 };
                 reader.readAsArrayBuffer(blob);
             } catch (e) {
-                reject(e);
+                reject(toError(e));
             }
         });
     }

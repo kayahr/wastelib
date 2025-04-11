@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage";
-import { decodeVxorInplace } from "../io/vxor";
+import { PicImage } from "../image/PicImage.js";
+import { decodeVxorInplace } from "../io/vxor.js";
 
 /**
  * Container for a single tile.

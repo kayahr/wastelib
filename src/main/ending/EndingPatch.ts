@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { COLOR_PALETTE } from "../image/colors";
-import { BinaryReader } from "../io/BinaryReader";
+import { COLOR_PALETTE } from "../image/colors.js";
+import { BinaryReader } from "../io/BinaryReader.js";
 
 /**
  * Image update patch.

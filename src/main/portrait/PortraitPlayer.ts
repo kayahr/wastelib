@@ -3,19 +3,19 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer";
-import { Portrait } from "./Portrait";
-import { PortraitFrame } from "./PortraitFrame";
+import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer.js";
+import { Portrait } from "./Portrait.js";
+import { PortraitFrame } from "./PortraitFrame.js";
 
 /**
  * Player for a portrait animation.
  */
 export class PortraitPlayer extends BaseAnimationPlayer<Portrait, PortraitFrame> {
     /** The current script line indices. */
-    private scriptPointers: number[];
+    private scriptPointers!: number[];
 
     /** The current script delays. */
-    private scriptDelays: number[];
+    private scriptDelays!: number[];
 
     /**
      * Creates a new player for the given portrait animation.

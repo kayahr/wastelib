@@ -3,13 +3,14 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Cursors } from "../cursor/Cursors";
-import { Ending } from "../ending/Ending";
-import { Font } from "../font/Font";
-import { Portraits } from "../portrait/Portraits";
-import { Sprites } from "../sprite/Sprites";
-import { Tilesets } from "../tile/Tilesets";
-import { Title } from "../title/Title";
+import { Cursors } from "../cursor/Cursors.js";
+import { Ending } from "../ending/Ending.js";
+import { Font } from "../font/Font.js";
+import { Portraits } from "../portrait/Portraits.js";
+import { Sprites } from "../sprite/Sprites.js";
+import { toError } from "../sys/error.js";
+import { Tilesets } from "../tile/Tilesets.js";
+import { Title } from "../title/Title.js";
 
 /** The version of the indexed DB used to store the Wasteland files in the browser. */
 const dbVersion = 1;
@@ -58,14 +59,14 @@ function openDB(): Promise<IDBDatabase> {
                 resolve(db);
             });
             request.addEventListener("error", event => {
-                reject(request.error);
+                reject(toError(request.error));
             });
             request.addEventListener("upgradeneeded", event => {
                 const db: IDBDatabase = request.result;
                 db.createObjectStore("files");
             });
         } catch (e) {
-            reject(e);
+            reject(toError(e));
         }
     });
 }
@@ -88,10 +89,10 @@ function getFile(db: IDBDatabase, name: WastelandFilename): Promise<File | undef
                 resolve(file);
             });
             request.addEventListener("error", event => {
-                reject(request.error);
+                reject(toError(request.error));
             });
         } catch (e) {
-            reject(e);
+            reject(toError(e));
         }
     });
 }
@@ -116,10 +117,10 @@ function putFile(db: IDBDatabase, file: File): Promise<void> {
                 resolve();
             });
             request.addEventListener("error", event => {
-                reject(request.error);
+                reject(toError(request.error));
             });
         } catch (e) {
-            reject(e);
+            reject(toError(e));
         }
     });
 }

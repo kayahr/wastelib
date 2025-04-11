@@ -3,5 +3,8 @@
     "files.exclude": {
         "lib": true,
         "node_modules": true
-    }
+    },
+    "task.allowAutomaticTasks": "on",
+    "javascript.preferences.importModuleSpecifierEnding": "js",
+    "typescript.preferences.importModuleSpecifierEnding": "js"
 }
