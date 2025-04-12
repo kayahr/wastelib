@@ -144,8 +144,7 @@ See also
 --------
 
 * [GitHub repository](https://github.com/kayahr/wastelib/)
-* [NPM repository](https://www.npmjs.com/package/wastelib/)
-* [API documentation](https://kayahr.github.io/wastelib/api/)
+* [API documentation](https://kayahr.github.io/wastelib/)
 
 [TypeScript]: https://www.typescriptlang.org/
 [Wasteland]: https://en.wikipedia.org/wiki/Wasteland_(video_game)
