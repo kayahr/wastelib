@@ -45,7 +45,7 @@
         "prepare": "run-s clean build"
     },
     "devDependencies": {
-        "@kayahr/eslint-config": "3.4.0",
+        "@kayahr/eslint-config": "3.5.0",
         "@types/node": "22.14.0",
         "@types/source-map-support": "0.5.10",
         "cspell": "8.18.1",
