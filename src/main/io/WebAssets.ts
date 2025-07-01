@@ -16,8 +16,8 @@ import { Title } from "../title/Title.js";
 const dbVersion = 1;
 
 /** A type for wasteland filenames to ensure they are all written correctly. */
-export type WastelandFilename = "ALLHTDS1" | "ALLHTDS2" | "ALLPICS1" | "ALLPICS2" | "COLORF.FNT" | "CURS" | "END.CPA" |
-    "GAME1" | "GAME2" | "IC0_9.WLF" | "MASKS.WLF" | "TITLE.PIC";
+export type WastelandFilename = "ALLHTDS1" | "ALLHTDS2" | "ALLPICS1" | "ALLPICS2" | "COLORF.FNT" | "CURS" | "END.CPA"
+    | "GAME1" | "GAME2" | "IC0_9.WLF" | "MASKS.WLF" | "TITLE.PIC";
 
 /** The names of the Wasteland files which must be installed in the browser. */
 const filenames: WastelandFilename[] = [
