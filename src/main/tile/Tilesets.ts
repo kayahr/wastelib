@@ -3,11 +3,11 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader.js";
-import { decodeHuffman } from "../io/huffman.js";
-import { toError } from "../sys/error.js";
-import { Tile } from "./Tile.js";
-import { Tileset } from "./Tileset.js";
+import { BinaryReader } from "../io/BinaryReader.ts";
+import { decodeHuffman } from "../io/huffman.ts";
+import { toError } from "../sys/error.ts";
+import { Tile } from "./Tile.ts";
+import { Tileset } from "./Tileset.ts";
 
 /**
  * Container for the tilesets of the two allhtds files.
@@ -28,7 +28,7 @@ export class Tilesets {
     /**
      * Returns array with all tilesets.
      *
-     * @return The tilesets.
+     * @returns The tilesets.
      */
     public getTilesets(): Tileset[] {
         return this.tilesets.slice();
@@ -37,7 +37,7 @@ export class Tilesets {
     /**
      * Returns the number of tilesets.
      *
-     * @return The number of tilesets.
+     * @returns The number of tilesets.
      */
     public getNumTilesets(): number {
         return this.tilesets.length;
@@ -47,11 +47,11 @@ export class Tilesets {
      * Returns the tileset with the given index.
      *
      * @param index  The tileset index.
-     * @return The tileset.
+     * @returns The tileset.
      */
     public getTileset(index: number): Tileset {
         if (index < 0 || index >= this.tilesets.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.tilesets[index];
     }
@@ -60,7 +60,7 @@ export class Tilesets {
      * Reads tilesets from the given array.
      *
      * @param array - The array to read the tilesets from.
-     * @return The read tilesets.
+     * @returns The read tilesets.
      */
     public static fromArray(array: Uint8Array): Tilesets {
         const reader = new BinaryReader(array);
@@ -88,21 +88,21 @@ export class Tilesets {
      * Reads tilesets from the given blob.
      *
      * @param blob  The ALLHTDS1 or ALLHTDS2 blob to read.
-     * @return The read tilesets.
+     * @returns The read tilesets.
      */
     public static fromBlob(blob: Blob): Promise<Tilesets> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = event => {
+                reader.addEventListener("load", event => {
                     resolve(Tilesets.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                };
-                reader.onerror = event => {
-                    reject(new Error("Unable to read tilesets from blob: " + reader.error));
-                };
+                });
+                reader.addEventListener("error", event => {
+                    reject(new Error(`Unable to read tilesets from blob: ${reader.error}`));
+                });
                 reader.readAsArrayBuffer(blob);
-            } catch (e) {
-                reject(toError(e));
+            } catch (error) {
+                reject(toError(error));
             }
         });
     }
@@ -112,7 +112,7 @@ export class Tilesets {
      *
      * @param array1  The array with the ALLHTDS1 file content.
      * @param array2  The array with the ALLHTDS2 file content.
-     * @return The read tilesets.
+     * @returns The read tilesets.
      */
     public static fromArrays(array1: Uint8Array, array2: Uint8Array): Tilesets {
         return new Tilesets(...this.fromArray(array1).tilesets, ...this.fromArray(array2).tilesets);
@@ -123,7 +123,7 @@ export class Tilesets {
      *
      * @param blob1  The ALLHTDS1 blob to read.
      * @param blob2  The ALLHTDS2 blob to read
-     * @return The read tilesets.
+     * @returns The read tilesets.
      */
     public static async fromBlobs(blob1: Blob, blob2: Blob): Promise<Tilesets> {
         return new Tilesets(

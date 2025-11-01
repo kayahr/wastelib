@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader.js";
-import { EndingPatch } from "./EndingPatch.js";
+import type { BinaryReader } from "../io/BinaryReader.ts";
+import { EndingPatch } from "./EndingPatch.ts";
 
 /**
  * A single ending animation update.
@@ -31,7 +31,7 @@ export class EndingUpdate {
      * Returns the delay to wait before applying this update. The unit is unknown but good results can be achieved
      * by multiplying this value with 50 to get a millisecond value.
      *
-     * @return The delay in time units.
+     * @returns The delay in time units.
      */
     public getDelay(): number {
         return this.delay;
@@ -40,7 +40,7 @@ export class EndingUpdate {
     /**
      * Returns the set of update patches.
      *
-     * @return The set of update patches.
+     * @returns The set of update patches.
      */
     public getPatches(): EndingPatch[] {
         return this.patches.slice();
@@ -50,11 +50,11 @@ export class EndingUpdate {
      * Returns the update patch with the given index.
      *
      * @param index  Update patch index.
-     * @return The animation patch.
+     * @returns The animation patch.
      */
     public getPatch(index: number): EndingPatch {
         if (index < 0 || index >= this.patches.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.patches[index];
     }
@@ -62,7 +62,7 @@ export class EndingUpdate {
     /**
      * Returns the number of update patches.
      *
-     * @return The number of update patches.
+     * @returns The number of update patches.
      */
     public getNumPatches(): number {
         return this.patches.length;
@@ -73,7 +73,7 @@ export class EndingUpdate {
      * returned.
      *
      * @param reader  The reader to read the animation frame from.
-     * @return The read animation update or null if end of animation has been reached.
+     * @returns The read animation update or null if end of animation has been reached.
      */
     public static read(reader: BinaryReader): EndingUpdate | null {
         const delay = reader.readUint16();

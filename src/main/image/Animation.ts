@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import type { AnimationPlayer } from "./AnimationPlayer.js";
-import type { BaseImage } from "./BaseImage.js";
+import type { AnimationPlayer } from "./AnimationPlayer.ts";
+import type { BaseImage } from "./BaseImage.ts";
 
 /**
  * Shared interface for [[Ending]] and [[Portrait]] animation.
@@ -16,21 +16,21 @@ export interface Animation {
      *
      * @param onDraw   Callback to call on each frame update. This callback is responsible for actually showing the
      *                 animation frame to the user.
-     * @return The created animation player. You have to call the start() method on it to start the animation.
+     * @returns The created animation player. You have to call the start() method on it to start the animation.
      */
     createPlayer(onDraw: (frame: BaseImage) => void): AnimationPlayer;
 
     /**
      * Returns the animation width in pixels.
      *
-     * @return The animation width in pixels.
+     * @returns The animation width in pixels.
      */
     getWidth(): number;
 
     /**
      * Returns the animation height in pixels.
      *
-     * @return The animation height in pixels.
+     * @returns The animation height in pixels.
      */
     getHeight(): number;
 }

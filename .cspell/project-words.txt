@@ -5,6 +5,7 @@ COLORF
 devtool
 Inplace
 kayahr
+oxlint
 readwrite
 Reimer
 savegame

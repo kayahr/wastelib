@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { COLOR_PALETTE } from "../image/colors.js";
-import { BinaryReader } from "../io/BinaryReader.js";
+import { COLOR_PALETTE } from "../image/colors.ts";
+import type { BinaryReader } from "../io/BinaryReader.ts";
 
 /**
  * Image update patch.
@@ -33,7 +33,7 @@ export class EndingPatch {
      * [[getX]]() and [[getY]]() methods which converts this offset into pixel coordinates relative to
      * the image. Or use the [[getOffset]]() method which returns the offset byte address in the image data.
      *
-     * @return The raw image update offset.
+     * @returns The raw image update offset.
      */
     public getRawOffset(): number {
         return this.offset;
@@ -42,7 +42,7 @@ export class EndingPatch {
     /**
      * Returns the byte offset in the image data array to update.
      *
-     * @return The byte offset in the image data array to update.
+     * @returns The byte offset in the image data array to update.
      */
     public getOffset(): number {
         return this.getY() * 144 + (this.getX() >> 1);
@@ -51,7 +51,7 @@ export class EndingPatch {
     /**
      * The horizontal update position in pixels relative to the image.
      *
-     * @return The horizontal update position.
+     * @returns The horizontal update position.
      */
     public getX(): number {
         return this.offset * 8 % 320;
@@ -60,7 +60,7 @@ export class EndingPatch {
     /**
      * The vertical update position in pixels relative to the image.
      *
-     * @return The vertical update position.
+     * @returns The vertical update position.
      */
     public getY(): number {
         return (this.offset * 8 / 320) | 0;
@@ -69,7 +69,7 @@ export class EndingPatch {
     /**
      * Returns the patch data to apply to the image. Always four bytes with eight 4-bit colors.
      *
-     * @return The patch data.
+     * @returns The patch data.
      */
     public getData(): number[] {
         return this.data.slice();
@@ -79,7 +79,7 @@ export class EndingPatch {
      * Returns the RGBA color at the specified position.
      *
      * @param x  The horizontal pixel position.
-     * @return The RGBA color at the specified position.
+     * @returns The RGBA color at the specified position.
      */
     public getColor(x: number): number {
         const pixelTuple = this.data[x >> 1];
@@ -92,7 +92,7 @@ export class EndingPatch {
      * returned.
      *
      * @param reader  The reader to read the update patch from.
-     * @return The read update patch or null if end of update block is reached.
+     * @returns The read update patch or null if end of update block is reached.
      */
     public static read(reader: BinaryReader): EndingPatch | null {
         const offset = reader.readUint16();

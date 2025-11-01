@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "../image/BaseImage.js";
-import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors.js";
+import { BaseImage } from "../image/BaseImage.ts";
+import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors.ts";
 
 /**
  * Container for a single mouse cursor image.
@@ -50,9 +50,9 @@ export class Cursor extends BaseImage {
      *
      * @param array   The array containing the image data.
      * @param offset  Optional start offset within the array. Defaults to 0.
-     * @return The parsed mouse cursor image.
+     * @returns The parsed mouse cursor image.
      */
-    public static fromArray(array: Uint8Array, offset: number = 0): Cursor {
+    public static fromArray(array: Uint8Array, offset = 0): Cursor {
         return new Cursor(array.slice(offset, offset + 256));
     }
 }

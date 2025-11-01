@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage.js";
-import { decodeVxorInplace } from "../io/vxor.js";
+import { PicImage } from "../image/PicImage.ts";
+import { decodeVxorInplace } from "../io/vxor.ts";
 
 /**
  * Container for a single tile.
@@ -24,9 +24,9 @@ export class Tile extends PicImage {
      *
      * @param array   The array buffer containing the image data.
      * @param offset  Optional data offset. Defaults to 0.
-     * @return The parsed tile.
+     * @returns The parsed tile.
      */
-    public static fromArray(array: Uint8Array, offset: number = 0): Tile {
+    public static fromArray(array: Uint8Array, offset = 0): Tile {
         return new Tile(decodeVxorInplace(array.slice(offset, offset + 128), 8));
     }
 }

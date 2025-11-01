@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { AnimationPlayer } from "./AnimationPlayer.js";
-import { BaseImage } from "./BaseImage.js";
+import type { AnimationPlayer } from "./AnimationPlayer.ts";
+import type { BaseImage } from "./BaseImage.ts";
 
 /**
  * Abstract base class for animation player implementations.
@@ -20,7 +20,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     private timer: unknown = null;
 
     /** The playing speed in milliseconds per time unit. */
-    private speed: number = 50;
+    private speed = 50;
 
     /** Callback to call on each frame update. */
     private readonly onDraw: (frame: T) => void;
@@ -36,14 +36,13 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     protected constructor(animation: A, onDraw: (frame: T) => void) {
         this.animation = animation;
         this.onDraw = onDraw;
-        this.reset();
     }
 
     /**
      * Initializes the player. Called for initialization when player is created and each time it is reset.
      *
      * @param animation  The animation to play.
-     * @return The base frame to start the animation with.
+     * @returns The base frame to start the animation with.
      */
     protected abstract init(animation: A): T;
 
@@ -58,7 +57,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     /**
      * Returns the current animation frame.
      *
-     * @return The current animation frame.
+     * @returns The current animation frame.
      */
     public getFrame(): T {
         return this.frame;
@@ -71,7 +70,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      *
      * @param animation     The animation to play.
      * @param currentFrame  The current frame.
-     * @return The next frame.
+     * @returns The next frame.
      */
     protected abstract nextFrame(animation: A, currentFrame: T): T;
 
@@ -86,14 +85,14 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      * Returns the number of time units to wait before rendering the next frame.
      *
      * @param animation  The animation to play.
-     * @return The next delay in time units.
+     * @returns The next delay in time units.
      */
     protected abstract getNextDelayInUnits(animation: A): number;
 
     /**
      * Returns the delay to wait before rendering the next frame.
      *
-     * @return The next delay in milliseconds.
+     * @returns The next delay in milliseconds.
      */
     public getNextDelay(): number {
         return this.getNextDelayInUnits(this.animation) * this.speed;
@@ -125,7 +124,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     /**
      * Returns the animation speed in milliseconds per time unit. Default is 50.
      *
-     * @return The animation speed in milliseconds per time unit.
+     * @returns The animation speed in milliseconds per time unit.
      */
     public getSpeed(): number {
         return this.speed;
@@ -143,7 +142,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     /**
      * Returns the animation width in pixels.
      *
-     * @return The animation width in pixels.
+     * @returns The animation width in pixels.
      */
     public getWidth(): number {
         return this.animation.getWidth();
@@ -152,7 +151,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     /**
      * Returns the animation height in pixels.
      *
-     * @return The animation height in pixels.
+     * @returns The animation height in pixels.
      */
     public getHeight(): number {
         return this.animation.getHeight();

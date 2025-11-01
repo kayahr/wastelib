@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas.js";
-import { createImage } from "../sys/image.js";
+import { createCanvas } from "../sys/canvas.ts";
+import { createImage } from "../sys/image.ts";
 
 /**
  * Base class for all images.
@@ -30,7 +30,7 @@ export abstract class BaseImage {
     /**
      * Returns the image width in pixels.
      *
-     * @return The image width in pixels.
+     * @returns The image width in pixels.
      */
     public getWidth(): number {
         return this.width;
@@ -39,7 +39,7 @@ export abstract class BaseImage {
     /**
      * Returns the image height in pixels.
      *
-     * @return The image height in pixels.
+     * @returns The image height in pixels.
      */
     public getHeight(): number {
         return this.height;
@@ -50,7 +50,7 @@ export abstract class BaseImage {
      *
      * @param x  The horizontal pixel position.
      * @param y  The vertical pixel position.
-     * @return The RGBA color at the specified position.
+     * @returns The RGBA color at the specified position.
      */
     public abstract getColor(x: number, y: number): number;
 
@@ -61,7 +61,7 @@ export abstract class BaseImage {
      * @param x    Optional horizontal target position. Defaults to 0.
      * @param y    Optional vertical target position. Defaults to 0.
      */
-    public draw(ctx: CanvasRenderingContext2D, x: number = 0, y: number = 0): void {
+    public draw(ctx: CanvasRenderingContext2D, x = 0, y = 0): void {
         const width = this.width;
         const height = this.height;
         const imageData = ctx.createImageData(width, height);
@@ -82,7 +82,7 @@ export abstract class BaseImage {
     /**
      * Creates and returns a new canvas containing the image.
      *
-     * @return The created canvas.
+     * @returns The created canvas.
      */
     public toCanvas(): HTMLCanvasElement {
         const canvas = createCanvas(this.width, this.height);
@@ -100,7 +100,7 @@ export abstract class BaseImage {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created data URL.
+     * @returns The created data URL.
      */
     public toDataUrl(type?: string, quality?: number): string {
         const canvas = this.toCanvas();
@@ -113,7 +113,7 @@ export abstract class BaseImage {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created HTML image.
+     * @returns The created HTML image.
      */
     public toImage(type?: string, quality?: number): HTMLImageElement {
         const image = createImage();

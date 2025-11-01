@@ -3,10 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas.js";
-import { toError } from "../sys/error.js";
-import { createImage } from "../sys/image.js";
-import { Cursor } from "./Cursor.js";
+import { createCanvas } from "../sys/canvas.ts";
+import { toError } from "../sys/error.ts";
+import { createImage } from "../sys/image.ts";
+import { Cursor } from "./Cursor.ts";
 
 /**
  * Container for the 8 mouse cursors in the CURS file.
@@ -27,7 +27,7 @@ export class Cursors {
     /**
      * Returns array with all mouse cursor images.
      *
-     * @return The mouse cursor images.
+     * @returns The mouse cursor images.
      */
     public getCursors(): Cursor[] {
         return this.cursors.slice();
@@ -37,11 +37,11 @@ export class Cursors {
      * Returns the mouse cursor image with the given index.
      *
      * @param index  The index of the mouse cursor image.
-     * @return The mouse cursor image.
+     * @returns The mouse cursor image.
      */
     public getCursor(index: number): Cursor {
         if (index < 0 || index >= this.cursors.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.cursors[index];
     }
@@ -49,7 +49,7 @@ export class Cursors {
     /**
      * Returns the number of mouse cursors.
      *
-     * @return THe number of mouse cursors.
+     * @returns THe number of mouse cursors.
      */
     public getNumCursors(): number {
         return this.cursors.length;
@@ -59,7 +59,7 @@ export class Cursors {
      * Parses the mouse cursor images from the given array and returns it.
      *
      * @param array - The array with the CURS file content to parse.
-     * @return The parsed mouse cursors.
+     * @returns The parsed mouse cursors.
      */
     public static fromArray(array: Uint8Array): Cursors {
         const cursors: Cursor[] = [];
@@ -73,21 +73,21 @@ export class Cursors {
      * Reads mouse cursor images from the given blob and returns it.
      *
      * @param blob - The CURS blob to read.
-     * @return The read mouse cursors.
+     * @returns The read mouse cursors.
      */
     public static fromBlob(blob: Blob): Promise<Cursors> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = event => {
+                reader.addEventListener("load", event => {
                     resolve(Cursors.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                };
-                reader.onerror = event => {
-                    reject(new Error("Unable to read cursors from blob: " + reader.error));
-                };
+                });
+                reader.addEventListener("error", event => {
+                    reject(new Error(`Unable to read cursors from blob: ${reader.error}`));
+                });
                 reader.readAsArrayBuffer(blob);
-            } catch (e) {
-                reject(toError(e));
+            } catch (error) {
+                reject(toError(error));
             }
         });
     }
@@ -95,7 +95,7 @@ export class Cursors {
     /**
      * Creates and returns a new canvas containing all the mouse cursors.
      *
-     * @return The created canvas.
+     * @returns The created canvas.
      */
     public toCanvas(): HTMLCanvasElement {
         const cursors = this.cursors;
@@ -117,7 +117,7 @@ export class Cursors {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created data URL.
+     * @returns The created data URL.
      */
     public toDataUrl(type?: string, quality?: number): string {
         const canvas = this.toCanvas();
@@ -130,7 +130,7 @@ export class Cursors {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created HTML image.
+     * @returns The created HTML image.
      */
     public toImage(type?: string, quality?: number): HTMLImageElement {
         const image = createImage();

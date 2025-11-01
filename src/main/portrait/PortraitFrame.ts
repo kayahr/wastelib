@@ -3,9 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage.js";
-import { Portrait } from "./Portrait.js";
-import { PortraitUpdate } from "./PortraitUpdate.js";
+import { PicImage } from "../image/PicImage.ts";
+import type { Portrait } from "./Portrait.ts";
+import type { PortraitUpdate } from "./PortraitUpdate.ts";
 
 /**
  * Updatable portrait animation frame.

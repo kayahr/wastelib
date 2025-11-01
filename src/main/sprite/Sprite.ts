@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "../image/BaseImage.js";
-import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors.js";
+import { BaseImage } from "../image/BaseImage.ts";
+import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors.ts";
 
 /**
  * Container for a single sprite image.
@@ -52,10 +52,9 @@ export class Sprite extends BaseImage {
      * @param maskArray   The array containing the mask data.
      * @param dataOffset  Optional data offset. Defaults to 0.
      * @param maskOffset  Optional mask offset. Defaults to 0.
-     * @return The parsed sprite.
+     * @returns The parsed sprite.
      */
-    public static fromArray(dataArray: Uint8Array, maskArray: Uint8Array, dataOffset: number = 0,
-            maskOffset: number = 0): Sprite {
+    public static fromArray(dataArray: Uint8Array, maskArray: Uint8Array, dataOffset = 0, maskOffset = 0): Sprite {
         return new Sprite(dataArray.slice(dataOffset, dataOffset + 128), maskArray.slice(maskOffset, maskOffset + 32));
     }
 }

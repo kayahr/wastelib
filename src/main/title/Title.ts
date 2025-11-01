@@ -3,9 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { PicImage } from "../image/PicImage.js";
-import { decodeVxor, decodeVxorInplace } from "../io/vxor.js";
-import { toError } from "../sys/error.js";
+import { PicImage } from "../image/PicImage.ts";
+import { decodeVxor, decodeVxorInplace } from "../io/vxor.ts";
+import { toError } from "../sys/error.ts";
 
 /**
  * Container for the title image.
@@ -24,7 +24,7 @@ export class Title extends PicImage {
      * Parses a title image from the given array and returns it.
      *
      * @param array - The vxor encoded array.
-     * @return The parsed title.pic image.
+     * @returns The parsed title.pic image.
      */
     public static fromArray(array: Uint8Array): Title {
         return new Title(decodeVxor(array, 144));
@@ -34,21 +34,21 @@ export class Title extends PicImage {
      * Reads the title image from the given blob and returns it.
      *
      * @param blob  The TITLE.PIC blob to read.
-     * @return The read title image.
+     * @returns The read title image.
      */
     public static fromBlob(blob: Blob): Promise<Title> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = event => {
+                reader.addEventListener("load", event => {
                     resolve(new Title(decodeVxorInplace(new Uint8Array(reader.result as ArrayBuffer), 144)));
-                };
-                reader.onerror = event => {
-                    reject(new Error("Unable to read title image from blob: " + reader.error));
-                };
+                });
+                reader.addEventListener("error", event => {
+                    reject(new Error(`Unable to read title image from blob: ${reader.error}`));
+                });
                 reader.readAsArrayBuffer(blob);
-            } catch (e) {
-                reject(toError(e));
+            } catch (error) {
+                reject(toError(error));
             }
         });
     }

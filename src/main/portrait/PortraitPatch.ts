@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader.js";
+import type { BinaryReader } from "../io/BinaryReader.ts";
 
 /**
  * A single portrait animation patch.
@@ -31,7 +31,7 @@ export class PortraitPatch {
      * relative to the 96 pixels (48 bytes) wide portrait image. It's recommended to use the [[getX]]() and
      * [[getY]]() methods which converts this offset into pixel coordinates.
      *
-     * @return The image offset to patch.
+     * @returns The image offset to patch.
      */
     public getOffset(): number {
         return this.offset;
@@ -40,7 +40,7 @@ export class PortraitPatch {
     /**
      * The horizontal patch position in pixels relative to the image.
      *
-     * @return The horizontal patch position.
+     * @returns The horizontal patch position.
      */
     public getX(): number {
         return this.offset % 48;
@@ -49,7 +49,7 @@ export class PortraitPatch {
     /**
      * The vertical patch position in pixels relative to the image.
      *
-     * @return The vertical update position.
+     * @returns The vertical update position.
      */
     public getY(): number {
         return (this.offset / 48) | 0;
@@ -58,7 +58,7 @@ export class PortraitPatch {
     /**
      * Returns the patch data. The data consists of one or more XOR values to apply to the current image data.
      *
-     * @return The patch data.
+     * @returns The patch data.
      */
     public getData(): number[] {
         return this.data.slice();
@@ -69,7 +69,7 @@ export class PortraitPatch {
      * has been reached then `null` is returned
      *
      * @param reader  The reader to read the animation patch from.
-     * @return The read portrait animation patch or `null` if end of animation update has been reached.
+     * @returns The read portrait animation patch or `null` if end of animation update has been reached.
      */
     public static read(reader: BinaryReader): PortraitPatch | null {
         const sizeAndOffset = reader.readUint16();

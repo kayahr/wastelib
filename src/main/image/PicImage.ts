@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "./BaseImage.js";
-import { COLOR_PALETTE } from "./colors.js";
+import { BaseImage } from "./BaseImage.ts";
+import { COLOR_PALETTE } from "./colors.ts";
 
 /**
  * Base class for images in pic layout (Each byte contains two 4-bit colors).
@@ -28,7 +28,7 @@ export abstract class PicImage extends BaseImage {
     /**
      * Returns a copy of the image data. Each byte contains two 4-bit colors.
      *
-     * @return The image data.
+     * @returns The image data.
      */
     public getData(): Uint8Array {
         return this.data.slice();

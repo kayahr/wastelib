@@ -3,9 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader.js";
-import { toError } from "../sys/error.js";
-import { Portrait } from "./Portrait.js";
+import { BinaryReader } from "../io/BinaryReader.ts";
+import { toError } from "../sys/error.ts";
+import { Portrait } from "./Portrait.ts";
 
 /**
  * Container for the portraits of an allpics file.
@@ -26,7 +26,7 @@ export class Portraits {
     /**
      * Returns array with all portraits.
      *
-     * @return The portraits.
+     * @returns The portraits.
      */
     public getPortraits(): Portrait[] {
         return this.portraits.slice();
@@ -35,7 +35,7 @@ export class Portraits {
     /**
      * Returns the number of portraits.
      *
-     * @return The number of portraits.
+     * @returns The number of portraits.
      */
     public getNumPortraits(): number {
         return this.portraits.length;
@@ -45,11 +45,11 @@ export class Portraits {
      * Returns the portrait with the given index.
      *
      * @param index  The index of the portrait to return.
-     * @return The portrait.
+     * @returns The portrait.
      */
     public getPortrait(index: number): Portrait {
         if (index < 0 || index >= this.portraits.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.portraits[index];
     }
@@ -58,7 +58,7 @@ export class Portraits {
      * Reads portraits from the given array.
      *
      * @param array  The array to read the portraits from.
-     * @return The read portraits.
+     * @returns The read portraits.
      */
     public static fromArray(array: Uint8Array): Portraits {
         const reader = new BinaryReader(array);
@@ -74,21 +74,22 @@ export class Portraits {
      * Reads portraits from the given blob.
      *
      * @param blob  The ALLPICS1 or ALLPICS2 blob to read.
-     * @return The read portraits.
+     * @returns The read portraits.
      */
     public static fromBlob(blob: Blob): Promise<Portraits> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = event => {
+                reader.addEventListener("load", event => {
                     resolve(Portraits.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                };
-                reader.onerror = event => {
+                });
+                reader.addEventListener("error", event => {
+                    // oxlint-disable-next-line prefer-template
                     reject(new Error("Unable to read portraits from blob: " + reader.error));
-                };
+                });
                 reader.readAsArrayBuffer(blob);
-            } catch (e) {
-                reject(toError(e));
+            } catch (error) {
+                reject(toError(error));
             }
         });
     }
@@ -98,7 +99,7 @@ export class Portraits {
      *
      * @param array1  The array with the ALLPICS1 file content.
      * @param array2  The array with the ALLPICS2 file content.
-     * @return The read portraits.
+     * @returns The read portraits.
      */
     public static fromArrays(array1: Uint8Array, array2: Uint8Array): Portraits {
         return new Portraits(...this.fromArray(array1).portraits, ...this.fromArray(array2).portraits);
@@ -109,7 +110,7 @@ export class Portraits {
      *
      * @param blob1  The ALLPICS1 blob to read.
      * @param blob2  The ALLPICS2 blob to read
-     * @return The read portraits.
+     * @returns The read portraits.
      */
     public static async fromBlobs(blob1: Blob, blob2: Blob): Promise<Portraits> {
         return new Portraits(

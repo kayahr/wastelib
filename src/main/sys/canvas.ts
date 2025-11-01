@@ -8,7 +8,7 @@
  *
  * @param width  Optional width in pixels.
  * @param height Optional height in pixels.
- * @return The created canvas.
+ * @returns The created canvas.
  */
 export function createCanvas(width?: number, height?: number): HTMLCanvasElement {
     let canvas: HTMLCanvasElement;

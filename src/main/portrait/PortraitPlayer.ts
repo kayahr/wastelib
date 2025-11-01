@@ -3,9 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer.js";
-import { Portrait } from "./Portrait.js";
-import { PortraitFrame } from "./PortraitFrame.js";
+import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer.ts";
+import type { Portrait } from "./Portrait.ts";
+import { PortraitFrame } from "./PortraitFrame.ts";
 
 /**
  * Player for a portrait animation.
@@ -26,12 +26,13 @@ export class PortraitPlayer extends BaseAnimationPlayer<Portrait, PortraitFrame>
      */
     public constructor(portrait: Portrait, onDraw: (frame: PortraitFrame) => void) {
         super(portrait, onDraw);
+        this.reset();
     }
 
     protected init(portrait: Portrait): PortraitFrame {
         const numScripts = portrait.getNumScripts();
-        this.scriptPointers = new Array<number>(numScripts);
-        this.scriptDelays = new Array<number>(numScripts);
+        this.scriptPointers = Array.from({ length: numScripts });
+        this.scriptDelays = Array.from({ length: numScripts });
         for (let i = 0; i < numScripts; ++i) {
             this.scriptPointers[i] = 0;
             this.scriptDelays[i] = portrait.getScript(i).getLine(0).getDelay();

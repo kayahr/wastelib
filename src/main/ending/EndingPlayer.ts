@@ -3,10 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer.js";
-import { BaseImage } from "../image/BaseImage.js";
-import { Ending } from "./Ending.js";
-import { EndingFrame } from "./EndingFrame.js";
+import { BaseAnimationPlayer } from "../image/BaseAnimationPlayer.ts";
+import type { BaseImage } from "../image/BaseImage.ts";
+import type { Ending } from "./Ending.ts";
+import { EndingFrame } from "./EndingFrame.ts";
 
 /**
  * Player for the ending animation.
@@ -24,6 +24,7 @@ export class EndingPlayer extends BaseAnimationPlayer<Ending, EndingFrame> {
      */
     public constructor(ending: Ending, onDraw: (frame: BaseImage) => void) {
         super(ending, onDraw);
+        this.reset();
     }
 
     protected init(ending: Ending): EndingFrame {

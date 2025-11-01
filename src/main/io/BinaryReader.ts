@@ -47,7 +47,7 @@ export class BinaryReader {
      * Checks if there is more data to read. If this method returns false then there is no more data and the
      * next read operation results in an errors.
      *
-     * @return True if there is still data to read, false if not.
+     * @returns True if there is still data to read, false if not.
      */
     public hasData(): boolean {
         return this.byte < this.last;
@@ -56,7 +56,7 @@ export class BinaryReader {
     /**
      * Returns the current byte index.
      *
-     * @return The current byte index.
+     * @returns The current byte index.
      */
     public getByteIndex(): number {
         return this.byte;
@@ -65,7 +65,7 @@ export class BinaryReader {
     /**
      * Returns the current bit index.
      *
-     * @return The current bit index.
+     * @returns The current bit index.
      */
     public getBitIndex(): number {
         return this.bit;
@@ -74,7 +74,7 @@ export class BinaryReader {
     /**
      * Reads a single bit and returns it.
      *
-     * @return The read bit.
+     * @returns The read bit.
      */
     public readBit(): number {
         if (this.byte >= this.last) {
@@ -92,7 +92,7 @@ export class BinaryReader {
     /**
      * Reads an unsigned 8 bit value (byte) and returns it.
      *
-     * @return The read value.
+     * @returns The read value.
      */
     public readUint8(): number {
         if (this.bit !== 0) {
@@ -112,7 +112,7 @@ export class BinaryReader {
      * Reads the specified number of unsigned 8 bit values and returns it.
      *
      * @param len  The number of bytes to read.
-     * @return The read bytes.
+     * @returns The read bytes.
      */
     public readUint8s(len: number): number[] {
         const result: number[] = [];
@@ -125,7 +125,7 @@ export class BinaryReader {
     /**
      * Reads an unsigned 16 bit value and returns it.
      *
-     * @return The read value.
+     * @returns The read value.
      */
     public readUint16(): number {
         return this.readUint8() | this.readUint8() << 8;
@@ -134,7 +134,7 @@ export class BinaryReader {
     /**
      * Reads an unsigned 32 bit value and returns it.
      *
-     * @return The read value.
+     * @returns The read value.
      */
     public readUint32(): number {
         return this.readUint16() | this.readUint16() << 16;
@@ -143,7 +143,7 @@ export class BinaryReader {
     /**
      * Reads a single character and returns it.
      *
-     * @return The read character.
+     * @returns The read character.
      */
     public readChar(): string {
         return String.fromCharCode(this.readUint8());
@@ -152,7 +152,7 @@ export class BinaryReader {
     /**
      * Reads a string with the given length and returns it.
      *
-     * @return The read string.
+     * @returns The read string.
      */
     public readString(len: number): string {
         let result = "";

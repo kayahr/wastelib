@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BaseImage } from "../image/BaseImage.js";
-import { COLOR_PALETTE } from "../image/colors.js";
+import { BaseImage } from "../image/BaseImage.ts";
+import { COLOR_PALETTE } from "../image/colors.ts";
 
 /**
  * Container for a single font character image.
@@ -46,9 +46,9 @@ export class FontChar extends BaseImage {
      *
      * @param array  - The array with the content of the colorf.fnt file.
      * @param offset - The offset in the array pointing to the font character.
-     * @return The parsed font character.
+     * @returns The parsed font character.
      */
-    public static fromArray(array: Uint8Array, offset: number = 0): FontChar {
+    public static fromArray(array: Uint8Array, offset = 0): FontChar {
         return new FontChar(array.slice(offset, offset + 32));
     }
 }

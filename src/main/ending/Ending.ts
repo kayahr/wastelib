@@ -3,15 +3,15 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Animation } from "../image/Animation.js";
-import { BaseImage } from "../image/BaseImage.js";
-import { PicImage } from "../image/PicImage.js";
-import { BinaryReader } from "../io/BinaryReader.js";
-import { decodeHuffman } from "../io/huffman.js";
-import { decodeVxorInplace } from "../io/vxor.js";
-import { toError } from "../sys/error.js";
-import { EndingPlayer } from "./EndingPlayer.js";
-import { EndingUpdate } from "./EndingUpdate.js";
+import type { Animation } from "../image/Animation.ts";
+import type { BaseImage } from "../image/BaseImage.ts";
+import { PicImage } from "../image/PicImage.ts";
+import { BinaryReader } from "../io/BinaryReader.ts";
+import { decodeHuffman } from "../io/huffman.ts";
+import { decodeVxorInplace } from "../io/vxor.ts";
+import { toError } from "../sys/error.ts";
+import { EndingPlayer } from "./EndingPlayer.ts";
+import { EndingUpdate } from "./EndingUpdate.ts";
 
 /**
  * Contains the base frame of the ending animation but also provides methods to access the animation information.
@@ -35,7 +35,7 @@ export class Ending extends PicImage implements Animation {
     /**
      * Returns the animation updates.
      *
-     * @return The animation updates.
+     * @returns The animation updates.
      */
     public getUpdates(): EndingUpdate[] {
         return this.updates.slice();
@@ -45,11 +45,11 @@ export class Ending extends PicImage implements Animation {
      * Returns the animation update with the given index.
      *
      * @param index  Animation update index.
-     * @return The animation update.
+     * @returns The animation update.
      */
     public getUpdate(index: number): EndingUpdate {
         if (index < 0 || index >= this.updates.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.updates[index];
     }
@@ -57,7 +57,7 @@ export class Ending extends PicImage implements Animation {
     /**
      * Returns the number of animation updates.
      *
-     * @return The number of animation updates.
+     * @returns The number of animation updates.
      */
     public getNumUpdates(): number {
         return this.updates.length;
@@ -71,7 +71,7 @@ export class Ending extends PicImage implements Animation {
      * Parses a end animation from the given array and returns it.
      *
      * @param array - The array containing the two encoded MSQ blocks with the base frame and animation data.
-     * @return The parsed end animation.
+     * @returns The parsed end animation.
      */
     public static fromArray(array: Uint8Array): Ending {
         const reader = new BinaryReader(array);
@@ -115,21 +115,21 @@ export class Ending extends PicImage implements Animation {
      * Reads the end animation from the given blob and returns it.
      *
      * @param blob  The END.CPA blob.
-     * @return The read end animation.
+     * @returns The read end animation.
      */
     public static fromBlob(blob: Blob): Promise<Ending> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = event => {
+                reader.addEventListener("load", event => {
                     resolve(Ending.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                };
-                reader.onerror = event => {
-                    reject(new Error("Unable to read end animation from blob: " + reader.error));
-                };
+                });
+                reader.addEventListener("error", event => {
+                    reject(new Error(`Unable to read end animation from blob: ${reader.error}`));
+                });
                 reader.readAsArrayBuffer(blob);
-            } catch (e) {
-                reject(toError(e));
+            } catch (error) {
+                reject(toError(error));
             }
         });
     }

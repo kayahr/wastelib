@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader.js";
-import { PortraitScriptLine } from "./PortraitScriptLine.js";
+import type { BinaryReader } from "../io/BinaryReader.ts";
+import { PortraitScriptLine } from "./PortraitScriptLine.ts";
 
 /**
  * A portrait animation script.
@@ -25,7 +25,7 @@ export class PortraitScript {
     /**
      * Returns the animation script lines.
      *
-     * @return The animation script lines.
+     * @returns The animation script lines.
      */
     public getLines(): PortraitScriptLine[] {
         return this.lines.slice();
@@ -35,11 +35,11 @@ export class PortraitScript {
      * Returns the animation script line with the given index.
      *
      * @param index  The index of the animation script line.
-     * @return The animation script line.
+     * @returns The animation script line.
      */
     public getLine(index: number): PortraitScriptLine {
         if (index < 0 || index >= this.lines.length) {
-           throw new Error("Index out of bounds: " + index);
+           throw new Error(`Index out of bounds: ${index}`);
         }
         return this.lines[index];
     }
@@ -47,7 +47,7 @@ export class PortraitScript {
     /**
      * Returns the number of script lines.
      *
-     * @return The number of script lines.
+     * @returns The number of script lines.
      */
     public getNumLines(): number {
         return this.lines.length;
@@ -57,7 +57,7 @@ export class PortraitScript {
      * Reads a portrait animation script.
      *
      * @param reader  The reader to read the script from.
-     * @return The read portrait animation script.
+     * @returns The read portrait animation script.
      */
     public static read(reader: BinaryReader): PortraitScript {
         let delay: number;

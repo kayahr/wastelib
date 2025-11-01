@@ -3,8 +3,8 @@
  * See LICENSE.md for licensing information.
  */
 
-import { BinaryReader } from "../io/BinaryReader.js";
-import { PortraitPatch } from "./PortraitPatch.js";
+import type { BinaryReader } from "../io/BinaryReader.ts";
+import { PortraitPatch } from "./PortraitPatch.ts";
 
 /**
  * A single update in a portrait animation.
@@ -25,7 +25,7 @@ export class PortraitUpdate {
     /**
      * Returns the patches to apply to the image.
      *
-     * @return The patches to apply to the image.
+     * @returns The patches to apply to the image.
      */
     public getPatches(): PortraitPatch[] {
         return this.patches.slice();
@@ -35,11 +35,11 @@ export class PortraitUpdate {
      * Returns the patch with the given index.
      *
      * @param index  The index of the patch to return.
-     * @return The patch.
+     * @returns The patch.
      */
     public getPatch(index: number): PortraitPatch {
         if (index < 0 || index >= this.patches.length) {
-           throw new Error("Index out of bounds: " + index);
+           throw new Error(`Index out of bounds: ${index}`);
         }
         return this.patches[index];
     }
@@ -47,7 +47,7 @@ export class PortraitUpdate {
     /**
      * Returns the number of patches.
      *
-     * @return The number of patches.
+     * @returns The number of patches.
      */
     public getNumPatches(): number {
         return this.patches.length;
@@ -58,7 +58,7 @@ export class PortraitUpdate {
      * returned.
      *
      * @param reader  The reader to read the animation update from.
-     * @return The read animation update or null if end of animation has been reached.
+     * @returns The read animation update or null if end of animation has been reached.
      */
     public static read(reader: BinaryReader): PortraitUpdate {
         let update: PortraitPatch | null;

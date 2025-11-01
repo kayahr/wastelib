@@ -3,9 +3,9 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas.js";
-import { createImage } from "../sys/image.js";
-import { Tile } from "./Tile.js";
+import { createCanvas } from "../sys/canvas.ts";
+import { createImage } from "../sys/image.ts";
+import type { Tile } from "./Tile.ts";
 
 /**
  * Container for a set of tiles read from an allhtds file.
@@ -31,7 +31,7 @@ export class Tileset {
     /**
      * Returns array with all tiles of this set.
      *
-     * @return The tiles.
+     * @returns The tiles.
      */
     public getTiles(): Tile[] {
         return this.tiles.slice();
@@ -40,7 +40,7 @@ export class Tileset {
     /**
      * Returns the disk number.
      *
-     * @return The disk number.
+     * @returns The disk number.
      */
     public getDisk(): number {
         return this.disk;
@@ -49,7 +49,7 @@ export class Tileset {
     /**
      * Returns the number of tiles in this set.
      *
-     * @return The number of tiles.
+     * @returns The number of tiles.
      */
     public getNumTiles(): number {
         return this.tiles.length;
@@ -59,11 +59,11 @@ export class Tileset {
      * Returns the tile with the given index.
      *
      * @param index  The index of the tile image to return.
-     * @return The tile image.
+     * @returns The tile image.
      */
     public getTile(index: number): Tile {
         if (index < 0 || index >= this.tiles.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.tiles[index];
     }
@@ -71,7 +71,7 @@ export class Tileset {
     /**
      * Creates and returns a new canvas containing the tileset image. 16 tilesets per row.
      *
-     * @return The created canvas.
+     * @returns The created canvas.
      */
     public toCanvas(): HTMLCanvasElement {
         const tiles = this.tiles;
@@ -93,7 +93,7 @@ export class Tileset {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created data URL.
+     * @returns The created data URL.
      */
     public toDataUrl(type?: string, quality?: number): string {
         const canvas = this.toCanvas();
@@ -106,7 +106,7 @@ export class Tileset {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created HTML image.
+     * @returns The created HTML image.
      */
     public toImage(type?: string, quality?: number): HTMLImageElement {
         const image = createImage();

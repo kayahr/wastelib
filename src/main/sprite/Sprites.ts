@@ -3,10 +3,10 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas.js";
-import { toError } from "../sys/error.js";
-import { createImage } from "../sys/image.js";
-import { Sprite } from "./Sprite.js";
+import { createCanvas } from "../sys/canvas.ts";
+import { toError } from "../sys/error.ts";
+import { createImage } from "../sys/image.ts";
+import { Sprite } from "./Sprite.ts";
 
 /**
  * Container for the 10 sprites defined in the ic0_9.wlf and masks.wlf files.
@@ -27,7 +27,7 @@ export class Sprites {
     /**
      * Returns array with all sprite images.
      *
-     * @return The sprite images.
+     * @returns The sprite images.
      */
     public getSprites(): Sprite[] {
         return this.sprites.slice();
@@ -37,11 +37,11 @@ export class Sprites {
      * Returns the sprite image with the given index.
      *
      * @param index  The index of the sprite.
-     * @return The sprite image.
+     * @returns The sprite image.
      */
     public getSprite(index: number): Sprite {
         if (index < 0 || index >= this.sprites.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.sprites[index];
     }
@@ -49,7 +49,7 @@ export class Sprites {
     /**
      * Returns the number of sprites.
      *
-     * @return The number of sprites.
+     * @returns The number of sprites.
      */
     public getNumSprites(): number {
         return this.sprites.length;
@@ -60,7 +60,7 @@ export class Sprites {
      *
      * @param imageArray  The image data array with the ico0_9.wlf file content to parse.
      * @param maskArray   The transparency mask array with the masks.wlf file content to parse.
-     * @return The parsed sprites.
+     * @returns The parsed sprites.
      */
     public static fromArrays(imageArray: Uint8Array, maskArray: Uint8Array): Sprites {
         const sprites: Sprite[] = [];
@@ -75,33 +75,33 @@ export class Sprites {
      *
      * @param imagesBlob - The IC0_9.WLF blob to read.
      * @param masksBlob  - The MASKS.WLF blob to read.
-     * @return The read sprites.
+     * @returns The read sprites.
      */
     public static fromBlobs(imagesBlob: Blob, masksBlob: Blob): Promise<Sprites> {
         return new Promise((resolve, reject) => {
             try {
                 const reader = new FileReader();
-                reader.onload = event => {
+                reader.addEventListener("load", event => {
                     try {
                         const masksReader = new FileReader();
-                        masksReader.onload = event => {
+                        masksReader.addEventListener("load", event => {
                             resolve(Sprites.fromArrays(new Uint8Array(reader.result as ArrayBuffer),
                                 new Uint8Array(masksReader.result as ArrayBuffer)));
-                        };
-                        masksReader.onerror = event => {
-                            reject(new Error("Unable to read sprite masks from blob: " + reader.error));
-                        };
+                        });
+                        masksReader.addEventListener("error", event => {
+                            reject(new Error(`Unable to read sprite masks from blob: ${reader.error}`));
+                        });
                         masksReader.readAsArrayBuffer(masksBlob);
-                    } catch (e) {
-                        reject(toError(e));
+                    } catch (error) {
+                        reject(toError(error));
                     }
-                };
-                reader.onerror = event => {
-                    reject(new Error("Unable to read sprite images from blob: " + reader.error));
-                };
+                });
+                reader.addEventListener("error", event => {
+                    reject(new Error(`Unable to read sprite images from blob: ${reader.error}`));
+                });
                 reader.readAsArrayBuffer(imagesBlob);
-            } catch (e) {
-                reject(toError(e));
+            } catch (error) {
+                reject(toError(error));
             }
         });
     }
@@ -109,7 +109,7 @@ export class Sprites {
     /**
      * Creates and returns a new canvas containing all the sprites.
      *
-     * @return The created canvas.
+     * @returns The created canvas.
      */
     public toCanvas(): HTMLCanvasElement {
         const cursors = this.sprites;
@@ -131,7 +131,7 @@ export class Sprites {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created data URL.
+     * @returns The created data URL.
      */
     public toDataUrl(type?: string, quality?: number): string {
         const canvas = this.toCanvas();
@@ -144,7 +144,7 @@ export class Sprites {
      * @param type    - Optional image mime type. Defaults to image/png.
      * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
      *                  1 with a default value of 0.92.
-     * @return The created HTML image.
+     * @returns The created HTML image.
      */
     public toImage(type?: string, quality?: number): HTMLImageElement {
         const image = createImage();

@@ -7,7 +7,7 @@
  * Creates and returns a new HTML image element. In Node.js the special image implementation of node-canvas is
  * returned instead.
  *
- * @return The created HTML image element.
+ * @returns The created HTML image element.
  */
 export function createImage(): HTMLImageElement {
     if (typeof Image === "undefined") {

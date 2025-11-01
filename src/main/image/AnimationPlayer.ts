@@ -20,7 +20,7 @@ export interface AnimationPlayer {
     /**
      * Returns the delay to wait before rendering the next frame.
      *
-     * @return The next delay in milliseconds.
+     * @returns The next delay in milliseconds.
      */
     getNextDelay(): number;
 
@@ -37,7 +37,7 @@ export interface AnimationPlayer {
     /**
      * Returns the animation speed in milliseconds per time unit. Default is 50.
      *
-     * @return The animation speed in milliseconds per time unit.
+     * @returns The animation speed in milliseconds per time unit.
      */
     getSpeed(): number;
 
@@ -51,14 +51,14 @@ export interface AnimationPlayer {
     /**
      * Returns the animation width in pixels.
      *
-     * @return The animation width in pixels.
+     * @returns The animation width in pixels.
      */
     getWidth(): number;
 
     /**
      * Returns the animation height in pixels.
      *
-     * @return The animation height in pixels.
+     * @returns The animation height in pixels.
      */
     getHeight(): number;
 }

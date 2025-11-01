@@ -3,15 +3,15 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Animation } from "../image/Animation.js";
-import { BaseImage } from "../image/BaseImage.js";
-import { PicImage } from "../image/PicImage.js";
-import { BinaryReader } from "../io/BinaryReader.js";
-import { decodeHuffman } from "../io/huffman.js";
-import { decodeVxorInplace } from "../io/vxor.js";
-import { PortraitPlayer } from "./PortraitPlayer.js";
-import { PortraitScript } from "./PortraitScript.js";
-import { PortraitUpdate } from "./PortraitUpdate.js";
+import type { Animation } from "../image/Animation.ts";
+import type { BaseImage } from "../image/BaseImage.ts";
+import { PicImage } from "../image/PicImage.ts";
+import { BinaryReader } from "../io/BinaryReader.ts";
+import { decodeHuffman } from "../io/huffman.ts";
+import { decodeVxorInplace } from "../io/vxor.ts";
+import { PortraitPlayer } from "./PortraitPlayer.ts";
+import { PortraitScript } from "./PortraitScript.ts";
+import { PortraitUpdate } from "./PortraitUpdate.ts";
 
 /**
  * An animated portrait image. Contains the base frame image but also provides methods to access the animation
@@ -40,7 +40,7 @@ export class Portrait extends PicImage implements Animation {
     /**
      * Returns the animation scripts.
      *
-     * @return The animation scripts.
+     * @returns The animation scripts.
      */
     public getScripts(): PortraitScript[] {
         return this.scripts.slice();
@@ -50,11 +50,11 @@ export class Portrait extends PicImage implements Animation {
      * Returns the animation script with the given index.
      *
      * @param index  Animation script index.
-     * @return The animation script.
+     * @returns The animation script.
      */
     public getScript(index: number): PortraitScript {
         if (index < 0 || index >= this.scripts.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.scripts[index];
     }
@@ -62,7 +62,7 @@ export class Portrait extends PicImage implements Animation {
     /**
      * Returns the number of animation scripts.
      *
-     * @return The number of animation scripts.
+     * @returns The number of animation scripts.
      */
     public getNumScripts(): number {
         return this.scripts.length;
@@ -71,7 +71,7 @@ export class Portrait extends PicImage implements Animation {
     /**
      * Returns the animation updates.
      *
-     * @return The animation updates.
+     * @returns The animation updates.
      */
     public getUpdates(): PortraitUpdate[] {
         return this.updates.slice();
@@ -81,11 +81,11 @@ export class Portrait extends PicImage implements Animation {
      * Returns the animation update with the given index.
      *
      * @param index  Animation update index.
-     * @return The animation update.
+     * @returns The animation update.
      */
     public getUpdate(index: number): PortraitUpdate {
         if (index < 0 || index >= this.updates.length) {
-            throw new Error("Index out of bounds: " + index);
+            throw new Error(`Index out of bounds: ${index}`);
         }
         return this.updates[index];
     }
@@ -93,7 +93,7 @@ export class Portrait extends PicImage implements Animation {
     /**
      * Returns the number of animation updates.
      *
-     * @return The number of animation updates.
+     * @returns The number of animation updates.
      */
     public getNumUpdates(): number {
         return this.updates.length;
@@ -107,7 +107,7 @@ export class Portrait extends PicImage implements Animation {
      * Reads a portrait from the given reader and returns it.
      *
      * @param reader  The reader to read the two encoded MSQ blocks with the base frame and animation data from.
-     * @return The parsed portrait.
+     * @returns The parsed portrait.
      */
     public static read(reader: BinaryReader): Portrait {
         // Parse base frame from first MSQ block
@@ -124,7 +124,7 @@ export class Portrait extends PicImage implements Animation {
         const animMsq = reader.readString(3);
         const animDisk = reader.readUint8();
         if (animMsq !== "msq" || animDisk !== 0) {
-            throw new Error("Invalid animation data block: " + animMsq +  animDisk + imageDisk);
+            throw new Error(`Invalid animation data block: ${animMsq}${animDisk}${imageDisk}`);
         }
         const animData = decodeHuffman(reader, animSize);
         const animReader = new BinaryReader(animData);
