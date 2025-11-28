@@ -45,11 +45,11 @@
         "prepare": "run clean build"
     },
     "devDependencies": {
-        "@kayahr/cspell": "9.2.2-bundle.1",
+        "@kayahr/cspell": "9.3.2-bundle.1",
         "@kayahr/npm-utils": "1.1.1",
-        "@kayahr/oxlint-config": "1.12.0",
-        "@kayahr/typedoc": "0.28.14-bundle.2",
-        "@types/node": "24.10.0",
+        "@kayahr/oxlint-config": "1.13.0",
+        "@kayahr/typedoc": "0.28.14-bundle.3",
+        "@types/node": "24.10.1",
         "typescript": "5.9.3"
     }
 }
