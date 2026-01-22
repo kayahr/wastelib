@@ -148,10 +148,10 @@ async function putFiles(db: IDBDatabase, files: File[]): Promise<void> {
  * @param installFiles  The installation callback to call if not all Wasteland files were found in the database.
  * @returns Array with all Wasteland files.
  */
-async function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]) => Promise<File[]>): Promise<{ [name: string]: File }> {
+async function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFilename[]) => Promise<File[]>): Promise<Record<string, File>> {
     const files = await Promise.all(filenames.map(filename => getFile(db, filename)));
     const missing: WastelandFilename[] = [];
-    const fileMap: { [name: string]: File } = {};
+    const fileMap: Record<string, File> = {};
     for (let i = 0; i < filenames.length; ++i) {
         const file = files[i];
         if (file == null) {
@@ -174,14 +174,14 @@ async function getFiles(db: IDBDatabase, installFiles: (filenames: WastelandFile
  */
 export class WebAssets {
     /** The file map (Mapping filenames to actual Wasteland files). */
-    private readonly files: { [name: string]: File };
+    private readonly files: Record<string, File>;
 
     /**
      * Creates the web assets factory with the given file map.
      *
      * @param files  The file map mapping filenames to Wasteland files installed in the browser.
      */
-    private constructor(files: { [name: string]: File }) {
+    private constructor(files: Record<string, File>) {
         this.files = files;
     }
 
