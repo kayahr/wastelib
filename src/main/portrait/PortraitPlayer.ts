@@ -55,11 +55,7 @@ export class PortraitPlayer extends BaseAnimationPlayer<Portrait, PortraitFrame>
                 frame.update(portrait.getUpdate(updateIndex));
 
                 // Advance to next script line (Or go back to beginning)
-                if (lineIndex < script.getNumLines() - 1) {
-                    lineIndex = ++this.scriptPointers[i];
-                } else {
-                    lineIndex = this.scriptPointers[i] = 0;
-                }
+                lineIndex = lineIndex < script.getNumLines() - 1 ? ++this.scriptPointers[i] : this.scriptPointers[i] = 0;
 
                 // Read the next script delay
                 this.scriptDelays[i] = script.getLine(lineIndex).getDelay();

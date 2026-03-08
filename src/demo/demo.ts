@@ -6,6 +6,8 @@
 import type { Animation } from "../main/image/Animation.ts";
 import { WebAssets } from "../main/io/WebAssets.ts";
 
+// oxlint-disable typescript/strict-void-return
+
 /**
  * Shows the installer panel and let the user select the Wasteland files. These selected files are then returned
  * and the panel is hidden again.

@@ -41,16 +41,9 @@ Install wastelib as a standard NPM dependency into your NPM project:
 npm install --save wastelib
 ```
 
-And then simply require it:
+And then simply import it:
 
-```javascript
-var wastelib = require("wastelib");
-// Use wastelib.EndingPlayer class for example
-```
-
-You can also use ES6 imports if you are using *TypeScript* or some other compiler supporting it::
-
-```javascript
+```typescript
 import { Ending, EndingPlayer } from "wastelib";
 ```
 
@@ -58,7 +51,19 @@ import { Ending, EndingPlayer } from "wastelib";
 Canvas API and Node.js
 ----------------------
 
-*wastelib* uses the Canvas API for generating image output so a Node.js application benefits from using [node-canvas].
+*wastelib* uses the Canvas API for generating image output so a Node.js application benefits from using [node-canvas] and installing it as a minimal shim:
+
+```typescript
+import { createCanvas, Image } from "canvas";
+
+globalThis.document ??= {} as Document;
+const origCreateElement = globalThis.document.createElement;
+globalThis.document.createElement = (tagName: string) => tagName === "canvas"
+    ? createCanvas(320, 200) as unknown as HTMLCanvasElement
+    : origCreateElement(tagName);
+globalThis.Image ??= Image as unknown as typeof HTMLImageElement;
+```
+
 But this is not a requirement. Without the Canvas API you simply can't use the various `toCanvas()` and `toImage()`
 methods but you can still parse the Wasteland assets and manually convert them into whatever image format you like by
 calling `getWidth()`, `getHeight()` and `getColor(x, y)` methods.
