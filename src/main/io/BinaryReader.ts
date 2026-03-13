@@ -4,14 +4,14 @@
  */
 
 /**
- * Reader for binary data. Supports reading single bits, bytes, characters and strings and more.
+ * Reader for reading binary data in various formats and sizes.
  */
 export class BinaryReader {
     /** Wrapped array to read from. */
-    private readonly data: ArrayLike<number>;
+    private readonly data: Uint8Array;
 
-    /** The last byte index in the array. */
-    private readonly last: number;
+    /** The data size in bytes. */
+    private readonly byteLength: number;
 
     /** The current byte index. */
     private byte: number;
@@ -24,33 +24,73 @@ export class BinaryReader {
      *
      * @param data    The data array to read from.
      * @param offset  Optional start offset. Defaults to 0.
-     * @param size    Optional maximum number of bytes to read from data array. Defaults to size of data array.
+     * @param size    Optional maximum number of bytes to read from data array. Defaults to size of data array
+     *                minus the offset.
      */
-    public constructor(data: ArrayLike<number>, offset = 0, size = data.length) {
-        this.data = data;
-        this.last = offset + size;
-        this.byte = offset;
+    public constructor(data: Uint8Array, offset = 0, size = data.byteLength - offset) {
+        this.data = new Uint8Array(data.buffer, data.byteOffset + offset, size);
+        this.byteLength = size;
+        this.byte = 0;
         this.bit = 0;
     }
 
     /**
      * Synchronizes the reader so it points to a full byte if it currently doesn't.
+     *
+     * @returns This reader for method chaining.
      */
-    public sync(): void {
+    public sync(): this {
         if (this.bit !== 0) {
             this.byte++;
             this.bit = 0;
         }
+        return this;
     }
 
     /**
-     * Checks if there is more data to read. If this method returns false then there is no more data and the
-     * next read operation results in an errors.
+     * Seeks to the given index.
      *
-     * @returns True if there is still data to read, false if not.
+     * @param byte - The byte index to set. Must not be outside of the data array range.
+     * @param bit  - Optional bit index to set. Defaults to 0.
+     * @returns This reader for method chaining.
+     * @throws RangeError  If index is out of range.
      */
-    public hasData(): boolean {
-        return this.byte < this.last;
+    public seek(byte: number, bit = 0): this {
+        // Normalize byte/bit offset
+        byte += bit >> 3;
+        bit &= 7;
+
+        if (byte < 0 || byte > this.byteLength) {
+            throw new RangeError(`Invalid byte index: ${byte}`);
+        } else if (byte === this.byteLength && bit !== 0) {
+            throw new RangeError(`Invalid byte index: ${byte} (+ ${bit} bit)`);
+        }
+
+        this.byte = byte;
+        this.bit = bit;
+        return this;
+    }
+
+    /**
+     * Skips the specified number of bytes and bits.
+     *
+     * @param byte - The bytes to skip.
+     * @param bit  - The bits to skip. Defaults to 0.
+     * @returns This reader for method chaining.
+     * @throws RangeError if index is out of range.
+     */
+    public skip(byte: number, bit = 0): this {
+        return this.seek(this.byte + byte, this.bit + bit);
+    }
+
+    /**
+     * Checks if there is enough data to read. If this method returns false then the next read operation with the same
+     * length results in an error.
+     *
+     * @returns True if there is enough data to read, false if not.
+     */
+    public hasData(bytes = 1, bits = 0): boolean {
+        return (this.data.length - this.byte << 3) - this.bit >= bits + (bytes << 3);
     }
 
     /**
@@ -60,6 +100,15 @@ export class BinaryReader {
      */
     public getByteIndex(): number {
         return this.byte;
+    }
+
+    /**
+     * Returns the size of the data to read in bytes.
+     *
+     * @returns The data size in bytes
+     */
+    public getByteLength(): number {
+        return this.byteLength;
     }
 
     /**
@@ -74,13 +123,17 @@ export class BinaryReader {
     /**
      * Reads a single bit and returns it.
      *
+     * @param reverse - Set to true to read bit in reverse order (Starting with the lowest bit instead of the highest bit). Defaults to false.
      * @returns The read bit.
+     * @throws RangeError - If reached the end of the data.
      */
-    public readBit(): number {
-        if (this.byte >= this.last) {
-            throw new Error("End of data");
+    public readBit(reverse = false): number {
+        if (this.byte >= this.byteLength) {
+            throw new RangeError("End of data");
         }
-        const result = this.data[this.byte] >> (7 - this.bit) & 1;
+        const result = (reverse
+            ? (this.data[this.byte] >> (this.bit))
+            : (this.data[this.byte] >> (7 - this.bit))) & 1;
         this.bit++;
         if (this.bit > 7) {
             this.bit = 0;
@@ -90,34 +143,65 @@ export class BinaryReader {
     }
 
     /**
+     * Reads the given number of bits and returns them.
+     *
+     * @param count   - The number of bits to read.
+     * @param reverse - Set to true to read bits in reverse order (Starting with the lowest bit instead of the highest bit). Defaults to false.
+     * @returns The read bits.
+     * @throws RangeError if reached the end of the data.
+     */
+    public readBits(count: number, reverse = false): number {
+        let result = 0;
+        for (let i = 0; i < count; i++) {
+            const bit = this.readBit(reverse);
+            result = reverse ? (result | (bit << i)) : ((result << 1) | bit);
+        }
+        return result;
+    }
+
+    /**
      * Reads an unsigned 8 bit value (byte) and returns it.
      *
      * @returns The read value.
+     * @throws RangeError - If reached the end of the data.
      */
     public readUint8(): number {
         if (this.bit !== 0) {
-            if (this.byte + 1 >= this.last) {
-                throw new Error("End of data");
+            // Slow lane: Need to construct the byte from two parts
+            if (this.byte + 1 >= this.byteLength) {
+                throw new RangeError("End of data");
             }
             return this.data[this.byte] << this.bit & 0xff | this.data[++this.byte] >> 8 - this.bit;
         } else {
-            if (this.byte >= this.last) {
-                throw new Error("End of data");
+            // Fast lane: Return byte directly
+            if (this.byte >= this.byteLength) {
+                throw new RangeError("End of data");
             }
             return this.data[this.byte++] & 0xff;
         }
     }
 
     /**
-     * Reads the specified number of unsigned 8 bit values and returns it.
+     * Reads the specified number of unsigned 8 bit values (bytes) and returns them.
      *
-     * @param len  The number of bytes to read.
+     * @param count - The number of bytes to read.
      * @returns The read bytes.
+     * @throws RangeError - If reached the end of the data.
      */
-    public readUint8s(len: number): number[] {
-        const result: number[] = [];
-        for (let i = 0; i < len; ++i) {
-            result.push(this.readUint8());
+    public readUint8s(count: number): Uint8Array {
+        let result: Uint8Array;
+        if (this.bit) {
+            // Slow lane: Need to read the data byte by byte
+            result = new Uint8Array(count);
+            for (let i = 0; i < count; ++i) {
+                result[i] = this.readUint8();
+            }
+        } else {
+            // Fast lane: Read whole data block directly
+            if (this.byte + count > this.byteLength) {
+                throw new RangeError("End of data");
+            }
+            result = this.data.slice(this.byte, this.byte += count);
         }
         return result;
     }
@@ -126,24 +210,57 @@ export class BinaryReader {
      * Reads an unsigned 16 bit value and returns it.
      *
      * @returns The read value.
+     * @throws RangeError if reached the end of the data.
      */
     public readUint16(): number {
         return this.readUint8() | this.readUint8() << 8;
     }
 
     /**
+     * Reads the specified number of unsigned 16 bit values and returns them.
+     *
+     * @param count - he number of values to read.
+     * @returns The read values.
+     * @throws RangeError if reached the end of the data.
+     */
+    public readUint16s(count: number): Uint16Array {
+        let result: Uint16Array;
+        if (this.bit) {
+            result = new Uint16Array(count);
+            for (let i = 0; i < count; ++i) {
+                result[i] = this.readUint16();
+            }
+        } else {
+            result = new Uint16Array(this.data.slice(this.byte, this.byte += count * 2).buffer);
+        }
+        return result;
+    }
+
+    /**
      * Reads an unsigned 32 bit value and returns it.
      *
      * @returns The read value.
+     * @throws RangeError if reached the end of the data.
      */
     public readUint32(): number {
         return this.readUint16() | this.readUint16() << 16;
     }
 
     /**
+     * Reads an unsigned 24 bit value and returns it.
+     *
+     * @returns The read value.
+     * @throws RangeError if reached the end of the data.
+     */
+    public readUint24(): number {
+        return this.readUint16() | this.readUint8() << 16;
+    }
+
+    /**
      * Reads a single character and returns it.
      *
      * @returns The read character.
+     * @throws RangeError if reached the end of the data.
      */
     public readChar(): string {
         return String.fromCharCode(this.readUint8());
@@ -152,12 +269,56 @@ export class BinaryReader {
     /**
      * Reads a string with the given length and returns it.
      *
+     * @param len - The length of the string to read.
      * @returns The read string.
+     * @throws RangeError if reached the end of the data.
      */
     public readString(len: number): string {
         let result = "";
         for (let i = 0; i < len; ++i) {
             result += this.readChar();
+        }
+        return result;
+    }
+
+    /**
+     * Reads a null-terminated string and returns it.
+     *
+     * @param len - Optional string length. If not specified then bytes are read until a null-byte is found. If
+     *              specified then reading stops at this length or (if null-byte was found before) the reader skips the
+     *              remaining bytes so it is guaranteed that the reader read `len` bytes.
+     * @returns The read string.
+     */
+    public readNullString(len?: number): string {
+        let result = "";
+        let read = 0;
+        while (true) {
+            const c = this.readUint8();
+            read++;
+            if (c === 0) {
+                if (len != null) {
+                    this.skip(len - read);
+                }
+                break;
+            }
+            result += String.fromCharCode(c);
+            if (len != null && read >= len) {
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Reads the specified number of null-terminated strings and returns them.
+     *
+     * @param num - The number of null-terminated strings to read.
+     * @returns The read strings.
+     */
+    public readNullStrings(num: number): string[] {
+        const result: string[] = [];
+        for (let i = 0; i < num; ++i) {
+            result.push(this.readNullString());
         }
         return result;
     }
