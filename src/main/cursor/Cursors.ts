@@ -3,15 +3,14 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas.ts";
+import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
 import { toError } from "../sys/error.ts";
-import { createImage } from "../sys/image.ts";
 import { Cursor } from "./Cursor.ts";
 
 /**
  * Container for the 8 mouse cursors in the CURS file.
  */
-export class Cursors {
+export class Cursors implements ToCanvas {
     /** The mouse cursor images. */
     private readonly cursors: Cursor[];
 
@@ -92,49 +91,16 @@ export class Cursors {
         });
     }
 
-    /**
-     * Creates and returns a new canvas containing all the mouse cursors.
-     *
-     * @returns The created canvas.
-     */
-    public toCanvas(): HTMLCanvasElement {
+    /** @inheritdoc */
+    public toCanvas<T extends CanvasLike>(canvas: T): T {
         const cursors = this.cursors;
         const numCursors = cursors.length;
-        const canvas = createCanvas(256, Math.ceil(numCursors / 16) * 16);
-        const ctx = canvas.getContext("2d");
-        if (ctx == null) {
-            throw new Error("Unable to create 2D rendering context");
-        }
+        canvas.width = 256;
+        canvas.height = Math.ceil(numCursors / 16) * 16;
+        const ctx = getCanvasContext2D(canvas);
         for (let i = 0; i < numCursors; ++i) {
             this.getCursor(i).draw(ctx, (i & 15) << 4, i >> 4 << 4);
         }
         return canvas;
-    }
-
-    /**
-     * Creates and returns an image data URL of an image with all mouse cursors.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created data URL.
-     */
-    public toDataUrl(type?: string, quality?: number): string {
-        const canvas = this.toCanvas();
-        return canvas.toDataURL(type, quality);
-    }
-
-    /**
-     * Creates and returns a HTML image with all mouse cursors.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created HTML image.
-     */
-    public toImage(type?: string, quality?: number): HTMLImageElement {
-        const image = createImage();
-        image.src = this.toDataUrl(type, quality);
-        return image;
     }
 }

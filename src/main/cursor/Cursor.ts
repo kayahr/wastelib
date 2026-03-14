@@ -4,7 +4,7 @@
  */
 
 import { BaseImage } from "../image/BaseImage.ts";
-import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors.ts";
+import { colorPalette, transparency } from "../image/colors.ts";
 
 /**
  * Container for a single mouse cursor image.
@@ -40,9 +40,9 @@ export class Cursor extends BaseImage {
                 | (((data[i + 64] >> b) & 1) << 1)   // Green
                 | (((data[i + 128] >> b) & 1) << 2)  // Red
                 | (((data[i + 192] >> b) & 1) << 3); // Intensity
-            return COLOR_PALETTE[pixel];
+            return colorPalette[pixel];
         }
-        return TRANSPARENCY;
+        return transparency;
     }
 
     /**

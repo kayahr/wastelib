@@ -3,15 +3,14 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas.ts";
+import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
 import { toError } from "../sys/error.ts";
-import { createImage } from "../sys/image.ts";
 import { FontChar } from "./FontChar.ts";
 
 /**
  * Container for the 172 font characters of the COLORF.FNT file.
  */
-export class Font {
+export class Font implements ToCanvas {
     /** The character images of the font. */
     private readonly chars: FontChar[];
 
@@ -92,49 +91,16 @@ export class Font {
         });
     }
 
-    /**
-     * Creates and returns a new canvas containing all characters of the font. 16 characters per row.
-     *
-     * @returns The created canvas.
-     */
-    public toCanvas(): HTMLCanvasElement {
+    /** @inheritdoc */
+    public toCanvas<T extends CanvasLike>(canvas: T): T {
         const chars = this.chars;
         const numChars = chars.length;
-        const canvas = createCanvas(128, Math.ceil(numChars / 8) * 8);
-        const ctx = canvas.getContext("2d");
-        if (ctx == null) {
-            throw new Error("Unable to create 2D rendering context");
-        }
+        canvas.width = 128;
+        canvas.height = Math.ceil(numChars / 8) * 8;
+        const ctx = getCanvasContext2D(canvas);
         for (let i = 0; i < numChars; ++i) {
             this.getChar(i).draw(ctx, (i & 15) << 3, i >> 4 << 3);
         }
         return canvas;
-    }
-
-    /**
-     * Creates and returns a font image data URL. 16 font characters per row.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created data URL.
-     */
-    public toDataUrl(type?: string, quality?: number): string {
-        const canvas = this.toCanvas();
-        return canvas.toDataURL(type, quality);
-    }
-
-    /**
-     * Creates and returns a HTML image of the font. 16 font characters per row.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created HTML image.
-     */
-    public toImage(type?: string, quality?: number): HTMLImageElement {
-        const image = createImage();
-        image.src = this.toDataUrl(type, quality);
-        return image;
     }
 }

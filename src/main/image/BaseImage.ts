@@ -1,26 +1,25 @@
 /*
- * Copyright (C) 2016 Klaus Reimer <k@ailis.de>
- * See LICENSE.md for licensing information.
+ * Copyright (c) 2016 Klaus Reimer
+ * SPDX-License-Identifier: MIT
  */
 
-import { createCanvas } from "../sys/canvas.ts";
-import { createImage } from "../sys/image.ts";
+import { type CanvasContext2DLike, type CanvasLike, type ImageDataLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
 
 /**
  * Base class for all images.
  */
-export abstract class BaseImage {
+export abstract class BaseImage implements ToCanvas {
     /** The image width in pixels. */
-    protected width: number;
+    protected readonly width: number;
 
     /** The image height in pixels. */
-    protected height: number;
+    protected readonly height: number;
 
     /**
      * Creates a new image with the given size.
      *
-     * @param width   The image width in pixels.
-     * @param height  The image height in pixels.
+     * @param width  - The image width in pixels.
+     * @param height - The image height in pixels.
      */
     protected constructor(width: number, height: number) {
         this.width = width;
@@ -28,8 +27,6 @@ export abstract class BaseImage {
     }
 
     /**
-     * Returns the image width in pixels.
-     *
      * @returns The image width in pixels.
      */
     public getWidth(): number {
@@ -37,8 +34,6 @@ export abstract class BaseImage {
     }
 
     /**
-     * Returns the image height in pixels.
-     *
      * @returns The image height in pixels.
      */
     public getHeight(): number {
@@ -48,76 +43,54 @@ export abstract class BaseImage {
     /**
      * Returns the RGBA color at the specified position.
      *
-     * @param x  The horizontal pixel position.
-     * @param y  The vertical pixel position.
+     * @param x - The horizontal pixel position.
+     * @param y - The vertical pixel position.
      * @returns The RGBA color at the specified position.
+     * @throws RangeError when coordinates are outside of the image boundaries.
      */
     public abstract getColor(x: number, y: number): number;
 
     /**
-     * Draws the image onto the given rendering context.
+     * Creates an ImageData container for the given canvas context, fills it with the image and returns it.
      *
-     * @param ctx  The rendering context to draw the image to.
-     * @param x    Optional horizontal target position. Defaults to 0.
-     * @param y    Optional vertical target position. Defaults to 0.
+     * @param ctx - The 2D canvas rendering context to create the image data for.
+     * @returns The image as RGBA image data.
      */
-    public draw(ctx: CanvasRenderingContext2D, x = 0, y = 0): void {
+    public toImageData(ctx: CanvasContext2DLike): ImageDataLike {
         const width = this.width;
         const height = this.height;
         const imageData = ctx.createImageData(width, height);
         const pixels = imageData.data;
-        let rgbaIndex = 0;
+        let i = 0;
         for (let y = 0; y < height; ++y) {
             for (let x = 0; x < width; ++x) {
                 const color = this.getColor(x, y);
-                pixels[rgbaIndex++] = (color >> 24) & 0xff;
-                pixels[rgbaIndex++] = (color >> 16) & 0xff;
-                pixels[rgbaIndex++] = (color >> 8) & 0xff;
-                pixels[rgbaIndex++] = color & 0xff;
+                pixels[i++] = (color >> 24) & 0xff;
+                pixels[i++] = (color >> 16) & 0xff;
+                pixels[i++] = (color >> 8) & 0xff;
+                pixels[i++] = color & 0xff;
             }
         }
-        ctx.putImageData(imageData, x, y);
+        return imageData;
     }
 
     /**
-     * Creates and returns a new canvas containing the image.
+     * Draws the image onto the given rendering context.
      *
-     * @returns The created canvas.
+     * @param ctx - The rendering context to draw the image to.
+     * @param x   - Optional horizontal target position. Defaults to 0.
+     * @param y   - Optional vertical target position. Defaults to 0.
      */
-    public toCanvas(): HTMLCanvasElement {
-        const canvas = createCanvas(this.width, this.height);
-        const ctx = canvas.getContext("2d");
-        if (ctx == null) {
-            throw new Error("Unable to create 2D rendering context");
-        }
+    public draw(ctx: CanvasContext2DLike, x = 0, y = 0): void {
+        ctx.putImageData(this.toImageData(ctx), x, y);
+    }
+
+    /** @inheritdoc */
+    public toCanvas<T extends CanvasLike>(canvas: T): T {
+        canvas.width = this.width;
+        canvas.height = this.height;
+        const ctx = getCanvasContext2D(canvas);
         this.draw(ctx);
         return canvas;
-    }
-
-    /**
-     * Creates and returns an image data URL.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created data URL.
-     */
-    public toDataUrl(type?: string, quality?: number): string {
-        const canvas = this.toCanvas();
-        return canvas.toDataURL(type, quality);
-    }
-
-    /**
-     * Creates and returns a HTML image.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created HTML image.
-     */
-    public toImage(type?: string, quality?: number): HTMLImageElement {
-        const image = createImage();
-        image.src = this.toDataUrl(type, quality);
-        return image;
     }
 }

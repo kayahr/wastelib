@@ -136,7 +136,6 @@ export class Map {
 
         // Read NPCs
         const npcs = npcPointers.map(pointer => new Character(reader.seek(pointer)));
-        console.log(npcs);
 
         // Read mob data
         const numMobs = (stringsOffset - mobDataOffset) >> 3;
@@ -151,9 +150,9 @@ export class Map {
 
         // Join action class map, action map and tile map into a user-friendly structure
         const mapTiles: MapTile[][] = [];
-        for (let y = 0, i = 0; y < mapSize; ++y, ++i) {
+        for (let y = 0, i = 0; y < mapSize; ++y) {
             const row: MapTile[] = [];
-            for (let x = 0; x < mapSize; ++x) {
+            for (let x = 0; x < mapSize; ++x, ++i) {
                 const actionClass = x & 1 ? (actionClassMap[i >> 1] & 0xf) : (actionClassMap[i >> 1] >> 4);
                 row[x] = new MapTile(actionClass, actionMap[i], tileMap[i]);
             }

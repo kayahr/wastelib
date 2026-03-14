@@ -3,15 +3,18 @@
  * See LICENSE.md for licensing information.
  */
 
-import { Cursors } from "../cursor/Cursors.ts";
-import { Ending } from "../ending/Ending.ts";
-import { Font } from "../font/Font.ts";
-import { Portraits } from "../portrait/Portraits.ts";
-import { Sprites } from "../sprite/Sprites.ts";
-import { toError } from "../sys/error.ts";
-import { Tilesets } from "../tile/Tilesets.ts";
-import { Title } from "../title/Title.ts";
-import { Exe } from "../exe/Exe.ts";
+import { Cursors } from "../main/cursor/Cursors.ts";
+import { Ending } from "../main/ending/Ending.ts";
+import { Font } from "../main/font/Font.ts";
+import { Portraits } from "../main/portrait/Portraits.ts";
+import { Sprites } from "../main/sprite/Sprites.ts";
+import { toError } from "../main/sys/error.ts";
+import { Tilesets } from "../main/tile/Tilesets.ts";
+import { Title } from "../main/title/Title.ts";
+import { Exe } from "../main/exe/Exe.ts";
+import { Map } from "../main/game/Map.ts";
+import { Savegame } from "../main/game/Savegame.ts";
+import { ShopItemList } from "../main/game/ShopItemList.ts";
 
 /** The version of the indexed DB used to store the Wasteland files in the browser. */
 const dbVersion = 1;
@@ -291,5 +294,43 @@ export class WebAssets {
      */
     public readExe(): Promise<Exe> {
         return Exe.fromBlob(this.getFile("WL.EXE"));
+    }
+
+    /**
+     * Reads a map from GAME1 or GAME2.
+     *
+     * @param location - The map location (0-49)
+     * @returns the read map.
+     */
+    public async readMap(location: number): Promise<Map> {
+        const exe = await this.readExe();
+        const map = exe.getLocationMap(location);
+        const disk  = exe.getLocationDisk(location);
+        const offset = exe.getMapOffset(disk, map);
+        const mapSize = exe.getMapSize(disk, map);
+        const tileMapOffset = exe.getTileMapOffset(disk, map);
+        return Map.fromBlob(this.getFile(disk === 0 ? "GAME1" : "GAME2"), offset, mapSize, tileMapOffset);
+    }
+
+    /**
+     * Reads a shop item list from GAME1 or GAME2.
+     *
+     * @param shop - The shop number (0-2 is in GAME1, 4 is in GAME2, 3 is invalid)
+     * @returns The read shop item list.
+     */
+    public async readShopItemList(shop: number): Promise<ShopItemList> {
+        const exe = await this.readExe();
+        const offset = exe.getShopItemListOffset(shop);
+        return ShopItemList.fromBlob(this.getFile(shop === 4 ? "GAME2" : "GAME1"), offset);
+    }
+
+    /**
+     * @returns the savegame from GAME1 or GAME2 (depending on which savegame has the higher serial number.
+     */
+    public async readSavegame(): Promise<Savegame> {
+        const exe = await this.readExe();
+        const savegame1 = await Savegame.fromBlob(this.getFile("GAME1"), exe.getSavegameOffset(0));
+        const savegame2 = await Savegame.fromBlob(this.getFile("GAME2"), exe.getSavegameOffset(0));
+        return savegame1.getSerial() >= savegame2.getSerial() ? savegame1 : savegame2;
     }
 }

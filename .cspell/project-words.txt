@@ -12,6 +12,7 @@ oxlint
 readwrite
 Reimer
 reloc
+rgba
 savegame
 tilemap
 Tileset

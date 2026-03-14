@@ -3,14 +3,13 @@
  * See LICENSE.md for licensing information.
  */
 
-import { createCanvas } from "../sys/canvas.ts";
-import { createImage } from "../sys/image.ts";
+import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
 import type { Tile } from "./Tile.ts";
 
 /**
  * Container for a set of tiles read from an allhtds file.
  */
-export class Tileset {
+export class Tileset implements ToCanvas {
     /** The tiles in this set. */
     private readonly tiles: Tile[];
 
@@ -68,49 +67,16 @@ export class Tileset {
         return this.tiles[index];
     }
 
-    /**
-     * Creates and returns a new canvas containing the tileset image. 16 tilesets per row.
-     *
-     * @returns The created canvas.
-     */
-    public toCanvas(): HTMLCanvasElement {
+    /** @inheritdoc */
+    public toCanvas<T extends CanvasLike>(canvas: T): T {
         const tiles = this.tiles;
         const numTiles = tiles.length;
-        const canvas = createCanvas(256, Math.ceil(numTiles / 16) * 16);
-        const ctx = canvas.getContext("2d");
-        if (ctx == null) {
-            throw new Error("Unable to create 2D rendering context");
-        }
+        canvas.width = 256;
+        canvas.height = Math.ceil(numTiles / 16) * 16;
+        const ctx = getCanvasContext2D(canvas);
         for (let i = 0; i < numTiles; ++i) {
             this.getTile(i).draw(ctx, (i & 15) << 4, i >> 4 << 4);
         }
         return canvas;
-    }
-
-    /**
-     * Creates and returns a tileset image data URL. 16 tiles per row.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created data URL.
-     */
-    public toDataUrl(type?: string, quality?: number): string {
-        const canvas = this.toCanvas();
-        return canvas.toDataURL(type, quality);
-    }
-
-    /**
-     * Creates and returns a HTML image of the tileset. 16 tiles per row.
-     *
-     * @param type    - Optional image mime type. Defaults to image/png.
-     * @param quality - Optional quality parameter for encoder. For image/jpeg this is the image quality between 0 and
-     *                  1 with a default value of 0.92.
-     * @returns The created HTML image.
-     */
-    public toImage(type?: string, quality?: number): HTMLImageElement {
-        const image = createImage();
-        image.src = this.toDataUrl(type, quality);
-        return image;
     }
 }

@@ -4,28 +4,28 @@
  */
 
 import { BaseImage } from "../image/BaseImage.ts";
-import { COLOR_PALETTE, TRANSPARENCY } from "../image/colors.ts";
+import { colorPalette, transparency } from "../image/colors.ts";
 
 /**
  * Container for a single sprite image.
  */
 export class Sprite extends BaseImage {
     /** The image data. */
-    private readonly data: ArrayLike<number>;
+    readonly #data: Uint8Array;
 
     /** The transparency mask data. */
-    private readonly maskData: ArrayLike<number>;
+    readonly #maskData: Uint8Array;
 
     /**
      * Creates a new sprite image for the given image and mask data.
      *
-     * @param data      The image data.
-     * @param maskData  The transparency mask data.
+     * @param data     - The image data.
+     * @param maskData - The transparency mask data.
      */
-    private constructor(data: ArrayLike<number>, maskData: ArrayLike<number>) {
+    private constructor(data: Uint8Array, maskData: Uint8Array) {
         super(16, 16);
-        this.data = data;
-        this.maskData = maskData;
+        this.#data = data;
+        this.#maskData = maskData;
     }
 
     public getColor(x: number, y: number): number {
@@ -34,15 +34,15 @@ export class Sprite extends BaseImage {
         }
         const i = (y << 1) + (x >> 3);
         const b = 7 - (x % 8);
-        if (((this.maskData[i] >> b) & 1) !== 0) {
-            return TRANSPARENCY;
+        if (((this.#maskData[i] >> b) & 1) !== 0) {
+            return transparency;
         }
-        const data = this.data;
+        const data = this.#data;
         const pixel = (((data[i] >> b) & 1) << 0)  // Blue
             | (((data[i + 32] >> b) & 1) << 1)     // Green
             | (((data[i + 64] >> b) & 1) << 2)     // Red
             | (((data[i + 96] >> b) & 1) << 3);    // Intensity
-        return COLOR_PALETTE[pixel];
+        return colorPalette[pixel];
     }
 
     /**

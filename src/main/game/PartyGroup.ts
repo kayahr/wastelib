@@ -54,7 +54,7 @@ export class PartyGroup {
      */
     public static read(reader: BinaryReader): PartyGroup {
         // Skip unused byte
-        console.log(reader.readUint8());
+        reader.skip(1);
         return new PartyGroup(
             Array.from(reader.readUint8s(7)) as PartyOrder,
             reader.readUint8(),

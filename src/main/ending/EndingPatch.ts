@@ -3,7 +3,7 @@
  * See LICENSE.md for licensing information.
  */
 
-import { COLOR_PALETTE } from "../image/colors.ts";
+import { colorPalette } from "../image/colors.ts";
 import type { BinaryReader } from "../io/BinaryReader.ts";
 
 /**
@@ -84,7 +84,7 @@ export class EndingPatch {
     public getColor(x: number): number {
         const pixelTuple = this.data[x >> 1];
         const pixel = (x & 1) === 1 ? pixelTuple & 0xf : pixelTuple >> 4;
-        return COLOR_PALETTE[pixel];
+        return colorPalette[pixel];
     }
 
     /**

@@ -6,7 +6,6 @@
 import { unpackExe } from "./exepack.ts";
 import { readStrings } from "../io/string.ts";
 import { BinaryReader } from "../io/BinaryReader.ts";
-import { writeFile } from "node:fs/promises";
 
 /** The offset of segment 2 in the unpacked WL.EXE file. */
 const SEG2 = 0xd020;
@@ -77,8 +76,6 @@ export class Exe {
         this.libraryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdacc, 277));
         this.shopStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdbf8, 229));
         this.infirmaryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdced, 369));
-
-        void writeFile("/tmp/data.bin", unpacked.slice(0xb270 + 1845, 0xbc7a));
 
         // Read the map sizes of the maps in the two GAME files.
         this.mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 50);

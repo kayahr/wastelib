@@ -4,7 +4,7 @@
  */
 
 import { BaseImage } from "../image/BaseImage.ts";
-import { COLOR_PALETTE } from "../image/colors.ts";
+import { colorPalette } from "../image/colors.ts";
 
 /**
  * Container for a single font character image.
@@ -38,7 +38,7 @@ export class FontChar extends BaseImage {
             | (((data[y + 8] >> bit) & 1) << 1)     // Green
             | (((data[y + 16] >> bit) & 1) << 2)    // Red
             | (((data[y + 24] >> bit) & 1) << 3);   // Intensity
-        return COLOR_PALETTE[pixel];
+        return colorPalette[pixel];
     }
 
     /**

@@ -4,7 +4,9 @@
  */
 
 import type { Animation } from "../main/image/Animation.ts";
-import { WebAssets } from "../main/io/WebAssets.ts";
+import { WebAssets } from "./WebAssets.ts";
+import type { ToCanvas } from "../main/wastelib.ts";
+import { getCanvasContext2D } from "../main/sys/canvas.ts";
 
 // oxlint-disable typescript/strict-void-return
 
@@ -61,12 +63,18 @@ document.querySelector<HTMLElement>("#demo")!.style.display = "block";
 // This is the output element used to show the various assets when the corresponding button is clicked.
 const output = document.querySelector<HTMLDivElement>("#output")!;
 
+function createImage(pic: ToCanvas): HTMLImageElement {
+    const image = new Image();
+    image.src = pic.toCanvas(document.createElement("canvas")).toDataURL();
+    return image;
+}
+
 // Mouse cursors as separate images
 document.querySelector<HTMLButtonElement>("#cursors")!.addEventListener("click", async () => {
     const cursors = await assets.readCursors();
     output.innerHTML = "";
     cursors.getCursors().forEach(cursor => {
-        output.appendChild(cursor.toImage());
+        output.appendChild(createImage(cursor));
     });
 });
 
@@ -74,13 +82,13 @@ document.querySelector<HTMLButtonElement>("#cursors")!.addEventListener("click",
 document.querySelector<HTMLButtonElement>("#cursors-map")!.addEventListener("click", async () => {
     const cursors = await assets.readCursors();
     output.innerHTML = "";
-    output.appendChild(cursors.toImage());
+    output.appendChild(createImage(cursors));
 });
 
 // End animation
 document.querySelector<HTMLButtonElement>("#end")!.addEventListener("click", async () => {
     const ending = await assets.readEnding();
-    const image = ending.toImage();
+    const image = createImage(ending);
     image.addEventListener("click", () => {
         playAnimation(ending);
     });
@@ -95,7 +103,7 @@ document.querySelector<HTMLButtonElement>("#font")!.addEventListener("click", as
     const font = await assets.readFont();
     output.innerHTML = "";
     font.getChars().forEach(char => {
-        output.appendChild(char.toImage());
+        output.appendChild(createImage(char));
     });
 });
 
@@ -103,7 +111,7 @@ document.querySelector<HTMLButtonElement>("#font")!.addEventListener("click", as
 document.querySelector<HTMLButtonElement>("#font-map")!.addEventListener("click", async () => {
     const font = await assets.readFont();
     output.innerHTML = "";
-    output.appendChild(font.toImage());
+    output.appendChild(createImage(font));
 });
 
 // Sprites as separate images
@@ -111,7 +119,7 @@ document.querySelector<HTMLButtonElement>("#sprites")!.addEventListener("click",
     const sprites = await assets.readSprites();
     output.innerHTML = "";
     sprites.getSprites().forEach(sprite => {
-        output.appendChild(sprite.toImage());
+        output.appendChild(createImage(sprite));
     });
 });
 
@@ -119,7 +127,7 @@ document.querySelector<HTMLButtonElement>("#sprites")!.addEventListener("click",
 document.querySelector<HTMLButtonElement>("#sprites-map")!.addEventListener("click", async () => {
     const sprites = await assets.readSprites();
     output.innerHTML = "";
-    output.appendChild(sprites.toImage());
+    output.appendChild(createImage(sprites));
 });
 
 // Portraits
@@ -127,7 +135,7 @@ document.querySelector<HTMLButtonElement>("#portraits")!.addEventListener("click
     const sprites = await assets.readPortraits();
     output.innerHTML = "";
     sprites.getPortraits().forEach(portrait => {
-        const image = portrait.toImage();
+        const image = createImage(portrait);
         image.addEventListener("click", () => {
             playAnimation(portrait);
         });
@@ -149,7 +157,7 @@ document.querySelector<HTMLButtonElement>("#tilesets")!.addEventListener("click"
         tileset.getTiles().forEach(tile => {
             // Directly appending the canvas output instead of converting to images because creating all
             // these images is too slow
-            output.appendChild(tile.toCanvas());
+            output.appendChild(tile.toCanvas(document.createElement("canvas")));
         });
     });
 });
@@ -163,7 +171,7 @@ document.querySelector<HTMLButtonElement>("#tilesets-map")!.addEventListener("cl
         const h1 = document.createElement("h2");
         h1.innerHTML = `Tileset ${index++} (Disk ${tileset.getDisk()})`;
         output.appendChild(h1);
-        output.appendChild(tileset.toImage());
+        output.appendChild(createImage(tileset));
     });
 });
 
@@ -171,5 +179,38 @@ document.querySelector<HTMLButtonElement>("#tilesets-map")!.addEventListener("cl
 document.querySelector<HTMLButtonElement>("#title")!.addEventListener("click", async () => {
     const title = await assets.readTitle();
     output.innerHTML = "";
-    output.appendChild(title.toImage());
+    output.appendChild(createImage(title));
+});
+
+// Maps
+document.querySelector<HTMLButtonElement>("#maps")!.addEventListener("click", async () => {
+    const sprites = await assets.readSprites();
+    output.innerHTML = "";
+    for (let mapIndex = 0; mapIndex < 50; mapIndex++) {
+        if (mapIndex === 14 || mapIndex === 30 || mapIndex === 37 || mapIndex >= 44 && mapIndex <= 48) {
+            continue;
+        }
+        const map = await assets.readMap(mapIndex);
+        const info = map.getInfo();
+        const tilesets = await assets.readTilesets();
+        const tileset = tilesets.getTileset(info.getTileset());
+        const size = info.getMapSize();
+        const canvas = document.createElement("canvas");
+        const tileWidth = tileset.getTile(0).getWidth();
+        const tileHeight = tileset.getTile(0).getHeight();
+        canvas.width = size * tileWidth;
+        canvas.height = size * tileHeight;
+        const ctx = getCanvasContext2D(canvas);
+        for (let y = 0; y < size; y++) {
+            for (let x = 0; x < size; x++) {
+                const tile = map.getTile(x, y);
+                const tileImageIndex = tile.getImage();
+                const tileImage = tileImageIndex < 10
+                    ? sprites.getSprite(tileImageIndex)
+                    : tileset.getTile(tileImageIndex - 10);
+                tileImage.draw(ctx, x * tileWidth, y * tileHeight);
+            }
+        }
+        output.appendChild(canvas);
+    }
 });
