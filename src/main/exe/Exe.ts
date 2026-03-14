@@ -6,12 +6,16 @@
 import { unpackExe } from "./exepack.ts";
 import { readStrings } from "../io/string.ts";
 import { BinaryReader } from "../io/BinaryReader.ts";
+import { writeFile } from "node:fs/promises";
 
 /** The offset of segment 2 in the unpacked WL.EXE file. */
 const SEG2 = 0xd020;
 
 /**
  * Provides information from the WL.EXE file.
+ *
+ * @see https://wasteland.fandom.com/wiki/WL.EXE
+ * @see https://wasteland.fandom.com/wiki/WL.EXE_seg002
  */
 export class Exe {
     /** The intro strings. */
@@ -50,6 +54,12 @@ export class Exe {
     /** The offsets to the tile maps. */
     private readonly tileMapOffsets: Uint16Array;
 
+    /** The offsets of the save games in the two GAME files. */
+    private readonly savegameOffsets: number[];
+
+    /** The offsets of the five shop lists in the two GAME files (0-3 in GAME1, 4 in GAME2, 3 is not used in game and actually does not exist in GAME1). */
+    private readonly shopItemListOffsets: number[];
+
     /**
      * Creates a new Exe information object from the given packed EXE content.
      *
@@ -68,6 +78,8 @@ export class Exe {
         this.shopStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdbf8, 229));
         this.infirmaryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdced, 369));
 
+        void writeFile("/tmp/data.bin", unpacked.slice(0xb270 + 1845, 0xbc7a));
+
         // Read the map sizes of the maps in the two GAME files.
         this.mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 50);
 
@@ -79,6 +91,21 @@ export class Exe {
 
         // Read the offsets to the tile maps
         this.tileMapOffsets = new Uint16Array(unpacked.slice(SEG2 + 0xbd22, SEG2 + 0xbd22 + 50 * 2).buffer);
+
+        // Read the offsets of the two savegame blocks in the two GAME files
+        this.savegameOffsets = [
+            new BinaryReader(unpacked, 0x880c, 2).readUint16() + (new BinaryReader(unpacked, 0x880f, 2).readUint16() << 16),
+            new BinaryReader(unpacked, 0x8819, 2).readUint16() + (new BinaryReader(unpacked, 0x881c, 2).readUint16() << 16)
+        ];
+
+        // Read the save game size (needed to calculate shop item list offsets)
+        const savegameSize = new BinaryReader(unpacked, 0x8820, 2).readUint16()
+
+        // Read the offsets of the four shop item lists (lists 0-2 are in GAME1, list 3 is in GAME2)
+        this.shopItemListOffsets = [
+            ...Array.from(new Uint16Array(unpacked.slice(SEG2 + 0xbe20, SEG2 + 0xbe20 + 4 * 2).buffer)),
+            0
+        ].map((offset, index) => this.savegameOffsets[index < 4 ? 0 : 1] + savegameSize + offset);
     }
 
     /**
@@ -97,21 +124,8 @@ export class Exe {
      * @param blob  The WL.EXE blob.
      * @returns The exe information.
      */
-    public static fromBlob(blob: Blob): Promise<Exe> {
-        return new Promise((resolve, reject) => {
-            try {
-                const reader = new FileReader();
-                reader.addEventListener("load", () => {
-                    resolve(Exe.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                });
-                reader.addEventListener("error", () => {
-                    reject(new Error(`Unable to read WL.EXE: ${reader.error}`));
-                });
-                reader.readAsArrayBuffer(blob);
-            } catch (error) {
-                reject(error);
-            }
-        });
+    public static async fromBlob(blob: Blob): Promise<Exe> {
+        return Exe.fromArray(new Uint8Array(await blob.arrayBuffer()));
     }
 
     /**
@@ -260,5 +274,25 @@ export class Exe {
             throw new Error(`Invalid location: ${location}`);
         }
         return value & 0x3f;
+    }
+
+    /**
+     * Returns the offset of the savegame data in either GAME1 or GAME2.
+     *
+     * @param disk - The disk index (0 for GAME1, 1 for GAME2).
+     * @returns The savegame offset
+     */
+    public getSavegameOffset(disk: number): number {
+        return this.savegameOffsets[disk];
+    }
+
+    /**
+     * Returns the shop item list offset in GAME1 or GAME2 for the specified shop number.
+     *
+     * @param shop - The shop number (0-3 in GAME1, 4 in GAME2, 3 is actually invalid because it does not exist and is not used in the game).
+     * @returns The shop item list offset
+     */
+    public getShopItemListOffset(shop: number): number {
+        return this.shopItemListOffsets[shop];
     }
 }

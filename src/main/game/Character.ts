@@ -76,153 +76,57 @@ export class Character {
     private readonly lastCon: number;
     private readonly afflictions: number;
     private readonly npc: boolean;
-    private readonly unknown$2a: number;
     private readonly itemRefuse: number;
     private readonly skillRefuse: number;
     private readonly attribRefuse: number;
     private readonly tradeRefuse: number;
-    private readonly unknown$2f: number;
     private readonly joinString: number;
     private readonly willingness: number;
     private readonly rank: string;
     private readonly gameWon: boolean;
     private readonly specialPromotion: boolean;
-    private readonly unknown$4d: Uint8Array;
     private readonly skills: Skill[];
-    private readonly unknown$bc: number;
     private readonly items: Item[];
-    private readonly unknown$f9: Uint8Array;
 
-    private constructor(
-        name: string,
-        strength: number,
-        intelligence: number,
-        luck: number,
-        speed: number,
-        agility: number,
-        dexterity: number,
-        charisma: number,
-        money: number,
-        gender: Gender,
-        nationality: Nationality,
-        armorClass: number,
-        maxCon: number,
-        curCon: number,
-        weapon: number,
-        skillPoints: number,
-        experience: number,
-        level: number,
-        armor: number,
-        lastCon: number,
-        afflictions: number,
-        npc: boolean,
-        unknown$2a: number,
-        itemRefuse: number,
-        skillRefuse: number,
-        attribRefuse: number,
-        tradeRefuse: number,
-        unknown$2f: number,
-        joinString: number,
-        willingness: number,
-        rank: string,
-        gameWon: boolean,
-        specialPromotion: boolean,
-        unknown$4d: Uint8Array,
-        skills: Skill[],
-        unknown$bc: number,
-        items: Item[],
-        unknown$f9: Uint8Array
-    ) {
-        this.name = name;
-        this.strength = strength;
-        this.intelligence = intelligence;
-        this.luck = luck;
-        this.speed = speed;
-        this.agility = agility;
-        this.dexterity = dexterity;
-        this.charisma = charisma;
-        this.money = money;
-        this.gender = gender;
-        this.nationality = nationality;
-        this.armorClass = armorClass;
-        this.maxCon = maxCon;
-        this.curCon = curCon;
-        this.weapon = weapon;
-        this.skillPoints = skillPoints;
-        this.experience = experience;
-        this.level = level;
-        this.armor = armor;
-        this.lastCon = lastCon;
-        this.afflictions = afflictions;
-        this.npc = npc;
-        this.unknown$2a = unknown$2a;
-        this.itemRefuse = itemRefuse;
-        this.skillRefuse = skillRefuse;
-        this.attribRefuse = attribRefuse;
-        this.tradeRefuse = tradeRefuse;
-        this.unknown$2f = unknown$2f;
-        this.joinString = joinString;
-        this.willingness = willingness;
-        this.rank = rank;
-        this.gameWon = gameWon;
-        this.specialPromotion = specialPromotion;
-        this.unknown$4d = unknown$4d;
-        this.skills = skills;
-        this.unknown$bc = unknown$bc;
-        this.items = items;
-        this.unknown$f9 = unknown$f9;
-    }
-
-    /**
-     * Reads character data from the given reader and returns it.
-     *
-     * @param reader - The reader to read the character data from.
-     * @returns The read character data.
-     */
-    public static read(reader: BinaryReader): Character {
-        const name = reader.readNullString(14);
-        const strength = reader.readUint8();
-        const iq = reader.readUint8();
-        const luck = reader.readUint8();
-        const speed = reader.readUint8();
-        const agility = reader.readUint8();
-        const dexterity = reader.readUint8();
-        const charisma = reader.readUint8();
-        const money = reader.readUint24();
-        const gender = reader.readUint8();
-        const nationality = reader.readUint8();
-        const armorClass = reader.readUint8();
-        const maxCon = reader.readUint16();
-        const curCon = reader.readUint16();
-        const weapon = reader.readUint8();
-        const skillPoints = reader.readUint8();
-        const experience = reader.readUint24();
-        const level = reader.readUint8();
-        const armor = reader.readUint8();
-        const lastCon = reader.readUint16();
-        const afflictions = reader.readUint8();
-        const npc = reader.readUint8() === 1;
-        const unknown$2a = reader.readUint8();
-        const itemRefuse = reader.readUint8();
-        const skillRefuse = reader.readUint8();
-        const attribRefuse = reader.readUint8();
-        const tradeRefuse = reader.readUint8();
-        const unknown$2f = reader.readUint8();
-        const joinString = reader.readUint8();
-        const willingness = reader.readUint8();
-        const rank = reader.readNullString(25);
-        const gameWon = reader.readUint8() === 1;
-        const specialPromotion = reader.readUint8() === 1;
-        const unknown$4d = reader.readUint8s(51);
-        const skills = readSkills(reader);
-        const unknown$bc = reader.readUint8();
-        const items = readItems(reader);
-        const unknown$f9 = reader.readUint8s(7);
-        return new Character(name, strength, iq, luck, speed, agility, dexterity, charisma, money, gender,
-            nationality, armorClass, maxCon, curCon, weapon, skillPoints, experience, level, armor,
-            lastCon, afflictions, npc, unknown$2a, itemRefuse, skillRefuse, attribRefuse, tradeRefuse,
-            unknown$2f, joinString, willingness, rank, gameWon, specialPromotion, unknown$4d, skills,
-            unknown$bc, items, unknown$f9);
+    public constructor(reader: BinaryReader) {
+        this.name = reader.readNullString(14);
+        this.strength = reader.readUint8();
+        this.intelligence = reader.readUint8();
+        this.luck = reader.readUint8();
+        this.speed = reader.readUint8();
+        this.agility = reader.readUint8();
+        this.dexterity = reader.readUint8();
+        this.charisma = reader.readUint8();
+        this.money = reader.readUint24();
+        this.gender = reader.readUint8();
+        this.nationality = reader.readUint8();
+        this.armorClass = reader.readUint8();
+        this.maxCon = reader.readUint16();
+        this.curCon = reader.readUint16();
+        this.weapon = reader.readUint8();
+        this.skillPoints = reader.readUint8();
+        this.experience = reader.readUint24();
+        this.level = reader.readUint8();
+        this.armor = reader.readUint8();
+        this.lastCon = reader.readUint16();
+        this.afflictions = reader.readUint8();
+        this.npc = reader.readUint8() === 1;
+        reader.skip(1); // Skip unknown byte at 0x2a
+        this.itemRefuse = reader.readUint8();
+        this.skillRefuse = reader.readUint8();
+        this.attribRefuse = reader.readUint8();
+        this.tradeRefuse = reader.readUint8();
+        reader.skip(1); // Skip unknown byte at 0x2f
+        this.joinString = reader.readUint8();
+        this.willingness = reader.readUint8();
+        this.rank = reader.readNullString(25);
+        this.gameWon = reader.readUint8() === 1;
+        this.specialPromotion = reader.readUint8() === 1;
+        reader.skip(51) // Skip 51 unknown bytes from 0x4d - 0x7f
+        this.skills = readSkills(reader);
+        reader.skip(1); // Skip unknown byte at 0xbc
+        this.items = readItems(reader);
+        reader.skip(7); // Skip 7 unknown bytes at 0xf9 - 0xff
     }
 
     /**
@@ -426,15 +330,6 @@ export class Character {
     }
 
     /**
-     * Returns the unknown byte at offset 0x2a.
-     *
-     * @returns The unknown byte.
-     */
-    public getUnknown$2a(): number {
-        return this.unknown$2a;
-    }
-
-    /**
      * Returns the chance of refusing an item usage. Affected by the willingness value.
      *
      * TODO Find out how this actually works.
@@ -476,15 +371,6 @@ export class Character {
      */
     public getTradeRefuse(): number {
         return this.tradeRefuse;
-    }
-
-    /**
-     * Returns the unknown byte at offset 0x2f.
-     *
-     * @returns The unknown byte.
-     */
-    public getUnknown$2f(): number {
-        return this.unknown$2f;
     }
 
     /**
@@ -535,15 +421,6 @@ export class Character {
     }
 
     /**
-     * Returns the 51 unknown bytes at offset 0x4d.
-     *
-     * @returns The unknown bytes.
-     */
-    public getUnknown$4d(): Uint8Array {
-        return this.unknown$4d;
-    }
-
-    /**
      * Returns the skills.
      *
      * @returns The skills.
@@ -553,29 +430,11 @@ export class Character {
     }
 
     /**
-     * Returns the unknown byte at offset 0xbc.
-     *
-     * @returns The unknown byte.
-     */
-    public getUnknown$bc(): number {
-        return this.unknown$bc;
-    }
-
-    /**
      * Returns the items.
      *
      * @returns The items.
      */
     public getItems(): Item[] {
         return this.items;
-    }
-
-    /**
-     * Returns the seven unknown bytes at offset 0xf9.
-     *
-     * @returns The unknown bytes.
-     */
-    public getUnknown$f9(): Uint8Array {
-        return this.unknown$f9;
     }
 }

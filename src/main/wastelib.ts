@@ -23,6 +23,8 @@ export { MapTile } from "./game/MapTile.ts";
 export { Mob } from "./game/Mob.ts";
 export { MobType } from "./game/MobType.ts";
 export { Nationality } from "./game/Nationality.ts";
+export { PartyGroup, type PartyOrder } from "./game/PartyGroup.ts";
+export { Savegame, type PartyGroups, type Party } from "./game/Savegame.ts";
 export { Skill } from "./game/Skill.ts";
 export type { Animation } from "./image/Animation.ts";
 export type { AnimationPlayer } from "./image/AnimationPlayer.ts";
