@@ -186,11 +186,11 @@ document.querySelector<HTMLButtonElement>("#title")!.addEventListener("click", a
 document.querySelector<HTMLButtonElement>("#maps")!.addEventListener("click", async () => {
     const sprites = await assets.readSprites();
     output.innerHTML = "";
-    for (let mapIndex = 0; mapIndex < 50; mapIndex++) {
-        if (mapIndex === 14 || mapIndex === 30 || mapIndex === 37 || mapIndex >= 44 && mapIndex <= 48) {
+    for (let location = 0; location < 50; location++) {
+        if (location === 14 || location === 30 || location === 37 || location >= 44 && location <= 48) {
             continue;
         }
-        const map = await assets.readMap(mapIndex);
+        const map = await assets.readMap(location);
         const info = map.getInfo();
         const tilesets = await assets.readTilesets();
         const tileset = tilesets.getTileset(info.getTileset());
@@ -201,6 +201,9 @@ document.querySelector<HTMLButtonElement>("#maps")!.addEventListener("click", as
         canvas.width = size * tileWidth;
         canvas.height = size * tileHeight;
         const ctx = getCanvasContext2D(canvas);
+        const h1 = document.createElement("h2");
+        h1.innerHTML = `Location ${location}`;
+        output.appendChild(h1);
         for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
                 const tile = map.getTile(x, y);
