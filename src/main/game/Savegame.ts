@@ -40,7 +40,6 @@ export class Savegame {
         if (header !== "msq0" && header !== "msq1") {
             throw new Error(`Invalid savegame header: ${header}`);
         }
-
         const data = decodeRotatingXor(reader.readUint8s(0x802));
         const dataReader = new BinaryReader(data);
         this.parties = [ PartyGroup.read(dataReader), PartyGroup.read(dataReader), PartyGroup.read(dataReader), PartyGroup.read(dataReader) ] as const;
