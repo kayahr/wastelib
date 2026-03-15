@@ -6,7 +6,7 @@
 import { Sprite } from "./Sprite.ts";
 
 /**
- * Container for the 10 sprites defined in the ic0_9.wlf and masks.wlf files.
+ * Container for the sprites defined in the ic0_9.wlf and masks.wlf files.
  */
 export class Sprites implements Iterable<Sprite> {
     /** The character images of the font. */
