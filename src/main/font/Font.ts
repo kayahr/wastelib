@@ -59,7 +59,8 @@ export class Font implements Iterable<FontChar> {
      */
     public static fromArray(array: Uint8Array): Font {
         const chars: FontChar[] = [];
-        for (let i = 0; i < 172; ++i) {
+        const numChars = array.length / 32;
+        for (let i = 0; i < numChars; ++i) {
             chars.push(new FontChar(array, i * 32));
         }
         return new Font(chars);
