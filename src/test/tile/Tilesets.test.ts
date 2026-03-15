@@ -9,7 +9,7 @@ import { readFile } from "node:fs/promises";
 import { assertMatchImage } from "../support/image.ts";
 import { createCanvasContext2D } from "../support/canvas.ts";
 import { openAsBlob } from "node:fs";
-import {  Tilesets } from "../../main/wastelib.ts";
+import { Tilesets } from "../../main/tile/Tilesets.ts";
 
 describe("Tilesets", () => {
     it("is iterable", async () => {

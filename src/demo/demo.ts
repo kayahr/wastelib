@@ -5,8 +5,7 @@
 
 import type { Animation } from "../main/image/Animation.ts";
 import { WebAssets } from "./WebAssets.ts";
-import type { ToCanvas } from "../main/wastelib.ts";
-import { getCanvasContext2D } from "../main/sys/canvas.ts";
+import { type ToCanvas, getCanvasContext2D } from "../main/sys/canvas.ts";
 
 // oxlint-disable typescript/strict-void-return
 

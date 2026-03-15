@@ -6,7 +6,7 @@
 import { describe, it } from "node:test";
 import { assertEquals, assertSame, assertThrowWithMessage } from "@kayahr/assert";
 import { readFile } from "node:fs/promises";
-import {  Tilesets } from "../../main/wastelib.ts";
+import { Tilesets } from "../../main/tile/Tilesets.ts";
 
 describe("Tileset", () => {
     it("is iterable", async () => {
