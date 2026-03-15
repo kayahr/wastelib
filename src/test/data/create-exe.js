@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import { promisify } from "node:util";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import {
+    savegameOffset0,
+    savegameOffset1
+} from "../exe/exe-data.ts";
 
 const baseDir = import.meta.dirname;
 
@@ -16,8 +19,6 @@ const data = await readFile(helloExe);
 
 // Fill exe with test data
 const view = new DataView(data.buffer);
-const savegameOffset0 = 0x012389ab;
-const savegameOffset1 = 0x4567cdef;
 view.setUint16(0x880c, savegameOffset0 & 0xffff, true);
 view.setUint16(0x880f, savegameOffset0 >> 16, true);
 view.setUint16(0x8819, savegameOffset1 & 0xffff, true);
