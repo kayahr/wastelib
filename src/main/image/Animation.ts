@@ -7,7 +7,7 @@ import type { AnimationPlayer } from "./AnimationPlayer.ts";
 import type { BaseImage } from "./BaseImage.ts";
 
 /**
- * Shared interface for [[Ending]] and [[Portrait]] animation.
+ * Shared interface for {@link Ending} and {@link Portrait} animation.
  */
 export interface Animation {
     /**

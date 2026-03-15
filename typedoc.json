@@ -6,7 +6,6 @@
     "basePath": "src/main",
     "entryPointStrategy": "resolve",
     "out": "lib/apidoc",
-    "alwaysCreateEntryPointModule": false,
     "excludePrivate": true,
     "excludeExternals": true,
     "excludeInternal": true,

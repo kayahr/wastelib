@@ -4,7 +4,7 @@
  */
 
 /**
- * Shared interface for [[EndingAnimationPlayer]] and [[PortraitAnimationPlayer]].
+ * Shared interface for {@link EndingPlayer} and {@link PortraitPlayer}.
  */
 export interface AnimationPlayer {
     /**

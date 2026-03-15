@@ -28,8 +28,8 @@ export class PortraitPatch {
 
     /**
      * Returns the image offset to patch. This is the raw offset value from the allpics file measured in bytes
-     * relative to the 96 pixels (48 bytes) wide portrait image. It's recommended to use the [[getX]]() and
-     * [[getY]]() methods which converts this offset into pixel coordinates.
+     * relative to the 96 pixels (48 bytes) wide portrait image. It's recommended to use the {@link getX} and
+     * {@link getY} methods which converts this offset into pixel coordinates.
      *
      * @returns The image offset to patch.
      */

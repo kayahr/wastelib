@@ -30,8 +30,8 @@ export class EndingPatch {
     /**
      * Returns the raw offset to update. This is the raw offset value from the END.CPA file measured in 8 byte
      * blocks relative to a 320 pixels wide screen. Too complex to use. So it's recommended to use the
-     * [[getX]]() and [[getY]]() methods which converts this offset into pixel coordinates relative to
-     * the image. Or use the [[getOffset]]() method which returns the offset byte address in the image data.
+     * {@link getX} and {@link getY} methods which converts this offset into pixel coordinates relative to
+     * the image. Or use the {@link getOffset} method which returns the offset byte address in the image data.
      *
      * @returns The raw image update offset.
      */

@@ -15,7 +15,7 @@ import { PortraitUpdate } from "./PortraitUpdate.ts";
 
 /**
  * An animated portrait image. Contains the base frame image but also provides methods to access the animation
- * information. To simply play the animation it is recommended to use the [[PortraitPlayer]] class.
+ * information. To simply play the animation it is recommended to use the {@link PortraitPlayer} class.
  */
 export class Portrait extends PicImage implements Animation {
     /** The animation scripts. */

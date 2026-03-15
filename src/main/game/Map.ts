@@ -49,14 +49,14 @@ export class Map {
     /**
      * Reads a game map from the given array and offset. Unfortunately maps are not completely self-contained and
      * some information from the Exe file (map size and tile map offset address) is needed in order to read the
-     * map. You can get this data from the [[Exe]] class.
+     * map. You can get this data from the {@link Exe} class.
      *
      * @param array          The array to read the map from. This is usually the content of the file GAME1 or GAME2.
      * @param offset         The offset in the array where the map data starts.
      * @param mapSize        The size of the map to read. This is 32 for a 32x32 map or 64 for a 64x64 map.
-     *                       This information can be read from the [[Exe.getMapSize]]() method.
+     *                       This information can be read from the {@link Exe#getMapSize} method.
      * @param tileMapOffset  The offset to the beginning of the tile map in the map data. This information ca be read
-     *                       from the [[Exe.getTileMapOffset]]() method.
+     *                       from the {@link Exe#getTileMapOffset} method.
      * @returns The read game map.
      */
     public static fromArray(array: Uint8Array, offset: number, mapSize: number, tileMapOffset: number): Map {
@@ -165,14 +165,14 @@ export class Map {
     /**
      * Reads a game map from the given array and offset. Unfortunately maps are not completely self-contained and
      * some information from the Exe file (map size and tile map offset address) is needed in order to read the
-     * map. You can get this data from the [[Exe]] class.
+     * map. You can get this data from the {@link Exe} class.
      *
      * @param blob          - The blob to read the map from. This is usually the the file GAME1 or GAME2.
      * @param offset        - The offset in the blob where the map data starts.
      * @param mapSize       - The size of the map to read. This is 32 for a 32x32 map or 64 for a 64x64 map.
-     *                        This information can be read from the `exe.getMapSize()` method.
+     *                        This information can be read from the {@link Exe#getMapSize} method.
      * @param tileMapOffset - The offset to the beginning of the tile map in the map data. This information ca be read
-     *                        from the [[Exe.getTileMapOffset]]() method.
+     *                        from the {@link Exe#getTileMapOffset} method.
      * @returns The read game map.
      */
     public static async fromBlob(blob: Blob, offset: number, mapSize: number, tileMapOffset: number): Promise<Map> {

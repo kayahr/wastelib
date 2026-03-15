@@ -15,7 +15,7 @@ import { EndingUpdate } from "./EndingUpdate.ts";
 
 /**
  * Contains the base frame of the ending animation but also provides methods to access the animation information.
- * To simply play the animation it is recommended to use the [[EndingPlayer]] class.
+ * To simply play the animation it is recommended to use the {@link EndingPlayer} class.
  */
 export class Ending extends PicImage implements Animation {
     /** The animation updates. */
