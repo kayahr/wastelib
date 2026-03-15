@@ -59,7 +59,8 @@ export class Cursors implements Iterable<Cursor> {
      */
     public static fromArray(array: Uint8Array): Cursors {
         const cursors: Cursor[] = [];
-        for (let i = 0; i < 8; ++i) {
+        const numCursors = array.length / 256;
+        for (let i = 0; i < numCursors; ++i) {
             cursors.push(new Cursor(array, i * 256));
         }
         return new Cursors(cursors);
