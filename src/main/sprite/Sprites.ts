@@ -35,7 +35,7 @@ export class Sprites implements Iterable<Sprite> {
      *
      * @param index - The index of the sprite.
      * @returns The sprite image.
-     * @throws {@link !RangeError} when index is out of bounds.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getSprite(index: number): Sprite {
         if (index < 0 || index >= this.#sprites.length) {

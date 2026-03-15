@@ -87,7 +87,7 @@ export interface CanvasLike {
  *
  * @param canvas - The canvas.
  * @returns The 2D rendering context of the given canvas.
- * @throws Error when canvas does not support 2D rendering.
+ * @throws {@link !Error} if canvas does not support 2D rendering.
  */
 export function getCanvasContext2D(canvas: CanvasLike): CanvasContext2DLike {
     const ctx = canvas.getContext("2d");

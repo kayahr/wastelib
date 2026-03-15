@@ -46,7 +46,7 @@ export abstract class BaseImage implements ToCanvas {
      * @param x - The horizontal pixel position.
      * @param y - The vertical pixel position.
      * @returns The RGBA color at the specified position.
-     * @throws RangeError when coordinates are outside of the image boundaries.
+     * @throws {@link !RangeError} if coordinates are outside of the image boundaries.
      */
     public abstract getColor(x: number, y: number): number;
 

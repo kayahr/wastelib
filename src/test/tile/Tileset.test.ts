@@ -31,7 +31,7 @@ describe("Tileset", () => {
         });
     });
     describe("getTile", () => {
-        it("throws exception when index is out of bounds", async () => {
+        it("throws exception if the index is out of bounds", async () => {
             const tileset = Tilesets.fromArray(await readFile("src/test/data/allhtds1")).getTileset(1);
             assertThrowWithMessage(() => tileset.getTile(-1), RangeError, "Index out of bounds: -1");
             assertThrowWithMessage(() => tileset.getTile(3), RangeError, "Index out of bounds: 3");

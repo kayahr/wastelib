@@ -54,7 +54,7 @@ export class Tileset implements Iterable<Tile> {
      *
      * @param index - The index of the tile image to return.
      * @returns The tile image.
-     * @throws {@link !RangeError} when index is out of bounds.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getTile(index: number): Tile {
         if (index < 0 || index >= this.#tiles.length) {

@@ -53,7 +53,7 @@ export class BinaryReader {
      * @param byte - The byte index to set. Must not be outside of the data array range.
      * @param bit  - Optional bit index to set. Defaults to 0.
      * @returns This reader for method chaining.
-     * @throws RangeError  If index is out of range.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public seek(byte: number, bit = 0): this {
         // Normalize byte/bit offset
@@ -77,7 +77,7 @@ export class BinaryReader {
      * @param byte - The bytes to skip.
      * @param bit  - The bits to skip. Defaults to 0.
      * @returns This reader for method chaining.
-     * @throws RangeError if index is out of range.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public skip(byte: number, bit = 0): this {
         return this.seek(this.byte + byte, this.bit + bit);
@@ -125,7 +125,7 @@ export class BinaryReader {
      *
      * @param reverse - Set to true to read bit in reverse order (Starting with the lowest bit instead of the highest bit). Defaults to false.
      * @returns The read bit.
-     * @throws RangeError - If reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readBit(reverse = false): number {
         if (this.byte >= this.byteLength) {
@@ -148,7 +148,7 @@ export class BinaryReader {
      * @param count   - The number of bits to read.
      * @param reverse - Set to true to read bits in reverse order (Starting with the lowest bit instead of the highest bit). Defaults to false.
      * @returns The read bits.
-     * @throws RangeError if reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readBits(count: number, reverse = false): number {
         let result = 0;
@@ -163,7 +163,7 @@ export class BinaryReader {
      * Reads an unsigned 8 bit value (byte) and returns it.
      *
      * @returns The read value.
-     * @throws RangeError - If reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readUint8(): number {
         if (this.bit !== 0) {
@@ -186,7 +186,7 @@ export class BinaryReader {
      *
      * @param count - The number of bytes to read.
      * @returns The read bytes.
-     * @throws RangeError - If reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readUint8s(count: number): Uint8Array {
         let result: Uint8Array;
@@ -210,7 +210,7 @@ export class BinaryReader {
      * Reads an unsigned 16 bit value and returns it.
      *
      * @returns The read value.
-     * @throws RangeError if reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readUint16(): number {
         return this.readUint8() | this.readUint8() << 8;
@@ -221,7 +221,7 @@ export class BinaryReader {
      *
      * @param count - he number of values to read.
      * @returns The read values.
-     * @throws RangeError if reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readUint16s(count: number): Uint16Array {
         let result: Uint16Array;
@@ -240,7 +240,7 @@ export class BinaryReader {
      * Reads an unsigned 32 bit value and returns it.
      *
      * @returns The read value.
-     * @throws RangeError if reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readUint32(): number {
         return this.readUint16() | this.readUint16() << 16;
@@ -250,7 +250,7 @@ export class BinaryReader {
      * Reads an unsigned 24 bit value and returns it.
      *
      * @returns The read value.
-     * @throws RangeError if reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readUint24(): number {
         return this.readUint16() | this.readUint8() << 16;
@@ -260,7 +260,7 @@ export class BinaryReader {
      * Reads a single character and returns it.
      *
      * @returns The read character.
-     * @throws RangeError if reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readChar(): string {
         return String.fromCharCode(this.readUint8());
@@ -271,7 +271,7 @@ export class BinaryReader {
      *
      * @param len - The length of the string to read.
      * @returns The read string.
-     * @throws RangeError if reached the end of the data.
+     * @throws {@link !RangeError} if reached the end of the data.
      */
     public readString(len: number): string {
         let result = "";
