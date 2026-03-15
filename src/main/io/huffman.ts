@@ -6,8 +6,7 @@
 import type { BinaryReader } from "../io/BinaryReader.ts";
 
 /**
- * Interface of a single huffman node with a left and right branch connected to other huffman nodes or payload
- * bytes.
+ * Interface of a single huffman node with a left and right branch connected to other huffman nodes or payload bytes.
  */
 interface Node {
     left: Node | number;
@@ -17,7 +16,7 @@ interface Node {
 /**
  * Recursively reads a huffman node (or payload byte) from the given reader and returns it.
  *
- * @param reader  The reader to read the huffman node from.
+ * @param reader - The reader to read the huffman node from.
  * @returns The huffman node. Can also be the payload byte of a node.
  */
 function readNode(reader: BinaryReader): Node | number {
@@ -34,10 +33,10 @@ function readNode(reader: BinaryReader): Node | number {
 /**
  * Decodes huffman encoded data read from the given reader and returns the decoded data.
  *
- * @param reader  The reader to read the encoded data from. The current position of the reader must point to the
- *                beginning of the huffman tree. After decoding the reader position is set to the next full byte after
- *                the encoded data.
- * @param size    The number of bytes to decode. Defines the size of the returned array.
+ * @param reader - The reader to read the encoded data from. The current position of the reader must point to the
+ *                 beginning of the huffman tree. After decoding the reader position is set to the next full byte after
+ *                 the encoded data.
+ * @param size   - The number of bytes to decode. Defines the size of the returned array.
  * @returns The decoded data.
  */
 export function decodeHuffman(reader: BinaryReader, size: number): Uint8Array {
