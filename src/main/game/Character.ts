@@ -98,8 +98,8 @@ export class Character {
         this.dexterity = reader.readUint8();
         this.charisma = reader.readUint8();
         this.money = reader.readUint24();
-        this.gender = reader.readUint8();
-        this.nationality = reader.readUint8();
+        this.gender = reader.readUint8() as Gender;
+        this.nationality = reader.readUint8() as Nationality;
         this.armorClass = reader.readUint8();
         this.maxCon = reader.readUint16();
         this.curCon = reader.readUint16();

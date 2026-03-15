@@ -10,6 +10,7 @@ import { readStrings } from "../io/string.ts";
 import { decodeHuffman } from "../io/huffman.ts";
 import { Mob } from "./Mob.ts";
 import { Character } from "./Character.ts";
+import type { ActionClass } from "./ActionClass.ts";
 
 /**
  * Container for a single map from on of the GAME files.
@@ -153,7 +154,7 @@ export class Map {
         for (let y = 0, i = 0; y < mapSize; ++y) {
             const row: MapTile[] = [];
             for (let x = 0; x < mapSize; ++x, ++i) {
-                const actionClass = x & 1 ? (actionClassMap[i >> 1] & 0xf) : (actionClassMap[i >> 1] >> 4);
+                const actionClass = (x & 1 ? (actionClassMap[i >> 1] & 0xf) : (actionClassMap[i >> 1] >> 4)) as ActionClass;
                 row[x] = new MapTile(actionClass, actionMap[i], tileMap[i]);
             }
             mapTiles.push(row);

@@ -63,7 +63,7 @@ export class Mob {
         const armorClass = reader.readBits(4);
         const fixedDamage = reader.readBits(4);
         const damageType = reader.readBits(4);
-        const mobType = reader.readUint8();
+        const mobType = reader.readUint8() as MobType;
         const portrait = reader.readUint8();
         return new Mob(hitPoints, hitChance, randomDamage, maxGroupSize, armorClass, fixedDamage, damageType, mobType,
             portrait, name);

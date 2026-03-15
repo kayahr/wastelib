@@ -7,20 +7,23 @@
  * Enum with the five possible types of a mob.
  *
  * @see https://wasteland.gamepedia.com/Map_Data_Monster_Body
+ *
+ * @enum
  */
-export enum MobType {
+export const MobType = {
     /** Mob is an animal. */
-    ANIMAL = 1,
+    ANIMAL: 1,
 
     /** Mob is a mutant. */
-    MUTANT = 2,
+    MUTANT: 2,
 
     /** Mob is a humanoid. */
-    HUMANOID = 3,
+    HUMANOID: 3,
 
     /** Mob is a cyborg. */
-    CYBORG = 4,
+    CYBORG: 4,
 
     /** Mob is a robot. */
-    ROBOT = 5
-}
+    ROBOT: 5
+} as const;
+export type MobType = (typeof MobType)[keyof typeof MobType];

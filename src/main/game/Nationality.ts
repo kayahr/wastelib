@@ -5,20 +5,23 @@
 
 /**
  * The nationality of a character.
+ *
+ * @enum
  */
-export enum Nationality {
+export const Nationality = {
     /** Character is a US citizen */
-    US = 0,
+    US: 0,
 
     /** Character is russian. */
-    RUSSIAN = 1,
+    RUSSIAN: 1,
 
     /** Character is mexican */
-    MEXICAN = 2,
+    MEXICAN: 2,
 
     /** Character is native american. */
-    INDIAN = 3,
+    INDIAN: 3,
 
     /** Character is chinese. */
-    CHINESE = 4
-}
+    CHINESE: 4
+} as const;
+export type Nationality = (typeof Nationality)[keyof typeof Nationality];

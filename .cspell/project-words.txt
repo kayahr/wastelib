@@ -8,6 +8,7 @@ exepack
 Inplace
 kayahr
 npcs
+ntest
 oxlint
 readwrite
 Reimer
