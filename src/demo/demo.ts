@@ -73,16 +73,9 @@ function createImage(pic: ToCanvas): HTMLImageElement {
 document.querySelector<HTMLButtonElement>("#cursors")!.addEventListener("click", async () => {
     const cursors = await assets.readCursors();
     output.innerHTML = "";
-    cursors.getCursors().forEach(cursor => {
+    Array.from(cursors).forEach(cursor => {
         output.appendChild(createImage(cursor));
     });
-});
-
-// Mouse cursors as single image (All in one row)
-document.querySelector<HTMLButtonElement>("#cursors-map")!.addEventListener("click", async () => {
-    const cursors = await assets.readCursors();
-    output.innerHTML = "";
-    output.appendChild(createImage(cursors));
 });
 
 // End animation

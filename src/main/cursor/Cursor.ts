@@ -11,24 +11,26 @@ import { colorPalette, transparency } from "../image/colors.ts";
  */
 export class Cursor extends BaseImage {
     /** The image data. */
-    private readonly data: ArrayLike<number>;
+    readonly #data: ArrayLike<number>;
 
     /**
      * Creates a new mouse cursor image with the give image data.
      *
-     * @param data  The image data.
+     * @param array  - The array containing the image data.
+     * @param offset - Optional start offset within the array. Defaults to 0.
      */
-    private constructor(data: ArrayLike<number>) {
+    public constructor(array: Uint8Array, offset = 0) {
         super(16, 16);
-        this.data = data;
+        this.#data = array.slice(offset, offset + 256);
     }
 
-    public getColor(x: number, y: number): number {
+    /** @inheritdoc */
+    public override getColor(x: number, y: number): number {
         if (x < 0 || y < 0 || x > 15 || y > 15) {
-            throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
+            throw new RangeError(`Coordinates outside of image boundary: ${x}, ${y}`);
         }
 
-        const data = this.data;
+        const data = this.#data;
         const i = (y << 2) + 3 - (x >> 3);
         const b = 7 - (x & 7);
 
@@ -43,16 +45,5 @@ export class Cursor extends BaseImage {
             return colorPalette[pixel];
         }
         return transparency;
-    }
-
-    /**
-     * Parses a mouse cursor image from the given array.
-     *
-     * @param array   The array containing the image data.
-     * @param offset  Optional start offset within the array. Defaults to 0.
-     * @returns The parsed mouse cursor image.
-     */
-    public static fromArray(array: Uint8Array, offset = 0): Cursor {
-        return new Cursor(array.slice(offset, offset + 256));
     }
 }
