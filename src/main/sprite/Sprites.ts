@@ -4,7 +4,6 @@
  */
 
 import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
-import { toError } from "../sys/error.ts";
 import { Sprite } from "./Sprite.ts";
 
 /**
@@ -76,33 +75,8 @@ export class Sprites implements ToCanvas {
      * @param masksBlob  - The MASKS.WLF blob to read.
      * @returns The read sprites.
      */
-    public static fromBlobs(imagesBlob: Blob, masksBlob: Blob): Promise<Sprites> {
-        return new Promise((resolve, reject) => {
-            try {
-                const reader = new FileReader();
-                reader.addEventListener("load", event => {
-                    try {
-                        const masksReader = new FileReader();
-                        masksReader.addEventListener("load", event => {
-                            resolve(Sprites.fromArrays(new Uint8Array(reader.result as ArrayBuffer),
-                                new Uint8Array(masksReader.result as ArrayBuffer)));
-                        });
-                        masksReader.addEventListener("error", event => {
-                            reject(new Error(`Unable to read sprite masks from blob: ${reader.error}`));
-                        });
-                        masksReader.readAsArrayBuffer(masksBlob);
-                    } catch (error) {
-                        reject(toError(error));
-                    }
-                });
-                reader.addEventListener("error", event => {
-                    reject(new Error(`Unable to read sprite images from blob: ${reader.error}`));
-                });
-                reader.readAsArrayBuffer(imagesBlob);
-            } catch (error) {
-                reject(toError(error));
-            }
-        });
+    public static async fromBlobs(imagesBlob: Blob, masksBlob: Blob): Promise<Sprites> {
+        return Sprites.fromArrays(new Uint8Array(await imagesBlob.arrayBuffer()), new Uint8Array(await masksBlob.arrayBuffer()));
     }
 
     /** @inheritdoc */

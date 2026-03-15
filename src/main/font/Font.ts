@@ -4,7 +4,6 @@
  */
 
 import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
-import { toError } from "../sys/error.ts";
 import { FontChar } from "./FontChar.ts";
 
 /**
@@ -74,21 +73,8 @@ export class Font implements ToCanvas {
      * @param blob  The COLORF.FNT blob to read.
      * @returns The read font.
      */
-    public static fromBlob(blob: Blob): Promise<Font> {
-        return new Promise((resolve, reject) => {
-            try {
-                const reader = new FileReader();
-                reader.addEventListener("load", event => {
-                    resolve(Font.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                });
-                reader.addEventListener("error", event => {
-                    reject(new Error(`Unable to read color font from blob: ${reader.error}`));
-                });
-                reader.readAsArrayBuffer(blob);
-            } catch (error) {
-                reject(toError(error));
-            }
-        });
+    public static async fromBlob(blob: Blob): Promise<Font> {
+        return Font.fromArray(new Uint8Array(await blob.arrayBuffer()));
     }
 
     /** @inheritdoc */

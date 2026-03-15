@@ -4,7 +4,6 @@
  */
 
 import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
-import { toError } from "../sys/error.ts";
 import { Cursor } from "./Cursor.ts";
 
 /**
@@ -74,21 +73,8 @@ export class Cursors implements ToCanvas {
      * @param blob - The CURS blob to read.
      * @returns The read mouse cursors.
      */
-    public static fromBlob(blob: Blob): Promise<Cursors> {
-        return new Promise((resolve, reject) => {
-            try {
-                const reader = new FileReader();
-                reader.addEventListener("load", event => {
-                    resolve(Cursors.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                });
-                reader.addEventListener("error", event => {
-                    reject(new Error(`Unable to read cursors from blob: ${reader.error}`));
-                });
-                reader.readAsArrayBuffer(blob);
-            } catch (error) {
-                reject(toError(error));
-            }
-        });
+    public static async fromBlob(blob: Blob): Promise<Cursors> {
+        return Cursors.fromArray(new Uint8Array(await blob.arrayBuffer()));
     }
 
     /** @inheritdoc */

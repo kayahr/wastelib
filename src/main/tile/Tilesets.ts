@@ -5,7 +5,6 @@
 
 import { BinaryReader } from "../io/BinaryReader.ts";
 import { decodeHuffman } from "../io/huffman.ts";
-import { toError } from "../sys/error.ts";
 import { Tile } from "./Tile.ts";
 import { Tileset } from "./Tileset.ts";
 
@@ -90,21 +89,8 @@ export class Tilesets {
      * @param blob  The ALLHTDS1 or ALLHTDS2 blob to read.
      * @returns The read tilesets.
      */
-    public static fromBlob(blob: Blob): Promise<Tilesets> {
-        return new Promise((resolve, reject) => {
-            try {
-                const reader = new FileReader();
-                reader.addEventListener("load", event => {
-                    resolve(Tilesets.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                });
-                reader.addEventListener("error", event => {
-                    reject(new Error(`Unable to read tilesets from blob: ${reader.error}`));
-                });
-                reader.readAsArrayBuffer(blob);
-            } catch (error) {
-                reject(toError(error));
-            }
-        });
+    public static async fromBlob(blob: Blob): Promise<Tilesets> {
+        return Tilesets.fromArray(new Uint8Array(await blob.arrayBuffer()));
     }
 
     /**

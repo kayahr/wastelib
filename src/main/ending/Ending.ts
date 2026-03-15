@@ -9,7 +9,6 @@ import { PicImage } from "../image/PicImage.ts";
 import { BinaryReader } from "../io/BinaryReader.ts";
 import { decodeHuffman } from "../io/huffman.ts";
 import { decodeVxorInplace } from "../io/vxor.ts";
-import { toError } from "../sys/error.ts";
 import { EndingPlayer } from "./EndingPlayer.ts";
 import { EndingUpdate } from "./EndingUpdate.ts";
 
@@ -117,20 +116,7 @@ export class Ending extends PicImage implements Animation {
      * @param blob  The END.CPA blob.
      * @returns The read end animation.
      */
-    public static fromBlob(blob: Blob): Promise<Ending> {
-        return new Promise((resolve, reject) => {
-            try {
-                const reader = new FileReader();
-                reader.addEventListener("load", event => {
-                    resolve(Ending.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                });
-                reader.addEventListener("error", event => {
-                    reject(new Error(`Unable to read end animation from blob: ${reader.error}`));
-                });
-                reader.readAsArrayBuffer(blob);
-            } catch (error) {
-                reject(toError(error));
-            }
-        });
+    public static async fromBlob(blob: Blob): Promise<Ending> {
+        return Ending.fromArray(new Uint8Array(await blob.arrayBuffer()));
     }
 }

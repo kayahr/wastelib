@@ -4,7 +4,6 @@
  */
 
 import { BinaryReader } from "../io/BinaryReader.ts";
-import { toError } from "../sys/error.ts";
 import { Portrait } from "./Portrait.ts";
 
 /**
@@ -76,22 +75,8 @@ export class Portraits {
      * @param blob  The ALLPICS1 or ALLPICS2 blob to read.
      * @returns The read portraits.
      */
-    public static fromBlob(blob: Blob): Promise<Portraits> {
-        return new Promise((resolve, reject) => {
-            try {
-                const reader = new FileReader();
-                reader.addEventListener("load", event => {
-                    resolve(Portraits.fromArray(new Uint8Array(reader.result as ArrayBuffer)));
-                });
-                reader.addEventListener("error", event => {
-                    // oxlint-disable-next-line prefer-template
-                    reject(new Error("Unable to read portraits from blob: " + reader.error));
-                });
-                reader.readAsArrayBuffer(blob);
-            } catch (error) {
-                reject(toError(error));
-            }
-        });
+    public static async fromBlob(blob: Blob): Promise<Portraits> {
+        return Portraits.fromArray(new Uint8Array(await blob.arrayBuffer()));
     }
 
     /**

@@ -8,7 +8,6 @@ import { Ending } from "../main/ending/Ending.ts";
 import { Font } from "../main/font/Font.ts";
 import { Portraits } from "../main/portrait/Portraits.ts";
 import { Sprites } from "../main/sprite/Sprites.ts";
-import { toError } from "../main/sys/error.ts";
 import { Tilesets } from "../main/tile/Tilesets.ts";
 import { Title } from "../main/title/Title.ts";
 import { Exe } from "../main/exe/Exe.ts";
@@ -48,6 +47,10 @@ const ALL_FILES: WastelandFilename[] = [
  */
 function isWastelandFilename(filename: string): filename is WastelandFilename {
     return ALL_FILES.includes(filename as WastelandFilename);
+}
+
+function toError(e: unknown): Error {
+    return e instanceof Error ? e : new Error(String(e));
 }
 
 /**
