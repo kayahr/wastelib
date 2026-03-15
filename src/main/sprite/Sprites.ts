@@ -60,7 +60,12 @@ export class Sprites implements Iterable<Sprite> {
      */
     public static fromArrays(imageArray: Uint8Array, maskArray: Uint8Array): Sprites {
         const sprites: Sprite[] = [];
-        for (let i = 0; i < 10; ++i) {
+        const numImages = imageArray.length / 128;
+        const numMasks = maskArray.length / 32;
+        if (numImages !== numMasks) {
+            throw new Error(`Number of images (${numImages}) does not match number of masks (${numMasks})`);
+        }
+        for (let i = 0; i < numImages; ++i) {
             sprites.push(new Sprite(imageArray, maskArray, i * 128, i * 32));
         }
         return new Sprites(sprites);

@@ -33,7 +33,7 @@ export class Sprite extends BaseImage {
     /** @inheritdoc */
     public override getColor(x: number, y: number): number {
         if (x < 0 || y < 0 || x > 15 || y > 15) {
-            throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
+            throw new RangeError(`Coordinates outside of image boundary: ${x}, ${y}`);
         }
         const i = (y << 1) + (x >> 3);
         const b = 7 - (x % 8);
