@@ -9,7 +9,7 @@ import type { BinaryReader } from "../io/BinaryReader.ts";
 /**
  * Mob stats.
  *
- * @see http://wasteland.gamepedia.com/Map_Data_Monster_Body
+ * @see https://wasteland.gamepedia.com/Map_Data_Monster_Body
  */
 export class Mob {
     private readonly hitPoints: number;

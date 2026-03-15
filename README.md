@@ -85,7 +85,7 @@ See also
 * [API documentation](https://kayahr.github.io/wastelib/)
 * [Wasteland Deconstruction Wiki]
 
-[Wasteland Deconstruction Wiki]: http://wasteland.gamepedia.com/Wasteland:_The_Definitive_Deconstruction
+[Wasteland Deconstruction Wiki]: https://wasteland.gamepedia.com/Wasteland:_The_Definitive_Deconstruction
 [TypeScript]: https://www.typescriptlang.org/
 [Wasteland]: https://en.wikipedia.org/wiki/Wasteland_(video_game)
 [node-canvas]: https://www.npmjs.com/package/canvas

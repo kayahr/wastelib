@@ -6,7 +6,7 @@
 /**
  * Enum with the five possible types of a mob.
  *
- * @see http://wasteland.gamepedia.com/Map_Data_Monster_Body
+ * @see https://wasteland.gamepedia.com/Map_Data_Monster_Body
  */
 export enum MobType {
     /** Mob is an animal. */

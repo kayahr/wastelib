@@ -6,7 +6,7 @@
 /**
  * Enum with the 16 possible action classes for a map tile.
  *
- * @see http://wasteland.gamepedia.com/Map_Tile_Action_Classes
+ * @see https://wasteland.gamepedia.com/Map_Tile_Action_Classes
  */
 export enum ActionClass {
     /** No action. */

@@ -12,7 +12,7 @@ import type { BinaryReader } from "../io/BinaryReader.ts";
  * 0x182A (0x1830 with the MSQ header) and for 32x32 maps its located at offset 0x062A (0x0630 with MSQ header).
  * The block is always 50 bytes long.
  *
- * @see http://wasteland.gamepedia.com/Map_Info
+ * @see https://wasteland.gamepedia.com/Map_Info
  */
 export class MapInfo {
     private readonly unknown$00: number;

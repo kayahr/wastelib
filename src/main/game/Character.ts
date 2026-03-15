@@ -51,7 +51,7 @@ function readItems(reader: BinaryReader): Item[] {
  *
  * TODO Add setters for all the data.
  *
- * @see http://wasteland.gamepedia.com/Character_Data
+ * @see https://wasteland.gamepedia.com/Character_Data
  */
 export class Character {
     private readonly name: string;

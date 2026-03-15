@@ -14,7 +14,7 @@ import { Character } from "./Character.ts";
 /**
  * Container for a single map from on of the GAME files.
  *
- * @see http://wasteland.gamepedia.com/GameX
+ * @see https://wasteland.gamepedia.com/GameX
  */
 export class Map {
     private readonly disk: number;
