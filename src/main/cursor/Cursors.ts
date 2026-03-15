@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Klaus Reimer <k@ailis.de>
- * See LICENSE.md for licensing information.
+ * Copyright (c) 2016 Klaus Reimer
+ * SPDX-License-Identifier: MIT
  */
 
 import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";

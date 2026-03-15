@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2026 Klaus Reimer <k@ailis.de>
- * See LICENSE.md for licensing information.
+ * Copyright (c) 2026 Klaus Reimer
+ * SPDX-License-Identifier: MIT
  */
 
 import type { BinaryReader } from "../io/BinaryReader.ts";

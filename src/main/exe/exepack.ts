@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2016 Klaus Reimer <k@ailis.de>
- * See LICENSE.md for licensing information.
+ * Copyright (c) 2016 Klaus Reimer
+ * SPDX-License-Identifier: MIT
  *
  * This file provides a function used to unpack the WL.EXE file. It is based on
  * [unexepack.c](https://sourceforge.net/p/openkb/code/ci/master/tree/src/tools/unexecomp.c) written by
