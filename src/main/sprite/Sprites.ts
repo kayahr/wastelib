@@ -54,8 +54,8 @@ export class Sprites implements Iterable<Sprite> {
     /**
      * Parses sprites from the given arrays and returns it.
      *
-     * @param imageArray - The image data array with the ico0_9.wlf file content to parse.
-     * @param maskArray  - The transparency mask array with the masks.wlf file content to parse.
+     * @param imageArray - The image data array with the IC0_9.wlf file content to parse.
+     * @param maskArray  - The transparency mask array with the MASKS.WLF file content to parse.
      * @returns The parsed sprites.
      */
     public static fromArrays(imageArray: Uint8Array, maskArray: Uint8Array): Sprites {

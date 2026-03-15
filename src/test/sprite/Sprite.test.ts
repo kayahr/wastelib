@@ -12,7 +12,7 @@ describe("Sprite", () => {
     describe("getColor", () => {
         it("returns a pixel at given position as RGBA value", async t => {
             const sprites = Sprites.fromArrays(
-                await readFile("src/test/data/ico0_9.wlf"),
+                await readFile("src/test/data/ic0_9.wlf"),
                 await readFile("src/test/data/masks.wlf")
             );
             const sprite = sprites.getSprite(2);
@@ -26,7 +26,7 @@ describe("Sprite", () => {
         });
         it("throws exception when coordinates are out of bounds", async () => {
             const sprites = Sprites.fromArrays(
-                await readFile("src/test/data/ico0_9.wlf"),
+                await readFile("src/test/data/ic0_9.wlf"),
                 await readFile("src/test/data/masks.wlf")
             );
             const sprite = sprites.getSprite(2);

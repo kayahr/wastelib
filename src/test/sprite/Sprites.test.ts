@@ -14,7 +14,7 @@ import { Sprites } from "../../main/sprite/Sprites.ts";
 describe("Sprites", () => {
     it("is iterable", async () => {
         const sprites = Sprites.fromArrays(
-            await readFile("src/test/data/ico0_9.wlf"),
+            await readFile("src/test/data/ic0_9.wlf"),
             await readFile("src/test/data/masks.wlf")
         );
         let index = 0;
@@ -23,9 +23,9 @@ describe("Sprites", () => {
         }
     });
     describe("fromArrays", () => {
-        it("reads ICO0_9.WLF and MASKS.WLF from array", async () => {
+        it("reads IC0_9.WLF and MASKS.WLF from array", async () => {
             const sprites = Sprites.fromArrays(
-                await readFile("src/test/data/ico0_9.wlf"),
+                await readFile("src/test/data/ic0_9.wlf"),
                 await readFile("src/test/data/masks.wlf")
             );
             assertEquals(sprites.getSize(), 3);
@@ -37,15 +37,15 @@ describe("Sprites", () => {
             await assertMatchImage(sprite1.toImageData(createCanvasContext2D()), "sprites/001");
             await assertMatchImage(sprite2.toImageData(createCanvasContext2D()), "sprites/002");
         });
-        it("throws error when number of images from ICO0_9.WLF does not match number of images from MASKS.WLF", async () => {
+        it("throws error when number of images from IC0_9.WLF does not match number of images from MASKS.WLF", async () => {
             assertThrowWithMessage(() => Sprites.fromArrays(new Uint8Array(1280), new Uint8Array(288)), Error,
                 "Number of images (10) does not match number of masks (9)");
         });
     });
     describe("fromBlob", () => {
-        it("reads ICO0_9.WLF and MASKS.WLF from array", async () => {
+        it("reads IC0_9.WLF and MASKS.WLF from array", async () => {
             const sprites = await Sprites.fromBlobs(
-                await openAsBlob("src/test/data/ico0_9.wlf"),
+                await openAsBlob("src/test/data/ic0_9.wlf"),
                 await openAsBlob("src/test/data/masks.wlf")
             );
             assertEquals(sprites.getSize(), 3);
@@ -61,7 +61,7 @@ describe("Sprites", () => {
     describe("getSprite", () => {
         it("throws exception if the index is out of bounds", async () => {
             const sprites = await Sprites.fromBlobs(
-                await openAsBlob("src/test/data/ico0_9.wlf"),
+                await openAsBlob("src/test/data/ic0_9.wlf"),
                 await openAsBlob("src/test/data/masks.wlf")
             );
             assertThrowWithMessage(() => sprites.getSprite(-1), RangeError, "Index out of bounds: -1");
