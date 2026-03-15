@@ -18,79 +18,84 @@ const SEG2 = 0xd020;
  */
 export class Exe {
     /** The intro strings. */
-    private readonly introStrings: string[];
+    readonly #introStrings: string[];
 
     /** Various unsorted strings. */
-    private readonly messageStrings: string[];
+    readonly #messageStrings: string[];
 
     /** Various strings mostly used in inventory, skills and attribute screens. */
-    private readonly inventoryStrings: string[];
+    readonly #inventoryStrings: string[];
 
     /** Character creation strings. */
-    private readonly characterCreationStrings: string[];
+    readonly #characterCreationStrings: string[];
 
     /** Promotion strings. */
-    private readonly promotionStrings: string[];
+    readonly #promotionStrings: string[];
 
     /** Library strings. */
-    private readonly libraryStrings: string[];
+    readonly #libraryStrings: string[];
 
     /** Shop strings. */
-    private readonly shopStrings: string[];
+    readonly #shopStrings: string[];
 
     /** Infirmary strings. */
-    private readonly infirmaryStrings: string[];
+    readonly #infirmaryStrings: string[];
 
     /** The map sizes of the maps in the two GAME files. */
-    private readonly mapSizes: Uint8Array;
+    readonly #mapSizes: Uint8Array;
 
     /** The map offsets of the maps in the two GAME files. */
-    private readonly mapOffsets: Uint32Array;
+    readonly #mapOffsets: Uint32Array;
 
     /** The mapping from location index to disk+map index. */
-    private readonly locationMapping: Uint8Array;
+    readonly #locationMapping: Uint8Array;
 
     /** The offsets to the tile maps. */
-    private readonly tileMapOffsets: Uint16Array;
+    readonly #tileMapOffsets: Uint16Array;
 
     /** The offsets of the save games in the two GAME files. */
-    private readonly savegameOffsets: number[];
+    readonly #savegameOffsets: number[];
 
     /** The offsets of the five shop lists in the two GAME files (0-3 in GAME1, 4 in GAME2, 3 is not used in game and actually does not exist in GAME1). */
-    private readonly shopItemListOffsets: number[];
+    readonly #shopItemListOffsets: number[];
 
     /**
      * Creates a new Exe information object from the given packed EXE content.
      *
-     * @param data  The packed content of the WL.EXE file.
+     * @param data - The content of the WL.EXE file. Maybe compressed with EXEPACK.
      */
     private constructor(data: Uint8Array) {
-        const unpacked = unpackExe(data);
+        const expectedExeSize = 169824;
+        const unpacked = data.length === expectedExeSize ? data : unpackExe(data);
+        const exeSize = unpacked.length;
+        if (exeSize !== expectedExeSize) {
+            throw new Error(`Expected unpacked EXE of size ${expectedExeSize} but got ${exeSize}`);
+        }
 
         // Decode global strings
-        this.introStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xa703, 527));
-        this.messageStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xab3e, 1661));
-        this.inventoryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xb270, 1845));
-        this.characterCreationStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xce4B, 210));
-        this.promotionStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xd622, 1136));
-        this.libraryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdacc, 277));
-        this.shopStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdbf8, 229));
-        this.infirmaryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdced, 369));
+        this.#introStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xa703, 527));
+        this.#messageStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xab3e, 1661));
+        this.#inventoryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xb270, 1845));
+        this.#characterCreationStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xce4B, 210));
+        this.#promotionStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xd622, 1136));
+        this.#libraryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdacc, 277));
+        this.#shopStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdbf8, 229));
+        this.#infirmaryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdced, 369));
 
         // Read the map sizes of the maps in the two GAME files.
-        this.mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 50);
+        this.#mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 50);
 
         // Read the map offsets of the maps in the two GAME files.
-        this.mapOffsets = new Uint32Array(unpacked.slice(SEG2 + 0xbc7a, SEG2 + 0xbc7a + 42 * 4).buffer);
+        this.#mapOffsets = new Uint32Array(unpacked.slice(SEG2 + 0xbc7a, SEG2 + 0xbc7a + 42 * 4).buffer);
 
         // Read the location to disk+map mapping
-        this.locationMapping = unpacked.slice(SEG2 + 0xbec9, SEG2 + 0xbec9 + 50);
+        this.#locationMapping = unpacked.slice(SEG2 + 0xbec9, SEG2 + 0xbec9 + 50);
 
         // Read the offsets to the tile maps
-        this.tileMapOffsets = new Uint16Array(unpacked.slice(SEG2 + 0xbd22, SEG2 + 0xbd22 + 50 * 2).buffer);
+        this.#tileMapOffsets = new Uint16Array(unpacked.slice(SEG2 + 0xbd22, SEG2 + 0xbd22 + 50 * 2).buffer);
 
         // Read the offsets of the two savegame blocks in the two GAME files
-        this.savegameOffsets = [
+        this.#savegameOffsets = [
             new BinaryReader(unpacked, 0x880c, 2).readUint16() + (new BinaryReader(unpacked, 0x880f, 2).readUint16() << 16),
             new BinaryReader(unpacked, 0x8819, 2).readUint16() + (new BinaryReader(unpacked, 0x881c, 2).readUint16() << 16)
         ];
@@ -99,16 +104,16 @@ export class Exe {
         const savegameSize = new BinaryReader(unpacked, 0x8820, 2).readUint16()
 
         // Read the offsets of the four shop item lists (lists 0-2 are in GAME1, list 3 is in GAME2)
-        this.shopItemListOffsets = [
+        this.#shopItemListOffsets = [
             ...Array.from(new Uint16Array(unpacked.slice(SEG2 + 0xbe20, SEG2 + 0xbe20 + 4 * 2).buffer)),
             0
-        ].map((offset, index) => this.savegameOffsets[index < 4 ? 0 : 1] + savegameSize + offset);
+        ].map((offset, index) => this.#savegameOffsets[index < 4 ? 0 : 1] + savegameSize + offset);
     }
 
     /**
      * Parses a WL.exe file and returns the information from it.
      *
-     * @param data  The array containing the packed content of the WL.EXE file.
+     * @param data - The array containing the packed content of the WL.EXE file.
      * @returns The parsed information from the exe file.
      */
     public static fromArray(data: Uint8Array): Exe {
@@ -118,7 +123,7 @@ export class Exe {
     /**
      * Reads information from the given WL.EXE blob and returns it.
      *
-     * @param blob  The WL.EXE blob.
+     * @param blob - The WL.EXE blob.
      * @returns The exe information.
      */
     public static async fromBlob(blob: Blob): Promise<Exe> {
@@ -132,7 +137,7 @@ export class Exe {
      * @returns The intro strings.
      */
     public getIntroStrings(): string[] {
-        return this.introStrings;
+        return this.#introStrings.slice();
     }
 
     /**
@@ -141,7 +146,7 @@ export class Exe {
      * @returns Various unsorted strings.
      */
     public getMessageStrings(): string[] {
-        return this.messageStrings;
+        return this.#messageStrings.slice();
     }
 
     /**
@@ -151,7 +156,7 @@ export class Exe {
      * @returns Various strings mostly used in inventory, skills and attribute screens.
      */
     public getInventoryStrings(): string[] {
-        return this.inventoryStrings;
+        return this.#inventoryStrings.slice();
     }
 
     /**
@@ -160,43 +165,35 @@ export class Exe {
      * @returns Character creation strings.
      */
     public getCharacterCreationStrings(): string[] {
-        return this.characterCreationStrings;
+        return this.#characterCreationStrings.slice();
     }
 
     /**
-     * Returns strings used during promotions.
-     *
-     * @returns Promotion strings.
+     * @returns Strings used during promotions.
      */
     public getPromotionStrings(): string[] {
-        return this.promotionStrings;
+        return this.#promotionStrings.slice();
     }
 
     /**
-     * Returns strings used in libraries.
-     *
-     * @returns Library strings.
+     * @returns Strings used in libraries.
      */
     public getLibraryStrings(): string[] {
-        return this.libraryStrings;
+        return this.#libraryStrings.slice();
     }
 
     /**
-     * Returns strings used in shops.
-     *
-     * @returns Shop strings.
+     * @returns Strings used in shops.
      */
     public getShopStrings(): string[] {
-        return this.shopStrings;
+        return this.#shopStrings.slice();
     }
 
     /**
-     * Returns strings used in infirmaries.
-     *
-     * @returns Infirmary strings.
+     * @returns Strings used in infirmaries.
      */
     public getInfirmaryStrings(): string[] {
-        return this.infirmaryStrings;
+        return this.#infirmaryStrings.slice();
     }
 
     /**
@@ -208,51 +205,51 @@ export class Exe {
      * @returns The map size.
      */
     public getMapSize(disk: number, map: number): number {
-        return this.mapSizes[this.getLocation(disk, map)];
+        return this.#mapSizes[this.getLocation(disk, map)];
     }
 
     /**
      * Returns the offset from the beginning of the huffman compressed tile map within the map data. This information
      * is needed to load a map because the maps itself do not know where the tile map section begins.
      *
-     * @param disk  The disk index (0 or 1).
-     * @param map   The map index (0-19 for disk 0 and 0-21 for disk 1).
+     * @param disk - The disk index (0 or 1).
+     * @param map  - The map index (0-19 for disk 0 and 0-21 for disk 1).
      * @returns The tile map offset.
      */
     public getTileMapOffset(disk: number, map: number): number {
-        return this.tileMapOffsets[this.getLocation(disk, map)];
+        return this.#tileMapOffsets[this.getLocation(disk, map)];
     }
 
     /**
      * Returns the map offset of the given map.
      *
-     * @param disk  The disk index (0 or 1).
-     * @param map   The map index (0-19 for disk 0 and 0-21 for disk 1).
+     * @param disk - The disk index (0 or 1).
+     * @param map  - The map index (0-19 for disk 0 and 0-21 for disk 1).
      * @returns The map offset.
      */
     public getMapOffset(disk: number, map: number): number {
-        return this.mapOffsets[disk * 20 + map];
+        return this.#mapOffsets[disk * 20 + map];
     }
 
     /**
      * Returns the location index of the given map.
      *
-     * @param disk  The disk index (0 or 1).
-     * @param map   The map index (0-19 for disk 0 and 0-21 for disk 1)
+     * @param disk - The disk index (0 or 1).
+     * @param map  - The map index (0-19 for disk 0 and 0-21 for disk 1)
      * @returns The location index (0-49)
      */
     public getLocation(disk: number, map: number): number {
-        return this.locationMapping.indexOf((disk + 1 ^ 3) << 6 | map);
+        return this.#locationMapping.indexOf((disk + 1 ^ 3) << 6 | map);
     }
 
     /**
      * Returns the disk index of the specified location.
      *
-     * @param location  The location (0-49, but there are also invalid locations within this range).
+     * @param location - The location (0-49, but there are also invalid locations within this range).
      * @returns The disk index (0 or 1).
      */
     public getLocationDisk(location: number): number {
-        const value = this.locationMapping[location] >> 6;
+        const value = this.#locationMapping[location] >> 6;
         if (!value) {
             throw new Error(`Invalid location: ${location}`);
         }
@@ -262,11 +259,12 @@ export class Exe {
     /**
      * Returns the map index of the specified location.
      *
-     * @param location  The location index (0-49, but there are also invalid locations within this range).
+     * @param location - The location index (0-49, but there are also invalid locations within this range).
      * @returns The map index (0-19 for disk 0 and 0-21 for disk 1).
+     * @throws {@link !RangeError} if the location index is invalid.
      */
     public getLocationMap(location: number): number {
-        const value = this.locationMapping[location];
+        const value = this.#locationMapping[location];
         if (!value) {
             throw new Error(`Invalid location: ${location}`);
         }
@@ -280,7 +278,7 @@ export class Exe {
      * @returns The savegame offset
      */
     public getSavegameOffset(disk: number): number {
-        return this.savegameOffsets[disk];
+        return this.#savegameOffsets[disk];
     }
 
     /**
@@ -290,6 +288,6 @@ export class Exe {
      * @returns The shop item list offset
      */
     public getShopItemListOffset(shop: number): number {
-        return this.shopItemListOffsets[shop];
+        return this.#shopItemListOffsets[shop];
     }
 }
