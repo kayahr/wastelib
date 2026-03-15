@@ -21,7 +21,7 @@ export class Font implements Iterable<FontChar> {
         this.#chars = chars;
     }
 
-     /**
+    /**
      * @yields The font characters.
      */
     public *[Symbol.iterator](): Generator<FontChar> {

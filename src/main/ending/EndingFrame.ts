@@ -24,14 +24,14 @@ export class EndingFrame extends PicImage {
     /**
      * Updates the animation frame.
      *
-     * @param update  The update to apply.
+     * @param update - The update to apply.
      */
     public update(update: EndingUpdate): void {
-        update.getPatches().forEach(patch => {
+        for (const patch of update) {
             const offset = patch.getOffset();
             patch.getData().forEach((value, index) => {
                 this.data[offset + index] = value;
             });
-        });
+        }
     }
 }

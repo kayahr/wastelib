@@ -9,22 +9,52 @@ import { EndingPatch } from "./EndingPatch.ts";
 /**
  * A single ending animation update.
  */
-export class EndingUpdate {
+export class EndingUpdate implements Iterable<EndingPatch> {
     /** The delay before applying this update. */
-    private readonly delay: number;
+    readonly #delay: number;
 
     /** A set of update patches. */
-    private readonly patches: EndingPatch[];
+    readonly #patches: readonly EndingPatch[];
 
     /**
      * Creates an end animation update with the given delay and patches.
      *
-     * @param delay    The delay before applying this update.
-     * @param patches  The set of update patches.
+     * @param delay   - The delay before applying this update.
+     * @param patches - The set of update patches.
      */
     private constructor(delay: number, patches: EndingPatch[]) {
-        this.delay = delay;
-        this.patches = patches;
+        this.#delay = delay;
+        this.#patches = patches;
+    }
+
+    /**
+     * @yields The ending animation update patches.
+     */
+    public *[Symbol.iterator](): Generator<EndingPatch> {
+        for (const patch of this.#patches) {
+            yield patch;
+        }
+    }
+
+    /**
+     * Returns the update patch with the given index.
+     *
+     * @param index - Update patch index.
+     * @returns The animation patch.
+     * @throws {@link !RangeError} if the index is out of bounds.
+     */
+    public getPatch(index: number): EndingPatch {
+        if (index < 0 || index >= this.#patches.length) {
+            throw new RangeError(`Index out of bounds: ${index}`);
+        }
+        return this.#patches[index];
+    }
+
+    /**
+     * @returns The number of update patches.
+     */
+    public getSize(): number {
+        return this.#patches.length;
     }
 
     /**
@@ -34,45 +64,14 @@ export class EndingUpdate {
      * @returns The delay in time units.
      */
     public getDelay(): number {
-        return this.delay;
-    }
-
-    /**
-     * Returns the set of update patches.
-     *
-     * @returns The set of update patches.
-     */
-    public getPatches(): EndingPatch[] {
-        return this.patches.slice();
-    }
-
-    /**
-     * Returns the update patch with the given index.
-     *
-     * @param index  Update patch index.
-     * @returns The animation patch.
-     */
-    public getPatch(index: number): EndingPatch {
-        if (index < 0 || index >= this.patches.length) {
-            throw new Error(`Index out of bounds: ${index}`);
-        }
-        return this.patches[index];
-    }
-
-    /**
-     * Returns the number of update patches.
-     *
-     * @returns The number of update patches.
-     */
-    public getNumPatches(): number {
-        return this.patches.length;
+        return this.#delay;
     }
 
     /**
      * Reads an animation update from the given reader. If the end of the animation has been reached then `null` is
      * returned.
      *
-     * @param reader  The reader to read the animation frame from.
+     * @param reader - The reader to read the animation frame from.
      * @returns The read animation update or null if end of animation has been reached.
      */
     public static read(reader: BinaryReader): EndingUpdate | null {

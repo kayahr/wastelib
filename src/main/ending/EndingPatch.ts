@@ -11,20 +11,20 @@ import type { BinaryReader } from "../io/BinaryReader.ts";
  */
 export class EndingPatch {
     /** The image offset to update. */
-    private readonly offset: number;
+    readonly #offset: number;
 
     /** The patch data (Four bytes with eight 4-bit colors). */
-    private readonly data: Uint8Array;
+    readonly #data: Uint8Array;
 
     /**
      * Creates a new update patch,
      *
-     * @param offset  The image update offset.
-     * @param data    The patch data (Four bytes with eight 4-bit colors).
+     * @param offset - The image update offset.
+     * @param data   - The patch data (Four bytes with eight 4-bit colors).
      */
     private constructor(offset: number, data: Uint8Array) {
-        this.offset = offset;
-        this.data = data;
+        this.#offset = offset;
+        this.#data = data;
     }
 
     /**
@@ -36,12 +36,10 @@ export class EndingPatch {
      * @returns The raw image update offset.
      */
     public getRawOffset(): number {
-        return this.offset;
+        return this.#offset;
     }
 
     /**
-     * Returns the byte offset in the image data array to update.
-     *
      * @returns The byte offset in the image data array to update.
      */
     public getOffset(): number {
@@ -49,40 +47,34 @@ export class EndingPatch {
     }
 
     /**
-     * The horizontal update position in pixels relative to the image.
-     *
-     * @returns The horizontal update position.
+     * @returns The horizontal update position in pixels relative to the image.
      */
     public getX(): number {
-        return this.offset * 8 % 320;
+        return this.#offset * 8 % 320;
     }
 
     /**
-     * The vertical update position in pixels relative to the image.
-     *
-     * @returns The vertical update position.
+     * @returns The vertical update position in pixels relative to the image.
      */
     public getY(): number {
-        return (this.offset * 8 / 320) | 0;
+        return (this.#offset * 8 / 320) | 0;
     }
 
     /**
-     * Returns the patch data to apply to the image. Always four bytes with eight 4-bit colors.
-     *
-     * @returns The patch data.
+     * @returns the patch data to apply to the image. Always four bytes with eight 4-bit colors.
      */
     public getData(): Uint8Array {
-        return this.data.slice();
+        return this.#data.slice();
     }
 
     /**
      * Returns the RGBA color at the specified position.
      *
-     * @param x  The horizontal pixel position.
+     * @param x - The horizontal pixel position.
      * @returns The RGBA color at the specified position.
      */
     public getColor(x: number): number {
-        const pixelTuple = this.data[x >> 1];
+        const pixelTuple = this.#data[x >> 1];
         const pixel = (x & 1) === 1 ? pixelTuple & 0xf : pixelTuple >> 4;
         return colorPalette[pixel];
     }
@@ -91,7 +83,7 @@ export class EndingPatch {
      * Reads an update patch from the given reader. If end of animation update block is reached then `null` is
      * returned.
      *
-     * @param reader  The reader to read the update patch from.
+     * @param reader - The reader to read the update patch from.
      * @returns The read update patch or null if end of update block is reached.
      */
     public static read(reader: BinaryReader): EndingPatch | null {

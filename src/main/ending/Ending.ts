@@ -16,52 +16,52 @@ import { EndingUpdate } from "./EndingUpdate.ts";
  * Contains the base frame of the ending animation but also provides methods to access the animation information.
  * To simply play the animation it is recommended to use the {@link EndingPlayer} class.
  */
-export class Ending extends PicImage implements Animation {
+export class Ending extends PicImage implements Animation, Iterable<EndingUpdate> {
     /** The animation updates. */
-    private readonly updates: EndingUpdate[];
+    readonly #updates: EndingUpdate[];
 
     /**
      * Creates a new end animation with the given image and animation data.
      *
-     * @param baseFrame  The (vxor-decoded) image data of the base frame of the end animation.
-     * @param updates    The animation updates.
+     * @param baseFrame - The decoded image data of the base frame.
+     * @param updates   - The animation updates.
      */
     private constructor(baseFrame: Uint8Array, updates: EndingUpdate[]) {
         super(baseFrame, 288, 128);
-        this.updates = updates;
+        this.#updates = updates;
     }
 
     /**
-     * Returns the animation updates.
-     *
-     * @returns The animation updates.
+     * @yields The ending animation updates.
      */
-    public getUpdates(): EndingUpdate[] {
-        return this.updates.slice();
+    public *[Symbol.iterator](): Generator<EndingUpdate> {
+        for (const update of this.#updates) {
+            yield update;
+        }
     }
 
     /**
      * Returns the animation update with the given index.
      *
-     * @param index  Animation update index.
+     * @param index - Animation update index.
      * @returns The animation update.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getUpdate(index: number): EndingUpdate {
-        if (index < 0 || index >= this.updates.length) {
-            throw new Error(`Index out of bounds: ${index}`);
+        if (index < 0 || index >= this.#updates.length) {
+            throw new RangeError(`Index out of bounds: ${index}`);
         }
-        return this.updates[index];
+        return this.#updates[index];
     }
 
     /**
-     * Returns the number of animation updates.
-     *
      * @returns The number of animation updates.
      */
-    public getNumUpdates(): number {
-        return this.updates.length;
+    public getSize(): number {
+        return this.#updates.length;
     }
 
+    /** @inheritdoc */
     public createPlayer(onDraw: (frame: BaseImage) => void): EndingPlayer {
         return new EndingPlayer(this, onDraw);
     }
@@ -113,7 +113,7 @@ export class Ending extends PicImage implements Animation {
     /**
      * Reads the end animation from the given blob and returns it.
      *
-     * @param blob  The END.CPA blob.
+     * @param blob - The END.CPA blob.
      * @returns The read end animation.
      */
     public static async fromBlob(blob: Blob): Promise<Ending> {

@@ -11,37 +11,36 @@ import type { BaseImage } from "./BaseImage.ts";
  */
 export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseImage> implements AnimationPlayer {
     /** The played animation. */
-    private readonly animation: A;
+    readonly #animation: A;
 
     /** The current frame. */
-    private frame!: T;
+    #frame: T | null = null;
 
     /** The timer handle if animation is playing. Null otherwise, */
-    private timer: unknown = null;
+    #timer: unknown = null;
 
     /** The playing speed in milliseconds per time unit. */
-    private speed = 50;
+    #speed = 50;
 
     /** Callback to call on each frame update. */
-    private readonly onDraw: (frame: T) => void;
+    readonly #onDraw: (frame: T) => void;
 
     /**
      * Creates a new animation player for the given animation and calling the given draw callback for each
      * animation frame.
      *
-     * @param animation  The animation to play.
-     * @param onDraw     Callback to call on each frame update. This callback is responsible for actually showing the
-     *                   animation frame to the user.
+     * @param animation - The animation to play.
+     * @param onDraw    - Callback to call on each frame update. This callback is responsible for actually showing the animation frame to the user.
      */
     protected constructor(animation: A, onDraw: (frame: T) => void) {
-        this.animation = animation;
-        this.onDraw = onDraw;
+        this.#animation = animation;
+        this.#onDraw = onDraw;
     }
 
     /**
      * Initializes the player. Called for initialization when player is created and each time it is reset.
      *
-     * @param animation  The animation to play.
+     * @param animation - The animation to play.
      * @returns The base frame to start the animation with.
      */
     protected abstract init(animation: A): T;
@@ -51,16 +50,17 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      */
     public reset(): void {
         this.stop();
-        this.onDraw(this.frame = this.init(this.animation));
+        this.#onDraw(this.#frame = this.init(this.#animation));
     }
 
     /**
-     * Returns the current animation frame.
-     *
      * @returns The current animation frame.
      */
     public getFrame(): T {
-        return this.frame;
+        if (this.#frame == null) {
+            throw new Error("Animation player did not initialize frame");
+        }
+        return this.#frame;
     }
 
     /**
@@ -68,8 +68,8 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      *
      * TODO Do we need a return value here?
      *
-     * @param animation     The animation to play.
-     * @param currentFrame  The current frame.
+     * @param animation    - The animation to play.
+     * @param currentFrame - The current frame.
      * @returns The next frame.
      */
     protected abstract nextFrame(animation: A, currentFrame: T): T;
@@ -78,36 +78,34 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      * Advances the animation to the next frame.
      */
     public next(): void {
-        this.onDraw(this.frame = this.nextFrame(this.animation, this.frame));
+        this.#onDraw(this.#frame = this.nextFrame(this.#animation, this.getFrame()));
     }
 
     /**
      * Returns the number of time units to wait before rendering the next frame.
      *
-     * @param animation  The animation to play.
+     * @param animation - The animation to play.
      * @returns The next delay in time units.
      */
     protected abstract getNextDelayInUnits(animation: A): number;
 
     /**
-     * Returns the delay to wait before rendering the next frame.
-     *
-     * @returns The next delay in milliseconds.
+     * @returns the delay to wait before rendering the next frame.
      */
     public getNextDelay(): number {
-        return this.getNextDelayInUnits(this.animation) * this.speed;
+        return this.getNextDelayInUnits(this.#animation) * this.#speed;
     }
 
     /**
      * Starts the animation if not already running.
      */
     public start(): void {
-        if (this.timer == null) {
+        if (this.#timer == null) {
             const animate = (): void => {
                 this.next();
-                this.timer = setTimeout(animate, this.getNextDelay());
+                this.#timer = setTimeout(animate, this.getNextDelay());
             };
-            this.timer = setTimeout(animate, this.getNextDelay());
+            this.#timer = setTimeout(animate, this.getNextDelay());
         }
     }
 
@@ -115,19 +113,17 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      * Stops the animation if currently running.
      */
     public stop(): void {
-        if (this.timer != null) {
-            clearTimeout(this.timer as number);
-            this.timer = null;
+        if (this.#timer != null) {
+            clearTimeout(this.#timer as number);
+            this.#timer = null;
         }
     }
 
     /**
-     * Returns the animation speed in milliseconds per time unit. Default is 50.
-     *
-     * @returns The animation speed in milliseconds per time unit.
+     * @returns the animation speed in milliseconds per time unit. Default is 50.
      */
     public getSpeed(): number {
-        return this.speed;
+        return this.#speed;
     }
 
     /**
@@ -136,24 +132,20 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      * @param speed  The animation speed to set.
      */
     public setSpeed(speed: number): void {
-        this.speed = speed;
+        this.#speed = speed;
     }
 
     /**
-     * Returns the animation width in pixels.
-     *
-     * @returns The animation width in pixels.
+     * @returns the animation width in pixels.
      */
     public getWidth(): number {
-        return this.animation.getWidth();
+        return this.#animation.getWidth();
     }
 
     /**
-     * Returns the animation height in pixels.
-     *
-     * @returns The animation height in pixels.
+     * @returns the animation height in pixels.
      */
     public getHeight(): number {
-        return this.animation.getHeight();
+        return this.#animation.getHeight();
     }
 }
