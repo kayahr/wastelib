@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
 import { FontChar } from "./FontChar.ts";
 
 /**
- * Container for the 172 font characters of the COLORF.FNT file.
+ * Container for the font characters of the COLORF.FNT file.
  */
-export class Font implements ToCanvas {
+export class Font implements Iterable<FontChar> {
     /** The character images of the font. */
-    private readonly chars: FontChar[];
+    readonly #chars: FontChar[];
 
     /**
      * Creates a new font container with the given font characters.
@@ -19,38 +18,37 @@ export class Font implements ToCanvas {
      * @param chars  The font character images.
      */
     private constructor(chars: FontChar[]) {
-        this.chars = chars;
+        this.#chars = chars;
     }
 
-    /**
-     * Returns array with all font character images.
-     *
-     * @returns The font character images.
+     /**
+     * @yields The font characters.
      */
-    public getChars(): FontChar[] {
-        return this.chars.slice();
+    public *[Symbol.iterator](): Generator<FontChar> {
+        for (const char of this.#chars) {
+            yield char;
+        }
     }
 
     /**
      * Returns the font character image with the given index.
      *
-     * @param index  The index of the font character.
+     * @param index - The index of the font character.
      * @returns The font character image.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getChar(index: number): FontChar {
-        if (index < 0 || index >= this.chars.length) {
-            throw new Error(`Index out of bounds: ${index}`);
+        if (index < 0 || index >= this.#chars.length) {
+            throw new RangeError(`Index out of bounds: ${index}`);
         }
-        return this.chars[index];
+        return this.#chars[index];
     }
 
     /**
-     * Returns the number of characters.
-     *
      * @returns The number of characters.
      */
-    public getNumChars(): number {
-        return this.chars.length;
+    public getSize(): number {
+        return this.#chars.length;
     }
 
     /**
@@ -62,7 +60,7 @@ export class Font implements ToCanvas {
     public static fromArray(array: Uint8Array): Font {
         const chars: FontChar[] = [];
         for (let i = 0; i < 172; ++i) {
-            chars.push(FontChar.fromArray(array, i * 32));
+            chars.push(new FontChar(array, i * 32));
         }
         return new Font(chars);
     }
@@ -70,23 +68,10 @@ export class Font implements ToCanvas {
     /**
      * Reads the color font from the given blob and returns it.
      *
-     * @param blob  The COLORF.FNT blob to read.
+     * @param blob - The COLORF.FNT blob to read.
      * @returns The read font.
      */
     public static async fromBlob(blob: Blob): Promise<Font> {
         return Font.fromArray(new Uint8Array(await blob.arrayBuffer()));
-    }
-
-    /** @inheritdoc */
-    public toCanvas<T extends CanvasLike>(canvas: T): T {
-        const chars = this.chars;
-        const numChars = chars.length;
-        canvas.width = 128;
-        canvas.height = Math.ceil(numChars / 8) * 8;
-        const ctx = getCanvasContext2D(canvas);
-        for (let i = 0; i < numChars; ++i) {
-            this.getChar(i).draw(ctx, (i & 15) << 3, i >> 4 << 3);
-        }
-        return canvas;
     }
 }

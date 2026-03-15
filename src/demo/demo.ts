@@ -94,16 +94,9 @@ document.querySelector<HTMLButtonElement>("#end")!.addEventListener("click", asy
 document.querySelector<HTMLButtonElement>("#font")!.addEventListener("click", async () => {
     const font = await assets.readFont();
     output.innerHTML = "";
-    font.getChars().forEach(char => {
+    Array.from(font).forEach(char => {
         output.appendChild(createImage(char));
     });
-});
-
-// Font as single image (16 characters per row)
-document.querySelector<HTMLButtonElement>("#font-map")!.addEventListener("click", async () => {
-    const font = await assets.readFont();
-    output.innerHTML = "";
-    output.appendChild(createImage(font));
 });
 
 // Sprites as separate images

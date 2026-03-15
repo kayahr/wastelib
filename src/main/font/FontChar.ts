@@ -16,39 +16,30 @@ export class FontChar extends BaseImage {
      * blue component bits, forth bit contains the intensity bits and the next four bytes do the same for the second
      * image row and so on.
      */
-    private readonly data: ArrayLike<number>;
+    readonly #data: ArrayLike<number>;
 
     /**
      * Creates a new font character image for the given image data.
      *
-     * @param data  The image data.
+     * @param array  - The array with the content of the colorf.fnt file.
+     * @param offset - The offset in the array pointing to the font character.
      */
-    private constructor(data: ArrayLike<number>) {
+    public constructor(array: Uint8Array, offset = 0) {
         super(8, 8);
-        this.data = data;
+        this.#data = array.slice(offset, offset + 32);
     }
 
+    /** @inheritdoc */
     public getColor(x: number, y: number): number {
         if (x < 0 || y < 0 || x > 7 || y > 7) {
-            throw new Error(`Coordinates outside of image boundary: ${x}, ${y}`);
+            throw new RangeError(`Coordinates outside of image boundary: ${x}, ${y}`);
         }
         const bit = 7 - (x & 7);
-        const data = this.data;
+        const data = this.#data;
         const pixel = (((data[y] >> bit) & 1) << 0) // Blue
             | (((data[y + 8] >> bit) & 1) << 1)     // Green
             | (((data[y + 16] >> bit) & 1) << 2)    // Red
             | (((data[y + 24] >> bit) & 1) << 3);   // Intensity
         return colorPalette[pixel];
-    }
-
-    /**
-     * Parses a single font character from the given array and returns it.
-     *
-     * @param array  - The array with the content of the colorf.fnt file.
-     * @param offset - The offset in the array pointing to the font character.
-     * @returns The parsed font character.
-     */
-    public static fromArray(array: Uint8Array, offset = 0): FontChar {
-        return new FontChar(array.slice(offset, offset + 32));
     }
 }
