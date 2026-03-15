@@ -25,6 +25,11 @@ describe("Exe", () => {
             assertEquals(exe.getSavegameOffset(0), savegameOffset0);
             assertEquals(exe.getSavegameOffset(1), savegameOffset1);
         });
+        it("reads packed WL.EXE array with relocation entries", async () => {
+            const exe = Exe.fromArray(await readFile("src/test/data/wl-reloc.exe"));
+            assertEquals(exe.getSavegameOffset(0), 0x012389ab);
+            assertEquals(exe.getSavegameOffset(1), 0x4567cdef);
+        });
         it("throws error when exe signature is invalid", async () => {
             const brokenExe = await readFile("src/test/data/broken/wl-no-exe.exe");
             assertThrowWithMessage(() => Exe.fromArray(brokenExe), Error, "No EXE file");
