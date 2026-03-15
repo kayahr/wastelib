@@ -3,18 +3,17 @@
  * SPDX-License-Identifier: MIT
  */
 
-import { type CanvasLike, type ToCanvas, getCanvasContext2D } from "../sys/canvas.ts";
 import type { Tile } from "./Tile.ts";
 
 /**
- * Container for a set of tiles read from an allhtds file.
+ * Container for a set of tiles read from the ALLHTDS1 or ALLHTDS2 file.
  */
-export class Tileset implements ToCanvas {
+export class Tileset implements Iterable<Tile> {
     /** The tiles in this set. */
-    private readonly tiles: Tile[];
+    readonly #tiles: Tile[];
 
     /** The disk number. */
-    private readonly disk: number;
+    readonly #disk: number;
 
     /**
      * Creates a new tileset with the given tiles.
@@ -23,60 +22,44 @@ export class Tileset implements ToCanvas {
      * @param disk   The disk number.
      */
     public constructor(tiles: Tile[], disk: number) {
-        this.tiles = tiles;
-        this.disk = disk;
+        this.#tiles = tiles;
+        this.#disk = disk;
     }
 
     /**
-     * Returns array with all tiles of this set.
-     *
-     * @returns The tiles.
+     * @yields The tiles.
      */
-    public getTiles(): Tile[] {
-        return this.tiles.slice();
+    public *[Symbol.iterator](): Generator<Tile> {
+        for (const tile of this.#tiles) {
+            yield tile;
+        }
     }
 
     /**
-     * Returns the disk number.
-     *
      * @returns The disk number.
      */
     public getDisk(): number {
-        return this.disk;
+        return this.#disk;
     }
 
     /**
-     * Returns the number of tiles in this set.
-     *
      * @returns The number of tiles.
      */
-    public getNumTiles(): number {
-        return this.tiles.length;
+    public getSize(): number {
+        return this.#tiles.length;
     }
 
     /**
      * Returns the tile with the given index.
      *
-     * @param index  The index of the tile image to return.
+     * @param index - The index of the tile image to return.
      * @returns The tile image.
+     * @throws {@link !RangeError} when index is out of bounds.
      */
     public getTile(index: number): Tile {
-        if (index < 0 || index >= this.tiles.length) {
-            throw new Error(`Index out of bounds: ${index}`);
+        if (index < 0 || index >= this.#tiles.length) {
+            throw new RangeError(`Index out of bounds: ${index}`);
         }
-        return this.tiles[index];
-    }
-
-    /** @inheritdoc */
-    public toCanvas<T extends CanvasLike>(canvas: T): T {
-        const tiles = this.tiles;
-        const numTiles = tiles.length;
-        canvas.width = 256;
-        canvas.height = Math.ceil(numTiles / 16) * 16;
-        const ctx = getCanvasContext2D(canvas);
-        for (let i = 0; i < numTiles; ++i) {
-            this.getTile(i).draw(ctx, (i & 15) << 4, i >> 4 << 4);
-        }
-        return canvas;
+        return this.#tiles[index];
     }
 }

@@ -13,20 +13,10 @@ export class Tile extends PicImage {
     /**
      * Creates a new tile with the given image data.
      *
-     * @param data  The image data.
+     * @param array  - The array buffer containing the image data.
+     * @param offset - Optional data offset. Defaults to 0.
      */
-    private constructor(data: Uint8Array) {
-        super(data, 16, 16);
-    }
-
-    /**
-     * Parses a tile from the given array buffer.
-     *
-     * @param array   The array buffer containing the image data.
-     * @param offset  Optional data offset. Defaults to 0.
-     * @returns The parsed tile.
-     */
-    public static fromArray(array: Uint8Array, offset = 0): Tile {
-        return new Tile(decodeVxorInplace(array.slice(offset, offset + 128), 8));
+    public constructor(array: Uint8Array, offset = 0) {
+        super(decodeVxorInplace(array.slice(offset, offset + 128), 8), 16, 16);
     }
 }

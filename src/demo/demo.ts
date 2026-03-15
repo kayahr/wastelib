@@ -150,28 +150,15 @@ document.querySelector<HTMLButtonElement>("#tilesets")!.addEventListener("click"
     const tilesets = await assets.readTilesets();
     output.innerHTML = "";
     let index = 0;
-    tilesets.getTilesets().forEach(tileset => {
+    Array.from(tilesets).forEach(tileset => {
         const h1 = document.createElement("h2");
         h1.innerHTML = `Tileset ${index++} (Disk ${tileset.getDisk()})`;
         output.appendChild(h1);
-        tileset.getTiles().forEach(tile => {
+        Array.from(tileset).forEach(tile => {
             // Directly appending the canvas output instead of converting to images because creating all
             // these images is too slow
             output.appendChild(tile.toCanvas(document.createElement("canvas")));
         });
-    });
-});
-
-// Tilesets as separate images per tileset (16 tiles per row)
-document.querySelector<HTMLButtonElement>("#tilesets-map")!.addEventListener("click", async () => {
-    const tilesets = await assets.readTilesets();
-    output.innerHTML = "";
-    let index = 0;
-    tilesets.getTilesets().forEach(tileset => {
-        const h1 = document.createElement("h2");
-        h1.innerHTML = `Tileset ${index++} (Disk ${tileset.getDisk()})`;
-        output.appendChild(h1);
-        output.appendChild(createImage(tileset));
     });
 });
 

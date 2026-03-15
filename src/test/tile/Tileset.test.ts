@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2026 Klaus Reimer
+ * SPDX-License-Identifier: MIT
+ */
+
+import { describe, it } from "node:test";
+import { assertEquals, assertSame, assertThrowWithMessage } from "@kayahr/assert";
+import { readFile } from "node:fs/promises";
+import {  Tilesets } from "../../main/wastelib.ts";
+
+describe("Tileset", () => {
+    it("is iterable", async () => {
+        const tileset = Tilesets.fromArray(await readFile("src/test/data/allhtds1")).getTileset(0);
+        let index = 0;
+        for (const tile of tileset) {
+            assertSame(tile, tileset.getTile(index++));
+        }
+    });
+    describe("getDisk", () => {
+        it("returns 0 for ALLHTDS1", async () => {
+            const tilesets = Tilesets.fromArray(await readFile("src/test/data/allhtds1"));
+            for (const tileset of tilesets) {
+                assertEquals(tileset.getDisk(), 0);
+            }
+        });
+        it("returns 1 for ALLHTDS2", async () => {
+            const tilesets = Tilesets.fromArray(await readFile("src/test/data/allhtds2"));
+            for (const tileset of tilesets) {
+                assertEquals(tileset.getDisk(), 1);
+            }
+        });
+    });
+    describe("getTile", () => {
+        it("throws exception when index is out of bounds", async () => {
+            const tileset = Tilesets.fromArray(await readFile("src/test/data/allhtds1")).getTileset(1);
+            assertThrowWithMessage(() => tileset.getTile(-1), RangeError, "Index out of bounds: -1");
+            assertThrowWithMessage(() => tileset.getTile(3), RangeError, "Index out of bounds: 3");
+        });
+    });
+});
