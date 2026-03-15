@@ -69,9 +69,12 @@ describe("Ending", () => {
             assertInstanceOf(frame, BaseImage);
             await assertMatchImage(frame.toImageData(createCanvasContext2D()), "ending/000");
 
+            const delays = [ 60, 5, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 4 ];
+
             // Check the next 15 frames
             for (let i = 1; i < 16; i++) {
                 onDraw.mock.resetCalls();
+                assertEquals(player.getNextDelay(), (delays.shift() ?? 0) * 50);
                 player.next();
                 assertEquals(onDraw.mock.callCount(), 1);
                 const frame = onDraw.mock.calls[0].arguments[0];

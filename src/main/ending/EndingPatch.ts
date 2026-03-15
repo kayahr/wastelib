@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-import { colorPalette } from "../image/colors.ts";
 import type { BinaryReader } from "../io/BinaryReader.ts";
 
 /**
@@ -25,18 +24,6 @@ export class EndingPatch {
     private constructor(offset: number, data: Uint8Array) {
         this.#offset = offset;
         this.#data = data;
-    }
-
-    /**
-     * Returns the raw offset to update. This is the raw offset value from the END.CPA file measured in 8 byte
-     * blocks relative to a 320 pixels wide screen. Too complex to use. So it's recommended to use the
-     * {@link getX} and {@link getY} methods which converts this offset into pixel coordinates relative to
-     * the image. Or use the {@link getOffset} method which returns the offset byte address in the image data.
-     *
-     * @returns The raw image update offset.
-     */
-    public getRawOffset(): number {
-        return this.#offset;
     }
 
     /**
@@ -65,18 +52,6 @@ export class EndingPatch {
      */
     public getData(): Uint8Array {
         return this.#data.slice();
-    }
-
-    /**
-     * Returns the RGBA color at the specified position.
-     *
-     * @param x - The horizontal pixel position.
-     * @returns The RGBA color at the specified position.
-     */
-    public getColor(x: number): number {
-        const pixelTuple = this.#data[x >> 1];
-        const pixel = (x & 1) === 1 ? pixelTuple & 0xf : pixelTuple >> 4;
-        return colorPalette[pixel];
     }
 
     /**

@@ -37,27 +37,6 @@ export class EndingUpdate implements Iterable<EndingPatch> {
     }
 
     /**
-     * Returns the update patch with the given index.
-     *
-     * @param index - Update patch index.
-     * @returns The animation patch.
-     * @throws {@link !RangeError} if the index is out of bounds.
-     */
-    public getPatch(index: number): EndingPatch {
-        if (index < 0 || index >= this.#patches.length) {
-            throw new RangeError(`Index out of bounds: ${index}`);
-        }
-        return this.#patches[index];
-    }
-
-    /**
-     * @returns The number of update patches.
-     */
-    public getSize(): number {
-        return this.#patches.length;
-    }
-
-    /**
      * Returns the delay to wait before applying this update. The unit is unknown but good results can be achieved
      * by multiplying this value with 50 to get a millisecond value.
      *
