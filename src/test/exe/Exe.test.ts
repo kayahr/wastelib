@@ -4,7 +4,7 @@
  */
 
 import { describe, it } from "node:test";
-import { assertEquals } from "@kayahr/assert";
+import { assertEquals, assertThrowWithMessage } from "@kayahr/assert";
 import { readFile } from "node:fs/promises";
 import { Exe } from "../../main/exe/Exe.ts";
 import {
@@ -24,6 +24,18 @@ describe("Exe", () => {
             const exe = Exe.fromArray(await readFile("src/test/data/wl.exe"));
             assertEquals(exe.getSavegameOffset(0), savegameOffset0);
             assertEquals(exe.getSavegameOffset(1), savegameOffset1);
+        });
+        it("throws error when exe signature is invalid", async () => {
+            const brokenExe = await readFile("src/test/data/broken/wl-no-exe.exe");
+            assertThrowWithMessage(() => Exe.fromArray(brokenExe), Error, "No EXE file");
+        });
+        it("throws error when exepack signature is invalid", async () => {
+            const brokenExe = await readFile("src/test/data/broken/wl-not-exepack.exe");
+            assertThrowWithMessage(() => Exe.fromArray(brokenExe), Error, "Not an EXEPACK file");
+        });
+        it("throws error when packed data contains an unknown command", async () => {
+            const brokenExe = await readFile("src/test/data/broken/wl-unknown-command.exe");
+            assertThrowWithMessage(() => Exe.fromArray(brokenExe), Error, "Unknown command 0 at position 9");
         });
     });
     describe("fromBlob", () => {
