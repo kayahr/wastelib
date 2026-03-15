@@ -118,16 +118,9 @@ document.querySelector<HTMLButtonElement>("#font-map")!.addEventListener("click"
 document.querySelector<HTMLButtonElement>("#sprites")!.addEventListener("click", async () => {
     const sprites = await assets.readSprites();
     output.innerHTML = "";
-    sprites.getSprites().forEach(sprite => {
+    Array.from(sprites).forEach(sprite => {
         output.appendChild(createImage(sprite));
     });
-});
-
-// Sprites as single image (All in one row)
-document.querySelector<HTMLButtonElement>("#sprites-map")!.addEventListener("click", async () => {
-    const sprites = await assets.readSprites();
-    output.innerHTML = "";
-    output.appendChild(createImage(sprites));
 });
 
 // Portraits
