@@ -66,8 +66,6 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     /**
      * Creates and returns the next frame in the animation.
      *
-     * TODO Do we need a return value here?
-     *
      * @param animation    - The animation to play.
      * @param currentFrame - The current frame.
      * @returns The next frame.
