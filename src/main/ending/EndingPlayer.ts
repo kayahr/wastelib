@@ -12,8 +12,8 @@ import { EndingFrame } from "./EndingFrame.ts";
  * Player for the ending animation.
  */
 export class EndingPlayer extends BaseAnimationPlayer<Ending, EndingFrame> {
-    /** The current frame index. */
-    #frameIndex = 0;
+    /** The index of the next animation update to apply. */
+    #updateIndex = 0;
 
     /**
      * Creates a new player for the given ending animation.
@@ -28,22 +28,25 @@ export class EndingPlayer extends BaseAnimationPlayer<Ending, EndingFrame> {
 
     /** @inheritdoc */
     protected init(ending: Ending): EndingFrame {
-        this.#frameIndex = 0;
+        this.#updateIndex = 0;
         return new EndingFrame(ending);
     }
 
     /** @inheritdoc */
     protected nextFrame(ending: Ending, frame: EndingFrame): EndingFrame {
-        this.#frameIndex++;
-        if (this.#frameIndex === 15) {
-            this.#frameIndex = 11;
+        frame.update(ending.getUpdate(this.#updateIndex));
+        this.#updateIndex++;
+
+        // Loop the last four frames
+        const size = ending.getSize();
+        if (this.#updateIndex === size) {
+            this.#updateIndex = size - 4;
         }
-        frame.update(ending.getUpdate(this.#frameIndex));
         return frame;
     }
 
     /** @inheritdoc */
     protected getNextDelayInUnits(ending: Ending): number {
-        return ending.getUpdate(this.#frameIndex).getDelay();
+        return ending.getUpdate(this.#updateIndex).getDelay();
     }
 }

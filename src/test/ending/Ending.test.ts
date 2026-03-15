@@ -78,6 +78,14 @@ describe("Ending", () => {
                 assertInstanceOf(frame, BaseImage);
                 await assertMatchImage(frame.toImageData(createCanvasContext2D()), `ending/${i.toString().padStart(3, "0")}`);
             }
+
+            // After frame 15 the original game loops back to frame 12.
+            onDraw.mock.resetCalls();
+            player.next();
+            assertEquals(onDraw.mock.callCount(), 1);
+            const loopFrame = onDraw.mock.calls[0].arguments[0];
+            assertInstanceOf(loopFrame, BaseImage);
+            await assertMatchImage(loopFrame.toImageData(createCanvasContext2D()), "ending/012");
         });
     });
 });
