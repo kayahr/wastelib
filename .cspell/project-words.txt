@@ -19,6 +19,7 @@ reloc
 rgba
 savegame
 savegames
+shopitemlist
 tilemap
 Tileset
 Tilesets
