@@ -1,4 +1,4 @@
-# ALLPICS1 / ALLPICS2 Format
+# ALLPICS Format
 
 This document describes the portrait archive format used by the Wasteland 1 files `ALLPICS1` and `ALLPICS2`.
 

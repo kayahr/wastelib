@@ -80,10 +80,11 @@ So you always create an empty canvas object yourself (initial size doesn't matte
 
 ## Format documentation
 
-* [Vertical XOR](https://github.com/kayahr/wastelib/blob/main/doc/vertical-xor.md)
-* [Huffman encoding](https://github.com/kayahr/wastelib/blob/main/doc/huffman.md)
-* [ALLPICS format](https://github.com/kayahr/wastelib/blob/main/doc/allpics.md)
-* [END.CPA format](https://github.com/kayahr/wastelib/blob/main/doc/ending.md)
+* [Vertical XOR](https://github.com/kayahr/wastelib/blob/main/doc/formats/vertical-xor.md)
+* [Huffman encoding](https://github.com/kayahr/wastelib/blob/main/doc/formats/huffman.md)
+* [ALLHTDS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/tilesets.md)
+* [ALLPICS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/allpics.md)
+* [END.CPA format](https://github.com/kayahr/wastelib/blob/main/doc/formats/ending.md)
 
 
 ## See also
