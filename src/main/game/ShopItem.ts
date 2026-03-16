@@ -38,6 +38,7 @@ export class ShopItem {
      * Creates a new shop item read from the given reader
      *
      * @param reader - The reader to read the shop item data from.
+     * @internal
      */
     public constructor(reader: BinaryReader) {
         this.price = reader.readUint16();

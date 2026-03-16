@@ -70,6 +70,7 @@ export class PortraitPatch {
      *
      * @param reader  The reader to read the animation patch from.
      * @returns The read portrait animation patch or `null` if end of animation update has been reached.
+     * @internal
      */
     public static read(reader: BinaryReader): PortraitPatch | null {
         const sizeAndOffset = reader.readUint16();

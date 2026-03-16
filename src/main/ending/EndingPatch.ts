@@ -60,6 +60,7 @@ export class EndingPatch {
      *
      * @param reader - The reader to read the update patch from.
      * @returns The read update patch or null if end of update block is reached.
+     * @internal
      */
     public static read(reader: BinaryReader): EndingPatch | null {
         const offset = reader.readUint16();

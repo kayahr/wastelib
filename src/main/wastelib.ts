@@ -34,7 +34,6 @@ export type { AnimationPlayer } from "./image/AnimationPlayer.ts";
 export { BaseAnimationPlayer } from "./image/BaseAnimationPlayer.ts";
 export { BaseImage } from "./image/BaseImage.ts";
 export { PicImage } from "./image/PicImage.ts";
-export { BinaryReader } from "./io/BinaryReader.ts";
 export { Portrait } from "./portrait/Portrait.ts";
 export { PortraitFrame } from "./portrait/PortraitFrame.ts";
 export { PortraitPatch } from "./portrait/PortraitPatch.ts";

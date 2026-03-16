@@ -88,6 +88,9 @@ export class Character {
     private readonly skills: Skill[];
     private readonly items: Item[];
 
+    /**
+     * @internal
+     */
     public constructor(reader: BinaryReader) {
         this.name = reader.readNullString(14);
         this.strength = reader.readUint8();

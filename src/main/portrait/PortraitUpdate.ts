@@ -59,6 +59,7 @@ export class PortraitUpdate {
      *
      * @param reader  The reader to read the animation update from.
      * @returns The read animation update or null if end of animation has been reached.
+     * @internal
      */
     public static read(reader: BinaryReader): PortraitUpdate {
         let update: PortraitPatch | null;

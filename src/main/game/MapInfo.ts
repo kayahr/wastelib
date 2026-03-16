@@ -64,6 +64,7 @@ export class MapInfo {
      *
      * @param reader - The reader to read the map information from
      * @returns The read map information.
+     * @internal
      */
     public static read(reader: BinaryReader): MapInfo {
         const unknown$00 = reader.readUint8();

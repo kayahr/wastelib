@@ -51,6 +51,7 @@ export class PartyGroup {
      *
      * @param reader - The reader to read the party data from.
      * @returns The read party.
+     * @internal
      */
     public static read(reader: BinaryReader): PartyGroup {
         // Skip unused byte

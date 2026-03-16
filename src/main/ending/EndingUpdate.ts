@@ -52,6 +52,7 @@ export class EndingUpdate implements Iterable<EndingPatch> {
      *
      * @param reader - The reader to read the animation frame from.
      * @returns The read animation update or null if end of animation has been reached.
+     * @internal
      */
     public static read(reader: BinaryReader): EndingUpdate | null {
         const delay = reader.readUint16();

@@ -54,6 +54,7 @@ export class Mob {
      * @param reader - The reader to read the mob data from.
      * @param name   - The mob name.
      * @returns The read mob data.
+     * @internal
      */
     public static read(reader: BinaryReader, name: string): Mob {
         const hitPoints = reader.readUint16();

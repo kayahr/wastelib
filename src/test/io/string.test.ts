@@ -6,7 +6,7 @@
 import { describe, it } from "node:test";
 import { assertEquals } from "@kayahr/assert";
 import { readStrings } from "../../main/io/string.ts";
-import { BinaryReader } from "../../main/wastelib.ts";
+import { BinaryReader } from "../../main/io/BinaryReader.ts";
 
 describe("string", () => {
     describe("readStrings", () => {

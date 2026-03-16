@@ -58,6 +58,7 @@ export class PortraitScript {
      *
      * @param reader  The reader to read the script from.
      * @returns The read portrait animation script.
+     * @internal
      */
     public static read(reader: BinaryReader): PortraitScript {
         let delay: number;

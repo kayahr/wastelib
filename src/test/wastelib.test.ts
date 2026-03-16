@@ -38,7 +38,6 @@ import type { Animation } from "../main/image/Animation.ts";
 import type { AnimationPlayer } from "../main/image/AnimationPlayer.ts";
 import { BaseImage } from "../main/image/BaseImage.ts";
 import { PicImage } from "../main/image/PicImage.ts";
-import { BinaryReader } from "../main/io/BinaryReader.ts";
 import { Portrait } from "../main/portrait/Portrait.ts";
 import { PortraitFrame } from "../main/portrait/PortraitFrame.ts";
 import { PortraitPatch } from "../main/portrait/PortraitPatch.ts";
@@ -88,7 +87,6 @@ describe("wastelib", () => {
             BaseAnimationPlayer ,
             BaseImage ,
             PicImage ,
-            BinaryReader ,
             Portrait ,
             PortraitFrame ,
             PortraitPatch ,

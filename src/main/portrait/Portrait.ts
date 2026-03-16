@@ -108,6 +108,7 @@ export class Portrait extends PicImage implements Animation {
      *
      * @param reader  The reader to read the two encoded MSQ blocks with the base frame and animation data from.
      * @returns The parsed portrait.
+     * @internal
      */
     public static read(reader: BinaryReader): Portrait {
         // Parse base frame from first MSQ block
