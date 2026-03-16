@@ -85,6 +85,7 @@ So you always create an empty canvas object yourself (initial size doesn't matte
 * [ALLHTDS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/tilesets.md)
 * [ALLPICS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/allpics.md)
 * [END.CPA format](https://github.com/kayahr/wastelib/blob/main/doc/formats/ending.md)
+* [TITLE.PIC format](https://github.com/kayahr/wastelib/blob/main/doc/formats/title.md)
 
 
 ## See also
