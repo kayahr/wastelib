@@ -226,7 +226,7 @@ Useful consistency checks when implementing a reader:
 - patch offsets and lengths must stay within the `4032`-byte image buffer
 - the next portrait begins immediately after the second `msq` block ends
 
-## Seel ALso
+## See Also
 
 - [Huffman Encoding](huffman.md)
 - [Vertical XOR](vertical-xor.md)
