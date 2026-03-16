@@ -1,3 +1,7 @@
+---
+title: GAME Format
+---
+
 # GAME Format
 
 This document describes the overall container structure of the Wasteland 1 `GAME1` and `GAME2` files.

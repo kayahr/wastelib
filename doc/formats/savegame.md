@@ -1,3 +1,7 @@
+---
+title: Savegame Format
+---
+
 # Savegame Format
 
 This document describes the savegame block format used inside the Wasteland 1 `GAME1` and `GAME2` files.

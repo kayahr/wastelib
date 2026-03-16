@@ -1,3 +1,7 @@
+---
+title: Huffman Encoding
+---
+
 # Huffman Encoding
 
 This document describes the generic Huffman bitstream format used by several Wasteland resource files.

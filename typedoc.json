@@ -5,6 +5,9 @@
     ],
     "basePath": "src/main",
     "entryPointStrategy": "resolve",
+    "projectDocuments": [
+        "doc/formats.md"
+    ],
     "out": "lib/apidoc",
     "excludePrivate": true,
     "excludeExternals": true,

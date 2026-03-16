@@ -1,3 +1,7 @@
+---
+title: Sprites Format
+---
+
 # Sprites Format
 
 This document describes the sprites format used by the Wasteland 1 files `IC0_9.WLF` and `MASKS.WLF`.

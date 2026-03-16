@@ -1,3 +1,7 @@
+---
+title: Shop Item List Format
+---
+
 # Shop Item List Format
 
 This document describes the shop item list block format used inside the Wasteland 1 `GAME1` and `GAME2` files.

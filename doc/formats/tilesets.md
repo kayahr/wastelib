@@ -1,3 +1,7 @@
+---
+title: ALLHTDS Format
+---
+
 # ALLHTDS Format
 
 This document describes the tileset archive format used by the Wasteland 1 files `ALLHTDS1` and `ALLHTDS2`.
