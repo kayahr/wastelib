@@ -84,7 +84,9 @@ So you always create an empty canvas object yourself (initial size doesn't matte
 * [Huffman encoding](https://github.com/kayahr/wastelib/blob/main/doc/formats/huffman.md)
 * [ALLHTDS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/tilesets.md)
 * [ALLPICS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/allpics.md)
+* [CURS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/cursors.md)
 * [END.CPA format](https://github.com/kayahr/wastelib/blob/main/doc/formats/ending.md)
+* [Sprites (IC0_9.WLF and MASKS.WLF) format](https://github.com/kayahr/wastelib/blob/main/doc/formats/sprites.md)
 * [TITLE.PIC format](https://github.com/kayahr/wastelib/blob/main/doc/formats/title.md)
 
 
