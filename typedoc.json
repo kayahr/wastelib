@@ -8,7 +8,7 @@
     "projectDocuments": [
         "doc/formats.md"
     ],
-    "out": "lib/apidoc",
+    "out": "lib/site",
     "excludePrivate": true,
     "excludeExternals": true,
     "excludeInternal": true,

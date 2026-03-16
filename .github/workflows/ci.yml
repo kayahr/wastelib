@@ -18,10 +18,10 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
-      - name: Create API Doc
-        run: npm run apidoc
-      - name: Deploy API Doc
+      - name: Create site
+        run: npm run site
+      - name: Deploy site
         if: github.ref == 'refs/heads/main'
         uses: kayahr/deploy-github-pages-action@v2
         with:
-          path: lib/apidoc
+          path: lib/site
