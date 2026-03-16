@@ -37,8 +37,9 @@ function readItems(reader: BinaryReader): Item[] {
     const items: Item[] = [];
     for (let i = 0; i < 30; ++i) {
         const id = reader.readUint8();
-        const load = reader.readUint8();
-        const jammed = false; // TODO This is the high bit but from which byte?
+        const ammoAndStatus = reader.readUint8();
+        const load = ammoAndStatus & 0x7f;
+        const jammed = (ammoAndStatus & 0x80) !== 0;
         if (id) {
             items.push(new Item(id, load, jammed));
         }

@@ -1,6 +1,9 @@
 ailis
 ALLHTDS
 allpics
+Bitplane
+bitplanes
+bitstream
 COLORF
 devtool
 Driedfruit
@@ -15,6 +18,7 @@ Reimer
 reloc
 rgba
 savegame
+savegames
 tilemap
 Tileset
 Tilesets

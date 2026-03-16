@@ -80,15 +80,17 @@ So you always create an empty canvas object yourself (initial size doesn't matte
 
 ## Format documentation
 
-* [Vertical XOR](https://github.com/kayahr/wastelib/blob/main/doc/formats/vertical-xor.md)
-* [Huffman encoding](https://github.com/kayahr/wastelib/blob/main/doc/formats/huffman.md)
-* [ALLHTDS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/tilesets.md)
-* [ALLPICS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/allpics.md)
-* [CURS format](https://github.com/kayahr/wastelib/blob/main/doc/formats/cursors.md)
-* [COLORF.FNT format](https://github.com/kayahr/wastelib/blob/main/doc/formats/font.md)
-* [END.CPA format](https://github.com/kayahr/wastelib/blob/main/doc/formats/ending.md)
-* [Sprites (IC0_9.WLF and MASKS.WLF) format](https://github.com/kayahr/wastelib/blob/main/doc/formats/sprites.md)
-* [TITLE.PIC format](https://github.com/kayahr/wastelib/blob/main/doc/formats/title.md)
+* [Vertical XOR](./doc/formats/vertical-xor.md)
+* [Huffman encoding](./doc/formats/huffman.md)
+* [ALLHTDS format](./doc/formats/tilesets.md)
+* [ALLPICS format](./doc/formats/allpics.md)
+* [CURS format](./doc/formats/cursors.md)
+* [COLORF.FNT format](./doc/formats/font.md)
+* [END.CPA format](./doc/formats/ending.md)
+* [WL.EXE format](./doc/formats/exe.md)
+* [GAME format](./doc/formats/game.md)
+* [Sprites (IC0_9.WLF and MASKS.WLF) format](./doc/formats/sprites.md)
+* [TITLE.PIC format](./doc/formats/title.md)
 
 
 ## See also
