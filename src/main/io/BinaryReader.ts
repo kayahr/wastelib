@@ -8,30 +8,29 @@
  */
 export class BinaryReader {
     /** Wrapped array to read from. */
-    private readonly data: Uint8Array;
+    readonly #data: Uint8Array;
 
     /** The data size in bytes. */
-    private readonly byteLength: number;
+    readonly #byteLength: number;
 
     /** The current byte index. */
-    private byte: number;
+    #byte: number;
 
     /** The current bit index. */
-    private bit: number;
+    #bit: number;
 
     /**
      * Creates a new binary reader for the given data.
      *
-     * @param data    The data array to read from.
-     * @param offset  Optional start offset. Defaults to 0.
-     * @param size    Optional maximum number of bytes to read from data array. Defaults to size of data array
-     *                minus the offset.
+     * @param data   - The data array to read from.
+     * @param offset - Optional start offset. Defaults to 0.
+     * @param size   - Optional maximum number of bytes to read from data array. Defaults to size of data array minus the offset.
      */
     public constructor(data: Uint8Array, offset = 0, size = data.byteLength - offset) {
-        this.data = new Uint8Array(data.buffer, data.byteOffset + offset, size);
-        this.byteLength = size;
-        this.byte = 0;
-        this.bit = 0;
+        this.#data = new Uint8Array(data.buffer, data.byteOffset + offset, size);
+        this.#byteLength = size;
+        this.#byte = 0;
+        this.#bit = 0;
     }
 
     /**
@@ -40,9 +39,9 @@ export class BinaryReader {
      * @returns This reader for method chaining.
      */
     public sync(): this {
-        if (this.bit !== 0) {
-            this.byte++;
-            this.bit = 0;
+        if (this.#bit !== 0) {
+            this.#byte++;
+            this.#bit = 0;
         }
         return this;
     }
@@ -60,14 +59,14 @@ export class BinaryReader {
         byte += bit >> 3;
         bit &= 7;
 
-        if (byte < 0 || byte > this.byteLength) {
+        if (byte < 0 || byte > this.#byteLength) {
             throw new RangeError(`Invalid byte index: ${byte}`);
-        } else if (byte === this.byteLength && bit !== 0) {
+        } else if (byte === this.#byteLength && bit !== 0) {
             throw new RangeError(`Invalid byte index: ${byte} (+ ${bit} bit)`);
         }
 
-        this.byte = byte;
-        this.bit = bit;
+        this.#byte = byte;
+        this.#bit = bit;
         return this;
     }
 
@@ -80,7 +79,7 @@ export class BinaryReader {
      * @throws {@link !RangeError} if the index is out of bounds.
      */
     public skip(byte: number, bit = 0): this {
-        return this.seek(this.byte + byte, this.bit + bit);
+        return this.seek(this.#byte + byte, this.#bit + bit);
     }
 
     /**
@@ -90,34 +89,28 @@ export class BinaryReader {
      * @returns True if there is enough data to read, false if not.
      */
     public hasData(bytes = 1, bits = 0): boolean {
-        return (this.data.length - this.byte << 3) - this.bit >= bits + (bytes << 3);
+        return (this.#data.length - this.#byte << 3) - this.#bit >= bits + (bytes << 3);
     }
 
     /**
-     * Returns the current byte index.
-     *
      * @returns The current byte index.
      */
     public getByteIndex(): number {
-        return this.byte;
+        return this.#byte;
     }
 
     /**
-     * Returns the size of the data to read in bytes.
-     *
-     * @returns The data size in bytes
+     * @returns The size of the data to read in bytes.
      */
     public getByteLength(): number {
-        return this.byteLength;
+        return this.#byteLength;
     }
 
     /**
-     * Returns the current bit index.
-     *
      * @returns The current bit index.
      */
     public getBitIndex(): number {
-        return this.bit;
+        return this.#bit;
     }
 
     /**
@@ -128,16 +121,16 @@ export class BinaryReader {
      * @throws {@link !RangeError} if reached the end of the data.
      */
     public readBit(reverse = false): number {
-        if (this.byte >= this.byteLength) {
+        if (this.#byte >= this.#byteLength) {
             throw new RangeError("End of data");
         }
         const result = (reverse
-            ? (this.data[this.byte] >> (this.bit))
-            : (this.data[this.byte] >> (7 - this.bit))) & 1;
-        this.bit++;
-        if (this.bit > 7) {
-            this.bit = 0;
-            this.byte++;
+            ? (this.#data[this.#byte] >> (this.#bit))
+            : (this.#data[this.#byte] >> (7 - this.#bit))) & 1;
+        this.#bit++;
+        if (this.#bit > 7) {
+            this.#bit = 0;
+            this.#byte++;
         }
         return result;
     }
@@ -166,18 +159,18 @@ export class BinaryReader {
      * @throws {@link !RangeError} if reached the end of the data.
      */
     public readUint8(): number {
-        if (this.bit !== 0) {
+        if (this.#bit !== 0) {
             // Slow lane: Need to construct the byte from two parts
-            if (this.byte + 1 >= this.byteLength) {
+            if (this.#byte + 1 >= this.#byteLength) {
                 throw new RangeError("End of data");
             }
-            return this.data[this.byte] << this.bit & 0xff | this.data[++this.byte] >> 8 - this.bit;
+            return this.#data[this.#byte] << this.#bit & 0xff | this.#data[++this.#byte] >> 8 - this.#bit;
         } else {
             // Fast lane: Return byte directly
-            if (this.byte >= this.byteLength) {
+            if (this.#byte >= this.#byteLength) {
                 throw new RangeError("End of data");
             }
-            return this.data[this.byte++] & 0xff;
+            return this.#data[this.#byte++] & 0xff;
         }
     }
 
@@ -190,7 +183,7 @@ export class BinaryReader {
      */
     public readUint8s(count: number): Uint8Array {
         let result: Uint8Array;
-        if (this.bit) {
+        if (this.#bit) {
             // Slow lane: Need to read the data byte by byte
             result = new Uint8Array(count);
             for (let i = 0; i < count; ++i) {
@@ -198,10 +191,10 @@ export class BinaryReader {
             }
         } else {
             // Fast lane: Read whole data block directly
-            if (this.byte + count > this.byteLength) {
+            if (this.#byte + count > this.#byteLength) {
                 throw new RangeError("End of data");
             }
-            result = this.data.slice(this.byte, this.byte += count);
+            result = this.#data.slice(this.#byte, this.#byte += count);
         }
         return result;
     }
@@ -225,13 +218,13 @@ export class BinaryReader {
      */
     public readUint16s(count: number): Uint16Array {
         let result: Uint16Array;
-        if (this.bit) {
+        if (this.#bit) {
             result = new Uint16Array(count);
             for (let i = 0; i < count; ++i) {
                 result[i] = this.readUint16();
             }
         } else {
-            result = new Uint16Array(this.data.slice(this.byte, this.byte += count * 2).buffer);
+            result = new Uint16Array(this.#data.slice(this.#byte, this.#byte += count * 2).buffer);
         }
         return result;
     }

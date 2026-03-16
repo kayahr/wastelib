@@ -11,46 +11,36 @@ import { PortraitScriptLine } from "./PortraitScriptLine.ts";
  */
 export class PortraitScript {
     /** The script lines. */
-    private readonly lines: PortraitScriptLine[];
+    readonly #lines: PortraitScriptLine[];
 
     /**
      * Creates a portrait animation script.
      *
-     * @param lines  The script lines.
+     * @param lines - The script lines.
      */
     private constructor(lines: PortraitScriptLine[]) {
-        this.lines = lines;
-    }
-
-    /**
-     * Returns the animation script lines.
-     *
-     * @returns The animation script lines.
-     */
-    public getLines(): PortraitScriptLine[] {
-        return this.lines.slice();
+        this.#lines = lines;
     }
 
     /**
      * Returns the animation script line with the given index.
      *
-     * @param index  The index of the animation script line.
+     * @param index - The index of the animation script line.
      * @returns The animation script line.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getLine(index: number): PortraitScriptLine {
-        if (index < 0 || index >= this.lines.length) {
-           throw new Error(`Index out of bounds: ${index}`);
+        if (index < 0 || index >= this.#lines.length) {
+           throw new RangeError(`Index out of bounds: ${index}`);
         }
-        return this.lines[index];
+        return this.#lines[index];
     }
 
     /**
-     * Returns the number of script lines.
-     *
      * @returns The number of script lines.
      */
-    public getNumLines(): number {
-        return this.lines.length;
+    public getLineCount(): number {
+        return this.#lines.length;
     }
 
     /**

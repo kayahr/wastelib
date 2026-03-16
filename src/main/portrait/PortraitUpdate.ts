@@ -9,48 +9,38 @@ import { PortraitPatch } from "./PortraitPatch.ts";
 /**
  * A single update in a portrait animation.
  */
-export class PortraitUpdate {
+export class PortraitUpdate implements Iterable<PortraitPatch> {
     /** The patches to apply to the image. */
-    private readonly patches: PortraitPatch[];
+    readonly #patches: PortraitPatch[];
 
     /**
      * Creates an animation update with the given image patches.
      *
-     * @param patches  The patches to apply on the image when this update is applied.
+     * @param patches - The patches to apply on the image when this update is applied.
      */
     private constructor(patches: PortraitPatch[]) {
-        this.patches = patches;
+        this.#patches = patches;
     }
 
     /**
-     * Returns the patches to apply to the image.
-     *
-     * @returns The patches to apply to the image.
+     * @yields The portrait animation patches.
      */
-    public getPatches(): PortraitPatch[] {
-        return this.patches.slice();
+    public *[Symbol.iterator](): Generator<PortraitPatch> {
+        yield* this.#patches;
     }
 
     /**
      * Returns the patch with the given index.
      *
-     * @param index  The index of the patch to return.
+     * @param index - The index of the patch to return.
      * @returns The patch.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getPatch(index: number): PortraitPatch {
-        if (index < 0 || index >= this.patches.length) {
-           throw new Error(`Index out of bounds: ${index}`);
+        if (index < 0 || index >= this.#patches.length) {
+           throw new RangeError(`Index out of bounds: ${index}`);
         }
-        return this.patches[index];
-    }
-
-    /**
-     * Returns the number of patches.
-     *
-     * @returns The number of patches.
-     */
-    public getNumPatches(): number {
-        return this.patches.length;
+        return this.#patches[index];
     }
 
     /**

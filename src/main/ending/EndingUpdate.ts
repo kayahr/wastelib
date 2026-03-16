@@ -31,9 +31,7 @@ export class EndingUpdate implements Iterable<EndingPatch> {
      * @yields The ending animation update patches.
      */
     public *[Symbol.iterator](): Generator<EndingPatch> {
-        for (const patch of this.#patches) {
-            yield patch;
-        }
+        yield* this.#patches;
     }
 
     /**

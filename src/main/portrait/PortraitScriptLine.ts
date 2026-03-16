@@ -8,20 +8,20 @@
  */
 export class PortraitScriptLine {
     /** The delay in time units. */
-    private readonly delay: number;
+    readonly #delay: number;
 
     /** The index of the animation update to apply. */
-    private readonly update: number;
+    readonly #update: number;
 
     /**
      * Creates a portrait animation script line.
      *
-     * @param delay   The delay in time units.
-     * @param update  The index of the animation update to apply.
+     * @param delay  - The delay in time units.
+     * @param update - The index of the animation update to apply.
      */
     public constructor(delay: number, update: number) {
-        this.delay = delay;
-        this.update = update;
+        this.#delay = delay;
+        this.#update = update;
     }
 
     /**
@@ -31,15 +31,13 @@ export class PortraitScriptLine {
      * @returns The delay in time units.
      */
     public getDelay(): number {
-        return this.delay;
+        return this.#delay;
     }
 
     /**
-     * Returns the index of the animation update to apply.
-     *
-     * @returns The animation update index.
+     * @returns The index of the animation update to apply.
      */
     public getUpdate(): number {
-        return this.update;
+        return this.#update;
     }
 }

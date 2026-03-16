@@ -25,9 +25,7 @@ export class Font implements Iterable<FontChar> {
      * @yields The font characters.
      */
     public *[Symbol.iterator](): Generator<FontChar> {
-        for (const char of this.#chars) {
-            yield char;
-        }
+        yield* this.#chars;
     }
 
     /**
@@ -47,7 +45,7 @@ export class Font implements Iterable<FontChar> {
     /**
      * @returns The number of characters.
      */
-    public getSize(): number {
+    public getCharCount(): number {
         return this.#chars.length;
     }
 

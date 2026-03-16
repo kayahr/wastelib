@@ -28,15 +28,13 @@ export class Tilesets implements Iterable<Tileset> {
      * @yields The tilesets.
      */
     public *[Symbol.iterator](): Generator<Tileset> {
-        for (const tileset of this.#tilesets) {
-            yield tileset;
-        }
+        yield* this.#tilesets;
     }
 
     /**
      * @returns The number of tilesets.
      */
-    public getSize(): number {
+    public getTilesetCount(): number {
         return this.#tilesets.length;
     }
 

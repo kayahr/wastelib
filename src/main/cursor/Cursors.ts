@@ -25,9 +25,7 @@ export class Cursors implements Iterable<Cursor> {
      * @yields The cursors.
      */
     public *[Symbol.iterator](): Generator<Cursor> {
-        for (const cursor of this.#cursors) {
-            yield cursor;
-        }
+        yield* this.#cursors;
     }
 
     /**
@@ -35,7 +33,7 @@ export class Cursors implements Iterable<Cursor> {
      *
      * @param index - The index of the mouse cursor image.
      * @returns The mouse cursor image.
-     * @throws {!RangeError} if the index is out of bounds.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getCursor(index: number): Cursor {
         if (index < 0 || index >= this.#cursors.length) {
@@ -47,7 +45,7 @@ export class Cursors implements Iterable<Cursor> {
     /**
      * @returns The number of mouse cursors.
      */
-    public getSize(): number {
+    public getCursorCount(): number {
         return this.#cursors.length;
     }
 

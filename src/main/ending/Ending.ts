@@ -35,9 +35,7 @@ export class Ending extends PicImage implements Animation, Iterable<EndingUpdate
      * @yields The ending animation updates.
      */
     public *[Symbol.iterator](): Generator<EndingUpdate> {
-        for (const update of this.#updates) {
-            yield update;
-        }
+        yield* this.#updates;
     }
 
     /**
@@ -57,7 +55,7 @@ export class Ending extends PicImage implements Animation, Iterable<EndingUpdate
     /**
      * @returns The number of animation updates.
      */
-    public getSize(): number {
+    public getUpdateCount(): number {
         return this.#updates.length;
     }
 

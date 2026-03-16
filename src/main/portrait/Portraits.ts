@@ -9,54 +9,52 @@ import { Portrait } from "./Portrait.ts";
 /**
  * Container for the portraits of an allpics file.
  */
-export class Portraits {
+export class Portraits implements Iterable<Portrait> {
     /** The portraits. */
-    private readonly portraits: Portrait[];
+    readonly #portraits: Portrait[];
 
     /**
      * Creates a new set of portraits.
      *
-     * @param portraits  The portraits.
+     * @param portraits - The portraits.
      */
     public constructor(...portraits: Portrait[]) {
-        this.portraits = portraits;
+        this.#portraits = portraits;
     }
 
+
     /**
-     * Returns array with all portraits.
-     *
-     * @returns The portraits.
+     * @yields The portraits.
      */
-    public getPortraits(): Portrait[] {
-        return this.portraits.slice();
+    public *[Symbol.iterator](): Generator<Portrait> {
+        yield* this.#portraits;
     }
 
     /**
-     * Returns the number of portraits.
-     *
      * @returns The number of portraits.
      */
-    public getNumPortraits(): number {
-        return this.portraits.length;
+    public getPortraitCount(): number {
+        return this.#portraits.length;
     }
 
     /**
      * Returns the portrait with the given index.
      *
-     * @param index  The index of the portrait to return.
+     * @param index - The index of the portrait to return.
      * @returns The portrait.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getPortrait(index: number): Portrait {
-        if (index < 0 || index >= this.portraits.length) {
-            throw new Error(`Index out of bounds: ${index}`);
+        if (index < 0 || index >= this.#portraits.length) {
+            throw new RangeError(`Index out of bounds: ${index}`);
         }
-        return this.portraits[index];
+        return this.#portraits[index];
     }
 
     /**
      * Reads portraits from the given array.
      *
-     * @param array  The array to read the portraits from.
+     * @param array - The array to read the portraits from.
      * @returns The read portraits.
      */
     public static fromArray(array: Uint8Array): Portraits {
@@ -72,7 +70,7 @@ export class Portraits {
     /**
      * Reads portraits from the given blob.
      *
-     * @param blob  The ALLPICS1 or ALLPICS2 blob to read.
+     * @param blob - The ALLPICS1 or ALLPICS2 blob to read.
      * @returns The read portraits.
      */
     public static async fromBlob(blob: Blob): Promise<Portraits> {
@@ -82,25 +80,25 @@ export class Portraits {
     /**
      * Reads portraits from the two given arrays.
      *
-     * @param array1  The array with the ALLPICS1 file content.
-     * @param array2  The array with the ALLPICS2 file content.
+     * @param array1 - The array with the ALLPICS1 file content.
+     * @param array2 - The array with the ALLPICS2 file content.
      * @returns The read portraits.
      */
     public static fromArrays(array1: Uint8Array, array2: Uint8Array): Portraits {
-        return new Portraits(...this.fromArray(array1).portraits, ...this.fromArray(array2).portraits);
+        return new Portraits(...this.fromArray(array1).#portraits, ...this.fromArray(array2).#portraits);
     }
 
     /**
      * Reads portraits from the two given blobs.
      *
-     * @param blob1  The ALLPICS1 blob to read.
-     * @param blob2  The ALLPICS2 blob to read
+     * @param blob1 - The ALLPICS1 blob to read.
+     * @param blob2 - The ALLPICS2 blob to read
      * @returns The read portraits.
      */
     public static async fromBlobs(blob1: Blob, blob2: Blob): Promise<Portraits> {
         return new Portraits(
-            ...(await this.fromBlob(blob1)).portraits,
-            ...(await this.fromBlob(blob2)).portraits
+            ...(await this.fromBlob(blob1)).#portraits,
+            ...(await this.fromBlob(blob2)).#portraits
         );
     }
 }

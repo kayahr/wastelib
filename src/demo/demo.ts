@@ -112,7 +112,7 @@ document.querySelector<HTMLButtonElement>("#sprites")!.addEventListener("click",
 document.querySelector<HTMLButtonElement>("#portraits")!.addEventListener("click", async () => {
     const sprites = await assets.readPortraits();
     output.innerHTML = "";
-    sprites.getPortraits().forEach(portrait => {
+    Array.from(sprites).forEach(portrait => {
         const image = createImage(portrait);
         image.addEventListener("click", () => {
             playAnimation(portrait);

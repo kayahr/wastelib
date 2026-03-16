@@ -22,7 +22,7 @@ describe("Font", () => {
     describe("fromArrays", () => {
         it("reads COLORF.FNT from array", async () => {
             const font = Font.fromArray(await readFile("src/test/data/colorf.fnt"));
-            assertEquals(font.getSize(), 3);
+            assertEquals(font.getCharCount(), 3);
             const char0 = font.getChar(0);
             const char1 = font.getChar(1);
             const char2 = font.getChar(2);
@@ -35,7 +35,7 @@ describe("Font", () => {
     describe("fromBlob", () => {
         it("reads COLORF.FNT from array", async () => {
             const font = await Font.fromBlob(await openAsBlob("src/test/data/colorf.fnt"));
-            assertEquals(font.getSize(), 3);
+            assertEquals(font.getCharCount(), 3);
             const char0 = font.getChar(0);
             const char1 = font.getChar(1);
             const char2 = font.getChar(2);

@@ -22,12 +22,12 @@ describe("Tilesets", () => {
     describe("fromArray", () => {
         it("reads ALLHTDS1 from array", async () => {
             const tilesets = Tilesets.fromArray(await readFile("src/test/data/allhtds1"));
-            assertEquals(tilesets.getSize(), 2);
+            assertEquals(tilesets.getTilesetCount(), 2);
             const tileset0 = tilesets.getTileset(0);
             const tileset1 = tilesets.getTileset(1);
             assertEquals(Array.from(tilesets), [ tileset0, tileset1 ]);
-            assertEquals(tileset0.getSize(), 2);
-            assertEquals(tileset1.getSize(), 3);
+            assertEquals(tileset0.getTileCount(), 2);
+            assertEquals(tileset1.getTileCount(), 3);
             await assertMatchImage(tileset0.getTile(0).toImageData(createCanvasContext2D()), "tilesets/000/000");
             await assertMatchImage(tileset0.getTile(1).toImageData(createCanvasContext2D()), "tilesets/000/001");
             await assertMatchImage(tileset1.getTile(0).toImageData(createCanvasContext2D()), "tilesets/001/000");
@@ -42,12 +42,12 @@ describe("Tilesets", () => {
     describe("fromBlob", () => {
         it("reads ALLHTDS1 from blob", async () => {
             const tilesets = await Tilesets.fromBlob(await openAsBlob("src/test/data/allhtds1"));
-            assertEquals(tilesets.getSize(), 2);
+            assertEquals(tilesets.getTilesetCount(), 2);
             const tileset0 = tilesets.getTileset(0);
             const tileset1 = tilesets.getTileset(1);
             assertEquals(Array.from(tilesets), [ tileset0, tileset1 ]);
-            assertEquals(tileset0.getSize(), 2);
-            assertEquals(tileset1.getSize(), 3);
+            assertEquals(tileset0.getTileCount(), 2);
+            assertEquals(tileset1.getTileCount(), 3);
             await assertMatchImage(tileset0.getTile(0).toImageData(createCanvasContext2D()), "tilesets/000/000");
             await assertMatchImage(tileset0.getTile(1).toImageData(createCanvasContext2D()), "tilesets/000/001");
             await assertMatchImage(tileset1.getTile(0).toImageData(createCanvasContext2D()), "tilesets/001/000");
@@ -61,7 +61,7 @@ describe("Tilesets", () => {
                 await readFile("src/test/data/allhtds1"),
                 await readFile("src/test/data/allhtds2")
             );
-            assertEquals(tilesets.getSize(), 4);
+            assertEquals(tilesets.getTilesetCount(), 4);
         });
     });
     describe("fromBlobs", () => {
@@ -70,7 +70,7 @@ describe("Tilesets", () => {
                 await openAsBlob("src/test/data/allhtds1"),
                 await openAsBlob("src/test/data/allhtds2")
             );
-            assertEquals(tilesets.getSize(), 4);
+            assertEquals(tilesets.getTilesetCount(), 4);
         });
     });
     describe("getTileset", () => {

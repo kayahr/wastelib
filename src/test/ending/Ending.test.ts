@@ -26,7 +26,7 @@ describe("Ending", () => {
             const ending = Ending.fromArray(await readFile("src/test/data/end.cpa"));
             assertEquals(ending.getWidth(), 288);
             assertEquals(ending.getHeight(), 128);
-            assertEquals(ending.getSize(), 15);
+            assertEquals(ending.getUpdateCount(), 15);
             await assertMatchImage(ending.toImageData(createCanvasContext2D()), "ending/000");
         });
         it("throws error when file is corrupt", async () => {
@@ -45,7 +45,7 @@ describe("Ending", () => {
             const ending = await Ending.fromBlob(await openAsBlob("src/test/data/end.cpa"));
             assertEquals(ending.getWidth(), 288);
             assertEquals(ending.getHeight(), 128);
-            assertEquals(ending.getSize(), 15);
+            assertEquals(ending.getUpdateCount(), 15);
             await assertMatchImage(ending.toImageData(createCanvasContext2D()), "ending/000");
         });
     });

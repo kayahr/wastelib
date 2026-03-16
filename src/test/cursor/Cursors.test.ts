@@ -22,7 +22,7 @@ describe("Cursors", () => {
     describe("fromArrays", () => {
         it("reads CURS from array", async () => {
             const cursors = Cursors.fromArray(await readFile("src/test/data/curs"));
-            assertEquals(cursors.getSize(), 2);
+            assertEquals(cursors.getCursorCount(), 2);
             const cursor0 = cursors.getCursor(0);
             const cursor1 = cursors.getCursor(1);
             assertEquals(Array.from(cursors), [ cursor0, cursor1 ]);
@@ -33,7 +33,7 @@ describe("Cursors", () => {
     describe("fromBlob", () => {
         it("reads CURS from array", async () => {
             const cursors = await Cursors.fromBlob(await openAsBlob("src/test/data/curs"));
-            assertEquals(cursors.getSize(), 2);
+            assertEquals(cursors.getCursorCount(), 2);
             const cursor0 = cursors.getCursor(0);
             const cursor1 = cursors.getCursor(1);
             assertEquals(Array.from(cursors), [ cursor0, cursor1 ]);

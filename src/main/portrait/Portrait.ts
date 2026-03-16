@@ -19,86 +19,60 @@ import { PortraitUpdate } from "./PortraitUpdate.ts";
  */
 export class Portrait extends PicImage implements Animation {
     /** The animation scripts. */
-    private readonly scripts: PortraitScript[];
+    readonly #scripts: PortraitScript[];
 
     /** The animation updates. */
-    private readonly updates: PortraitUpdate[];
+    readonly #updates: PortraitUpdate[];
 
     /**
      * Creates a new portrait with the given base frame, animation scripts and animation updates.
      *
-     * @param baseFrame  The image data of the base frame.
-     * @param scripts    The animation scripts.
-     * @param updates    The animation updates.
+     * @param baseFrame - The image data of the base frame.
+     * @param scripts   - The animation scripts.
+     * @param updates   - The animation updates.
      */
     private constructor(baseFrame: Uint8Array, scripts: PortraitScript[], updates: PortraitUpdate[]) {
         super(baseFrame, 96, 84);
-        this.scripts = scripts;
-        this.updates = updates;
-    }
-
-    /**
-     * Returns the animation scripts.
-     *
-     * @returns The animation scripts.
-     */
-    public getScripts(): PortraitScript[] {
-        return this.scripts.slice();
+        this.#scripts = scripts;
+        this.#updates = updates;
     }
 
     /**
      * Returns the animation script with the given index.
      *
-     * @param index  Animation script index.
+     * @param index - Animation script index.
      * @returns The animation script.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getScript(index: number): PortraitScript {
-        if (index < 0 || index >= this.scripts.length) {
+        if (index < 0 || index >= this.#scripts.length) {
             throw new Error(`Index out of bounds: ${index}`);
         }
-        return this.scripts[index];
+        return this.#scripts[index];
     }
 
     /**
-     * Returns the number of animation scripts.
-     *
      * @returns The number of animation scripts.
      */
-    public getNumScripts(): number {
-        return this.scripts.length;
-    }
-
-    /**
-     * Returns the animation updates.
-     *
-     * @returns The animation updates.
-     */
-    public getUpdates(): PortraitUpdate[] {
-        return this.updates.slice();
+    public getScriptCount(): number {
+        return this.#scripts.length;
     }
 
     /**
      * Returns the animation update with the given index.
      *
-     * @param index  Animation update index.
+     * @param index - Animation update index.
      * @returns The animation update.
+     * @throws {@link !RangeError} if the index is out of bounds.
      */
     public getUpdate(index: number): PortraitUpdate {
-        if (index < 0 || index >= this.updates.length) {
-            throw new Error(`Index out of bounds: ${index}`);
+        if (index < 0 || index >= this.#updates.length) {
+            throw new RangeError(`Index out of bounds: ${index}`);
         }
-        return this.updates[index];
+        return this.#updates[index];
     }
 
-    /**
-     * Returns the number of animation updates.
-     *
-     * @returns The number of animation updates.
-     */
-    public getNumUpdates(): number {
-        return this.updates.length;
-    }
-
+    /** @inheritdoc */
     public createPlayer(onDraw: (frame: BaseImage) => void): PortraitPlayer {
         return new PortraitPlayer(this, onDraw);
     }
@@ -106,7 +80,7 @@ export class Portrait extends PicImage implements Animation {
     /**
      * Reads a portrait from the given reader and returns it.
      *
-     * @param reader  The reader to read the two encoded MSQ blocks with the base frame and animation data from.
+     * @param reader - The reader to read the two encoded MSQ blocks with the base frame and animation data from.
      * @returns The parsed portrait.
      * @internal
      */

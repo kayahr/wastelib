@@ -28,7 +28,7 @@ describe("Sprites", () => {
                 await readFile("src/test/data/ic0_9.wlf"),
                 await readFile("src/test/data/masks.wlf")
             );
-            assertEquals(sprites.getSize(), 3);
+            assertEquals(sprites.getSpriteCount(), 3);
             const sprite0 = sprites.getSprite(0);
             const sprite1 = sprites.getSprite(1);
             const sprite2 = sprites.getSprite(2);
@@ -48,7 +48,7 @@ describe("Sprites", () => {
                 await openAsBlob("src/test/data/ic0_9.wlf"),
                 await openAsBlob("src/test/data/masks.wlf")
             );
-            assertEquals(sprites.getSize(), 3);
+            assertEquals(sprites.getSpriteCount(), 3);
             const sprite0 = sprites.getSprite(0);
             const sprite1 = sprites.getSprite(1);
             const sprite2 = sprites.getSprite(2);

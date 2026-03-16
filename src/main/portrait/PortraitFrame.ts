@@ -14,7 +14,7 @@ export class PortraitFrame extends PicImage {
     /**
      * Creates a new updatable portrait animation frame initialized to the base frame of the given portrait image.
      *
-     * @param portrait  The portrait image to initialize this frame with.
+     * @param portrait - The portrait image to initialize this frame with.
      */
     public constructor(portrait: Portrait) {
         super(portrait.getData(), 96, 84);
@@ -23,14 +23,16 @@ export class PortraitFrame extends PicImage {
     /**
      * Updates the animation frame.
      *
-     * @param update  The update to apply.
+     * @param update - The update to apply.
      */
     public update(update: PortraitUpdate): void {
-        update.getPatches().forEach(patch => {
+        for (const patch of update) {
             const offset = patch.getOffset();
-            patch.getData().forEach((value, index) => {
+            let index = 0;
+            for (const value of patch) {
                 this.data[offset + index] ^= value;
-            });
-        });
+                index++;
+            }
+        }
     }
 }

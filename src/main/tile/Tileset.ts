@@ -30,9 +30,7 @@ export class Tileset implements Iterable<Tile> {
      * @yields The tiles.
      */
     public *[Symbol.iterator](): Generator<Tile> {
-        for (const tile of this.#tiles) {
-            yield tile;
-        }
+        yield* this.#tiles;
     }
 
     /**
@@ -45,7 +43,7 @@ export class Tileset implements Iterable<Tile> {
     /**
      * @returns The number of tiles.
      */
-    public getSize(): number {
+    public getTileCount(): number {
         return this.#tiles.length;
     }
 

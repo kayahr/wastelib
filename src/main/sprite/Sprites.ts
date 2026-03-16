@@ -25,9 +25,7 @@ export class Sprites implements Iterable<Sprite> {
      * @yields The sprites.
      */
     public *[Symbol.iterator](): Generator<Sprite> {
-        for (const sprite of this.#sprites) {
-            yield sprite;
-        }
+        yield* this.#sprites;
     }
 
     /**
@@ -47,7 +45,7 @@ export class Sprites implements Iterable<Sprite> {
     /**
      * @returns The number of sprites.
      */
-    public getSize(): number {
+    public getSpriteCount(): number {
         return this.#sprites.length;
     }
 

@@ -38,7 +38,7 @@ export class EndingPlayer extends BaseAnimationPlayer<Ending, EndingFrame> {
         this.#updateIndex++;
 
         // Loop the last four frames
-        const size = ending.getSize();
+        const size = ending.getUpdateCount();
         if (this.#updateIndex === size) {
             this.#updateIndex = size - 4;
         }
