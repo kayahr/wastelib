@@ -1,5 +1,8 @@
 # Map Format
 
+> [!WARNING]
+> This documentation is still work in progress and currently incomplete. Some parts of the format are still unknown or only partially understood.
+
 This document describes the map block format used inside the Wasteland 1 `GAME1` and `GAME2` files.
 
 It covers:
