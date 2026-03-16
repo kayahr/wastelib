@@ -78,8 +78,15 @@ await writeFile("/tmp/title.png", canvas.toBuffer());
 So you always create an empty canvas object yourself (initial size doesn't matter) and pass it to the `toCanvas()` method which then fills the canvas with the image and returns it.
 
 
-See also
---------
+## Format documentation
+
+* [Vertical XOR](https://github.com/kayahr/wastelib/blob/main/doc/vertical-xor.md)
+* [Huffman encoding](https://github.com/kayahr/wastelib/blob/main/doc/huffman.md)
+* [ALLPICS format](https://github.com/kayahr/wastelib/blob/main/doc/allpics.md)
+* [END.CPA format](https://github.com/kayahr/wastelib/blob/main/doc/ending.md)
+
+
+## See also
 
 * [GitHub repository](https://github.com/kayahr/wastelib/)
 * [API documentation](https://kayahr.github.io/wastelib/)

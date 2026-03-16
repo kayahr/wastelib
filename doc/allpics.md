@@ -9,6 +9,11 @@ It covers:
 - the decoded animation data layout
 - the script and update encodings
 
+The compression and base-image post-processing used by this file are documented separately:
+
+- [Huffman Encoding](huffman.md)
+- [Vertical XOR](vertical-xor.md)
+
 ## Scope
 
 `ALLPICS1` and `ALLPICS2` use the same binary format. The only practical difference is which portraits each file contains.
@@ -225,8 +230,3 @@ Useful consistency checks when implementing a reader:
 - update parsing must end exactly at `updatesSize`
 - patch offsets and lengths must stay within the `4032`-byte image buffer
 - the next portrait begins immediately after the second `msq` block ends
-
-## See Also
-
-- [Huffman Encoding](huffman.md)
-- [Vertical XOR](vertical-xor.md)
