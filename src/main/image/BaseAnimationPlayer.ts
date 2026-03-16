@@ -19,8 +19,8 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
     /** The timer handle if animation is playing. Null otherwise, */
     #timer: unknown = null;
 
-    /** The playing speed in milliseconds per time unit. */
-    #speed = 50;
+    /** The playing speed in milliseconds per time unit. Based on IBM PC BIOS timer ticks of 18.2065 Hz. */
+    #speed = 1000 / 18.2065;
 
     /** Callback to call on each frame update. */
     readonly #onDraw: (frame: T) => void;
@@ -91,7 +91,7 @@ export abstract class BaseAnimationPlayer<A extends BaseImage, T extends BaseIma
      * @returns the delay to wait before rendering the next frame.
      */
     public getNextDelay(): number {
-        return this.getNextDelayInUnits(this.#animation) * this.#speed;
+        return (1 + this.getNextDelayInUnits(this.#animation)) * this.#speed;
     }
 
     /**

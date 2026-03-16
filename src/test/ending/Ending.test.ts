@@ -74,7 +74,7 @@ describe("Ending", () => {
             // Check the next 15 frames
             for (let i = 1; i < 16; i++) {
                 onDraw.mock.resetCalls();
-                assertEquals(player.getNextDelay(), (delays.shift() ?? 0) * 50);
+                assertEquals(player.getNextDelay(), ((delays.shift() ?? 0) + 1) * player.getSpeed());
                 player.next();
                 assertEquals(onDraw.mock.callCount(), 1);
                 const frame = onDraw.mock.calls[0].arguments[0];
