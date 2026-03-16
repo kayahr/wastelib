@@ -4,6 +4,11 @@ A JavaScript library (Written in [TypeScript]) for reading the assets of the gam
 
 The library is based on the valuable information gathered by the members of the [Wasteland Deconstruction Wiki].
 
+## Demo
+
+The [Demo] shows wastelib in action.
+
+
 ## Usage
 
 Install wastelib as a standard NPM dependency:
@@ -95,10 +100,12 @@ So you always create an empty canvas object yourself (initial size doesn't matte
 
 ## See also
 
+* [Demo]
 * [GitHub repository](https://github.com/kayahr/wastelib/)
 * [API documentation](https://kayahr.github.io/wastelib/)
 * [Wasteland Deconstruction Wiki]
 
+[Demo]: https://kayahr.github.io/wastelib/demo/
 [Wasteland Deconstruction Wiki]: https://wasteland.gamepedia.com/Wasteland:_The_Definitive_Deconstruction
 [TypeScript]: https://www.typescriptlang.org/
 [Wasteland]: https://en.wikipedia.org/wiki/Wasteland_(video_game)
