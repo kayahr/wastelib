@@ -9,8 +9,6 @@ It covers:
 - the decoded animation data layout
 - the script and update encodings
 
-It does **not** explain the internal Huffman coding used by the `msq` blocks or the vertical XOR transform used for the base frame in detail.
-
 ## Scope
 
 `ALLPICS1` and `ALLPICS2` use the same binary format. The only practical difference is which portraits each file contains.
@@ -55,15 +53,16 @@ Both blocks use the same wrapper:
 
 Important details:
 
-- the `u32` size is the size **after** Huffman decoding
+- the `u32` size is the size **after** [Huffman](huffman.md) decoding.
 - the compressed payload length is not stored explicitly
 - the parser must decode exactly that many bytes
 - after decoding, the reader advances to the next full byte boundary before the next field begins
 
-The meaning of the MSQ disk byte is outside the scope of this format description. In the shipped portrait data:
+In the shipped Wasteland 1 portrait archives, the MSQ disk byte has a fixed value depending on file and block type:
 
-- the base-image block uses `0` or `1`
-- the animation block uses `0`
+- the animation block always uses `0`
+- the base-image block in `ALLPICS1` always uses `0`
+- the base-image block in `ALLPICS2` always uses `1`
 
 ## Base Image Block
 
@@ -73,7 +72,7 @@ The first `msq` block in each portrait record contains the base portrait frame.
 
 The decoded payload is a `4032`-byte packed image buffer for a `96x84` portrait.
 
-The bytes are still vertical-XOR encoded at this point. After Huffman decoding, the data must be vertical-XOR decoded with a row stride of `48` bytes.
+The bytes are still [vertical-XOR encoded](vertical-xor.md) at this point. After Huffman decoding, the data must be vertical-XOR decoded with a row stride of `48` bytes.
 
 After that step, the result is the final base image:
 
@@ -107,12 +106,6 @@ For a valid block:
 animDecodedSize = 2 + scriptsSize + 2 + updatesSize
 ```
 
-or equivalently:
-
-```text
-scriptsSize + updatesSize + 4 = animDecodedSize
-```
-
 ## Script Section
 
 The script section is a byte stream containing one script after another until exactly `scriptsSize` bytes have been consumed.
@@ -127,7 +120,6 @@ Each script is a sequence of `(delay, updateIndex)` pairs terminated by a single
 | --- | --- |
 | `u8 delay` | Delay value for this script step |
 | `u8 updateIndex` | Zero-based index into the update table |
-| `u8 0xFF` | End of script marker |
 
 Parsing rule:
 
@@ -140,19 +132,26 @@ Parsing rule:
 Example:
 
 ```text
-01 02 01 02 FF
+00 04 03 07 01 02 FF
 ```
 
-This encodes one script with two lines:
+This encodes one script with three lines:
 
-1. `delay = 1`, `updateIndex = 2`
-2. `delay = 1`, `updateIndex = 2`
+1. `delay = 0`, `updateIndex = 4`
+2. `delay = 3`, `updateIndex = 7`
+3. `delay = 1`, `updateIndex = 2`
 
 ### Delay Semantics
 
 The file format stores only the raw `u8` delay value. No additional timing multiplier or per-portrait speed field is present in the animation data.
 
-The exact conversion from `delay` to wall-clock time is a playback concern, not extra binary data stored in the file. Different players may choose slightly different timing models.
+A practical timing model is to treat the delay as an additional hold count on top of a base redraw tick:
+
+```text
+milliseconds = (delay + 1) * 54.925
+```
+
+This is based on the IBM PC timer tick rate of approximately `18.2065 Hz`, where one tick is about `54.925 ms`.
 
 ## Update Section
 
@@ -168,7 +167,6 @@ Each update contains one or more patch records and ends with the 16-bit sentinel
 | --- | --- |
 | `u16 sizeAndOffset` | Packed patch header |
 | `u8[size] data` | XOR bytes for the patch |
-| `u16 0xFFFF` | End of update marker |
 
 If `sizeAndOffset == 0xFFFF`, the current update ends and no patch follows.
 
@@ -228,8 +226,7 @@ Useful consistency checks when implementing a reader:
 - patch offsets and lengths must stay within the `4032`-byte image buffer
 - the next portrait begins immediately after the second `msq` block ends
 
-## Practical Notes
+## Seel ALso
 
-- `ALLPICS1` and `ALLPICS2` are independent files using the same record structure.
-- Portrait indices are implicit: index `0` is the first record in the file, index `1` the second, and so on.
-- If a tool combines both files into one logical portrait list, that combined indexing is external to the file format itself.
+- [Huffman Encoding](huffman.md)
+- [Vertical XOR](vertical-xor.md)
