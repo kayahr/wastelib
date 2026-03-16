@@ -1,4 +1,4 @@
-# GAME1 / GAME2 Map Format
+# Map Format
 
 This document describes the map block format used inside the Wasteland 1 `GAME1` and `GAME2` files.
 
@@ -6,15 +6,15 @@ It covers:
 
 - how maps are located inside `GAME1` / `GAME2`
 - the outer map block structure
-- the pre-tile data region
-- the tile map bitstream
+- the map-data section
+- the tile-map section
 - the central directory and variable data sections
 
-The Huffman bitstream used for the tile image section is documented separately:
+The Huffman bitstream used for the tile-map section is documented separately:
 
 - [Huffman Encoding](huffman.md)
 
-The rotating-XOR transform used by the pre-tile data region is documented separately:
+The rotating-XOR transform used by the map-data section is documented separately:
 
 - [Rotating-XOR](rotating-xor.md)
 
@@ -31,7 +31,7 @@ The game locates maps by using tables stored in the executable:
 Those values are required to parse a map correctly. In particular:
 
 - the map block itself does not reliably expose its total length
-- the tile map offset is external metadata
+- the offset of the tile-map header is external metadata
 - the map size only appears later inside the map-info structure, but the parser already needs it before that point
 
 See [EXE Format](exe.md) for the structure and locations of those tables.
@@ -43,51 +43,44 @@ In the shipped Wasteland 1 data:
 
 All multi-byte integer fields are little-endian.
 
-## Map Block Header
+## Top-Level Block Layout
 
-Each map begins with a 4-byte ASCII header:
-
-| Value | Meaning |
-| --- | --- |
-| `"msq0"` | Map block in `GAME1` |
-| `"msq1"` | Map block in `GAME2` |
-
-This header is unrelated to the Huffman-wrapped `"msq"` container used by some other Wasteland files.
-
-Immediately after the header are two bytes used by the rotating-XOR decryption step:
+The map block contains these top-level parts:
 
 | Offset | Type | Meaning |
 | --- | --- | --- |
-| `+0x00` | `char[4]` | Map header: `"msq0"` or `"msq1"` |
-| `+0x04` | `u8` | XOR byte 1 |
-| `+0x05` | `u8` | XOR byte 2 |
-| `+0x06` | variable | Pre-tile data region |
+| `+0x00` | `char[4]` | `"msq0"` in `GAME1`, `"msq1"` in `GAME2` |
+| `+0x04` | `u8[tileMapOffset - 4]` | Map-data section |
+| `+tileMapOffset` | variable | Tile-map section |
 
-## Outer Block Layout
+The executable's tile-map-offset table provides the offset of the tile-map section within each map block.
 
-The outer map block is:
+## Map-Data Section
+
+The map-data section begins immediately after the 4-byte block header and ends one byte before the tile-map section.
+
+Its layout is:
+
+| Offset within map-data section | Type | Meaning |
+| --- | --- | --- |
+| `+0x00` | `u8` | XOR byte 1 |
+| `+0x01` | `u8` | XOR byte 2 |
+| `+0x02` | `u8[tileMapOffset - 7]` | Map-data body |
+| `+(tileMapOffset - 5)` | `u8` | Unknown byte before the tile-map section |
+
+The XOR bytes are plain header bytes for this section. They initialize the rotating-XOR decoder. The encrypted data begins at offset `+0x02` within the map-data section.
+
+## Map-Data Body
+
+The map-data body begins immediately after the two XOR bytes and ends one byte before the tile-map section.
+
+Its total size is known:
 
 ```text
-header
-xor bytes
-preTileData
-unknownStringsByte
-tileMapDecodedSize:u32
-unknownTileMap:u32
-tileMapHuffmanBitstream
+mapDataBodySize = tileMapOffset - 7
 ```
 
-The `tileMapDecodedSize` field must equal:
-
-```text
-mapSize * mapSize
-```
-
-The start of `tileMapDecodedSize` is not stored inside the map block. It comes from the executable's tile-map-offset table.
-
-## Pre-Tile Data Region
-
-The pre-tile data region starts immediately after the two XOR bytes and ends one byte before the `tileMapDecodedSize` field.
+This is the size of the whole body, not the size of the rotating-XOR encrypted prefix at its start.
 
 Its internal layout is:
 
@@ -99,38 +92,48 @@ mapInfo
 variableDataSections
 ```
 
-The final byte before the tile-map-size field is a currently-unknown byte:
-
-| Field | Size |
-| --- | --- |
-| `unknownStringsByte` | `1` byte |
+The single byte immediately before the tile-map section is currently unknown.
 
 ## Rotating-XOR Decoding
 
-The pre-tile data region begins with a rotating-XOR encrypted prefix followed by plain data. The rotating-XOR algorithm itself is described in [Rotating-XOR](rotating-xor.md).
+The map-data body begins with a rotating-XOR encrypted prefix followed by plain data. The rotating-XOR algorithm itself is described in [Rotating-XOR](rotating-xor.md).
 
-The exact size of the encrypted prefix is currently unknown.
-
-Important caveat:
-
-- stopping at the first checksum match is not reliable
-- early checksum matches can occur before the true end of the encrypted area
-- a better rule may exist in the executable metadata or loader code, but it is not yet documented here
+The total size of the map-data body is known from `tileMapOffset - 7`, but the encrypted prefix length is not stored as a separate field.
 
 Important detail:
 
-- only the leading part of the pre-tile region is encrypted
-- the remaining bytes up to `unknownStringsByte` are stored as plain data
+- only the leading part of the map-data body is encrypted
+- the remaining bytes up to the unknown byte before the tile-map section are stored as plain data
 
-So the pre-tile region should be treated as:
+The reader processes the map-data body from the start and applies the rotating-XOR transform until the running checksum first equals `endChecksum`. At that point the encrypted prefix ends.
+
+So the map-data body is treated as:
 
 ```text
 encryptedPrefix + plainSuffix
 ```
 
+## Tile-Map Section
+
+The tile-map section begins at the executable-provided `tileMapOffset`.
+
+Its layout is:
+
+| Offset within tile-map section | Type | Meaning |
+| --- | --- | --- |
+| `+0x00` | `u32` | Tile-map decoded size |
+| `+0x04` | `u32` | Unknown dword before the tile-map bitstream |
+| `+0x08` | bitstream | Huffman-coded tile-map data |
+
+The first field in this section, `tileMapDecodedSize`, must equal:
+
+```text
+mapSize * mapSize
+```
+
 ## Fixed-Offset Sections
 
-The first two sections of the decoded pre-tile region have sizes derived only from `mapSize`.
+The first two sections of the decoded map-data body have sizes derived only from `mapSize`.
 
 ### Action Class Map
 
@@ -169,7 +172,7 @@ Immediately after the action-class map and the action map comes a fixed-size cen
 | `+0x26` | `u16` | `specialsOffset` |
 | `+0x28` | `u16` | `npcOffset` |
 
-All directory offsets are absolute offsets within the pre-tile data region, not relative to the directory itself.
+All directory offsets are absolute offsets within the map-data body, not relative to the directory itself.
 
 The following offsets are described below:
 
@@ -184,7 +187,7 @@ The `actionClassOffsets` table and `specialsOffset` are present in the data, but
 
 The map-info block follows immediately after the central directory and is always `50` bytes long.
 
-Its offset within the pre-tile region is therefore fixed:
+Its offset within the map-data body is therefore fixed:
 
 - `0x062A` for `32x32` maps
 - `0x182A` for `64x64` maps
@@ -228,7 +231,7 @@ npcPointer[1]
 
 The table has no explicit count. It ends when the reader position reaches the smallest NPC pointer value.
 
-Each NPC pointer is an absolute offset within the pre-tile data region and points to a `0x100`-byte character record.
+Each NPC pointer is an absolute offset within the map-data body and points to a `0x100`-byte character record.
 
 The NPC record layout matches the character record used in savegame data. See [Savegame Format](savegame.md).
 
@@ -287,9 +290,9 @@ Each string is decoded from 5-bit codes:
 
 Each referenced group can contain up to 4 strings.
 
-## Tile Map Section
+## Decoded Tile Map
 
-The tile map is stored outside the pre-tile data region.
+The tile map is stored in the tile-map section, outside the map-data body.
 
 Its layout is:
 
@@ -329,6 +332,6 @@ Useful consistency checks when implementing a reader:
 
 - every map block must begin with `"msq0"` or `"msq1"`
 - `tileMapDecodedSize` must equal `mapSize * mapSize`
-- all central-directory offsets must point within the pre-tile data region
+- all central-directory offsets must point within the map-data body
 - the map-info `mapSize` byte must match the external `mapSize` metadata from `WL.EXE`
-- NPC pointers, if present, should point to `0x100`-byte character records inside the pre-tile data region
+- NPC pointers, if present, should point to `0x100`-byte character records inside the map-data body

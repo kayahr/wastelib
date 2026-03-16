@@ -6,7 +6,7 @@ It covers:
 
 - the common XOR/key schedule
 - the checksum calculation
-- rotating-XOR decoding
+- the decoding modes used by different container formats
 
 All multi-byte integer fields are little-endian.
 
@@ -39,7 +39,9 @@ key      = (key + 0x1F) & 0xFF
 
 The checksum is accumulated over the decoded bytes, not the encoded bytes.
 
-## Decoding
+## Whole-Block Decoding
+
+In the simplest case, the surrounding format tells the reader exactly how many bytes are encrypted.
 
 Decoding procedure:
 
@@ -47,7 +49,24 @@ Decoding procedure:
 2. Decode exactly `N` bytes with the byte transform above.
 3. Verify that the final checksum equals `endChecksum`.
 
-This decoding is used by:
+This decoding mode is used by:
 
 - [Savegame Format](savegame.md)
 - [Shop Item List Format](shopitemlist.md)
+
+## Prefix Decoding Within a Known-Size Section
+
+Some formats contain a section whose total size is known, but only a leading prefix of that section is rotating-XOR encrypted.
+
+Decoding procedure:
+
+1. Read `xor1` and `xor2`.
+2. Begin decoding bytes at the start of the section body.
+3. Stop decoding as soon as the running checksum equals `endChecksum`.
+4. Treat the remaining bytes in the section body as plain data.
+
+In this mode, the checksum determines where the encrypted prefix ends. The surrounding format still provides the total size of the whole section.
+
+This decoding mode is used by:
+
+- [Map Format](map.md)
