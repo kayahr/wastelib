@@ -1,7 +1,3 @@
----
-title: Rotating-XOR
----
-
 # Rotating-XOR
 
 This document describes the rotating-XOR transform used by several Wasteland 1 `GAME1` / `GAME2` data blocks.

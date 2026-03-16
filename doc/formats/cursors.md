@@ -1,7 +1,3 @@
----
-title: CURS Format
----
-
 # CURS Format
 
 This document describes the mouse cursor format used by the Wasteland 1 `CURS` file.

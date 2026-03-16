@@ -1,7 +1,3 @@
----
-title: COLORF.FNT Format
----
-
 # COLORF.FNT Format
 
 This document describes the font format used by the Wasteland 1 `COLORF.FNT` file.

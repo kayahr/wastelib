@@ -1,7 +1,3 @@
----
-title: Map Format
----
-
 # Map Format
 
 > [!WARNING]

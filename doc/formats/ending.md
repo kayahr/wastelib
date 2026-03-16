@@ -1,7 +1,3 @@
----
-title: END.CPA Format
----
-
 # END.CPA Format
 
 This document describes the format of the Wasteland 1 `END.CPA` file.

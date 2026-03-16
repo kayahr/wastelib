@@ -1,7 +1,3 @@
----
-title: Vertical XOR
----
-
 # Vertical XOR
 
 This document describes the generic vertical-XOR transform used by several Wasteland resource files.

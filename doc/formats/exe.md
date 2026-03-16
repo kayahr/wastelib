@@ -1,7 +1,3 @@
----
-title: EXE Format
----
-
 # EXE Format
 
 This document describes the executable metadata stored in Wasteland 1 `WL.EXE`.

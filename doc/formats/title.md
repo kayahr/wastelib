@@ -1,7 +1,3 @@
----
-title: TITLE.PIC Format
----
-
 # TITLE.PIC Format
 
 This document describes the format of the Wasteland 1 `TITLE.PIC` file.
