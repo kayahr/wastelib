@@ -72,7 +72,7 @@ So the currently understood savegame data is the decoded `0x800`-byte payload im
 
 ## Rotating-XOR Decoding
 
-The `0x800`-byte payload uses the fixed-length variant described in [Rotating-XOR](rotating-xor.md).
+The `0x800`-byte payload uses the rotating-XOR decoding described in [Rotating-XOR](rotating-xor.md).
 
 Decode exactly `0x800` bytes after the two XOR bytes and verify that the final checksum equals `endChecksum`.
 

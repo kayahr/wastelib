@@ -6,7 +6,7 @@ It covers:
 
 - the common XOR/key schedule
 - the checksum calculation
-- fixed-length decoding
+- rotating-XOR decoding
 
 All multi-byte integer fields are little-endian.
 
@@ -39,9 +39,7 @@ key      = (key + 0x1F) & 0xFF
 
 The checksum is accumulated over the decoded bytes, not the encoded bytes.
 
-## Fixed-Length Decoding
-
-In the fixed-length case, the caller already knows how many bytes are encrypted.
+## Decoding
 
 Decoding procedure:
 
@@ -49,7 +47,7 @@ Decoding procedure:
 2. Decode exactly `N` bytes with the byte transform above.
 3. Verify that the final checksum equals `endChecksum`.
 
-This variant is used by:
+This decoding is used by:
 
 - [Savegame Format](savegame.md)
 - [Shop Item List Format](shopitemlist.md)

@@ -55,7 +55,7 @@ This fixed size matches the spacing of the real shop blocks in `GAME1` and the f
 
 ## Rotating-XOR Decoding
 
-The `760`-byte payload uses the fixed-length variant described in [Rotating-XOR](rotating-xor.md).
+The `760`-byte payload uses the rotating-XOR decoding described in [Rotating-XOR](rotating-xor.md).
 
 Decode exactly `760` bytes after the two XOR bytes and verify that the final checksum equals `endChecksum`.
 
