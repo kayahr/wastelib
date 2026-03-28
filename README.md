@@ -116,6 +116,7 @@ So you always create an empty canvas object yourself (initial size doesn't matte
 * [Sprites (IC0_9.WLF and MASKS.WLF) format](./doc/formats/sprites.md)
 * [TITLE.PIC format](./doc/formats/title.md)
 * [PARAGRAPHS.BIN format](./doc/formats/paragraphs.md)
+* [String Control Bytes](./doc/formats/strings.md)
 
 ## See also
 
