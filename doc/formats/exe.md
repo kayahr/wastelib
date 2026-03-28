@@ -64,6 +64,7 @@ The executable contains at least these string tables:
 | Message strings | `0x17B5E` | `1661` | `107` | General messages |
 | Inventory strings | `0x18290` | `1845` | `170` | Inventory, skills, attributes |
 | Character creation strings | `0x19E6B` | `210` | `8` | Character creation |
+| Ending strings | `0x1A1AE` | `661` | `10` | Base Cochise ending text |
 | Promotion strings | `0x1A642` | `1136` | `63` | Promotion text |
 | Library strings | `0x1AAEC` | `277` | `11` | Library text |
 | Shop strings | `0x1AC18` | `229` | `10` | Shop text |

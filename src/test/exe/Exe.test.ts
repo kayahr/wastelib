@@ -10,6 +10,7 @@ import { openAsBlob } from "node:fs";
 import { Exe } from "../../main/exe/Exe.ts";
 import {
     characterCreationStrings,
+    endingStrings,
     infirmaryStrings,
     introStrings,
     invalidLocations,
@@ -196,6 +197,11 @@ describe("Exe", () => {
     describe("getInfirmaryStrings", () => {
         it("returns infirmary strings", async () => {
             assertEquals((await readPackedExe()).getInfirmaryStrings(), infirmaryStrings);
+        });
+    });
+    describe("getEndingStrings", () => {
+        it("returns ending strings", async () => {
+            assertEquals((await readPackedExe()).getEndingStrings(), endingStrings);
         });
     });
 });

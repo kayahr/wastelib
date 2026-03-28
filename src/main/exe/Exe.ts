@@ -42,6 +42,9 @@ export class Exe {
     /** Infirmary strings. */
     readonly #infirmaryStrings: string[];
 
+    /** Ending strings. */
+    readonly #endingStrings: string[];
+
     /** The map sizes of the maps in the two GAME files. */
     readonly #mapSizes: Uint8Array;
 
@@ -91,6 +94,7 @@ export class Exe {
         this.#libraryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdacc, 277));
         this.#shopStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdbf8, 229));
         this.#infirmaryStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xdced, 369));
+        this.#endingStrings = readStrings(new BinaryReader(unpacked, SEG2 + 0xd18e, 0x295));
 
         // Read the map sizes of the maps in the two GAME files.
         this.#mapSizes = unpacked.slice(SEG2 + 0xbf1c, SEG2 + 0xbf1c + 50);
@@ -224,6 +228,13 @@ export class Exe {
      */
     public getInfirmaryStrings(): string[] {
         return this.#infirmaryStrings.slice();
+    }
+
+    /**
+     * @returns Strings used in the ending sequence.
+     */
+    public getEndingStrings(): string[] {
+        return this.#endingStrings.slice();
     }
 
     /**

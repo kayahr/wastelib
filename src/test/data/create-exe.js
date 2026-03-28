@@ -5,6 +5,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import {
     characterCreationStrings,
+    endingStrings,
     infirmaryStrings,
     introStrings,
     inventoryStrings,
@@ -38,7 +39,8 @@ const stringBlocks = [
     { offset: SEG2 + 0xd622, length: 1136, strings: promotionStrings },
     { offset: SEG2 + 0xdacc, length: 277, strings: libraryStrings },
     { offset: SEG2 + 0xdbf8, length: 229, strings: shopStrings },
-    { offset: SEG2 + 0xdced, length: 369, strings: infirmaryStrings }
+    { offset: SEG2 + 0xdced, length: 369, strings: infirmaryStrings },
+    { offset: SEG2 + 0xd18e, length: 0x295, strings: endingStrings }
 ];
 
 async function runExepack(input, output) {

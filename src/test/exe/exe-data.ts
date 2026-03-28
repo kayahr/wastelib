@@ -65,6 +65,17 @@ export const infirmaryStrings = [
     "\x04You are clean.\r\x06"
 ];
 
+export const endingStrings = [
+    "",
+    "Base goes boom.\r",
+    "Robots die dramatically.\r",
+    "\x0b was killed in the blast.\r",
+    "\"The rangers won.\"\r",
+    "\"Humanity survives another day.\"\r",
+    "",
+    "\rExcerpt from The History of the Rangers.\r"
+];
+
 export interface LocationEntry {
     readonly location: number;
     readonly disk: number;
