@@ -38,6 +38,8 @@ import type { Animation } from "../main/image/Animation.ts";
 import type { AnimationPlayer } from "../main/image/AnimationPlayer.ts";
 import { BaseImage } from "../main/image/BaseImage.ts";
 import { PicImage } from "../main/image/PicImage.ts";
+import type { FileHandleLike, FileReadResultLike } from "../main/io/FileHandleLike.ts";
+import { readParagraphs } from "../main/paragraphs/paragraphs.ts";
 import { Portrait } from "../main/portrait/Portrait.ts";
 import { PortraitFrame } from "../main/portrait/PortraitFrame.ts";
 import { PortraitPatch } from "../main/portrait/PortraitPatch.ts";
@@ -100,7 +102,8 @@ describe("wastelib", () => {
             Tile ,
             Tileset,
             Tilesets,
-            Title
+            Title,
+            readParagraphs
         });
 
         // Interfaces and types can only be checked by TypeScript
@@ -113,5 +116,7 @@ describe("wastelib", () => {
         ((): ToCanvas => (({} as exports.ToCanvas)))();
         ((): CanvasLike => (({} as exports.CanvasLike)))();
         ((): CanvasContext2DLike => (({} as exports.CanvasContext2DLike)))();
+        ((): FileHandleLike => (({} as exports.FileHandleLike)))();
+        ((): FileReadResultLike => (({} as exports.FileReadResultLike)))();
     });
 });

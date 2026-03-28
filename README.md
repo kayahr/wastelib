@@ -54,6 +54,25 @@ There are always two types of static methods to parse the files:
 * The synchronous `fromArray()` method (or `fromArrays()` if data is read from multiple files) simply reads the data from a [Uint8Array]. How you fetched the data from the corresponding game files is up to you. In a browser you might want to [fetch] the data via HTTPS, while in Node.js you might want to read the files with [readFile].
 * The asynchronous `fromBlob()` method (or `fromBlobs()` if data is read from multiple files) can be used with [Blob] or [File] objects which can for example be created by a file selector in the browser or with [openAsBlob] in Node.js.
 
+## Parsing text paragraphs
+
+*wastelib* is also able to read the text paragraphs from the file `paragraphs.bin` shipped by the modernized game release *Wasteland 1 - The Original Classic*.
+
+Here is a small Node.js example:
+
+```ts
+import { readParagraphs } from "@kayahr/wastelib";
+import { open } from "node:fs/promises";
+
+const file = await open("paragraphs.bin");
+const paragraphs = await readParagraphs(file);
+console.log(paragraphs[130]);
+```
+
+The file handle passed to `readParagraphs` is a minimal interface with just one simple `read` method which Node.js' [FileHandle](https://nodejs.org/api/fs.html#class-filehandle) type already implements. When using `readParagraphs` in a browser (very unlikely because this file is a whooping 19 MiB) then this minimal interface must be implemented manually.
+
+There are lots of OCR errors in `paragraphs.bin` and messed up line breaks. The OCR errors are automatically corrected and the line breaks are normalized and corrected as well, so each line in a paragraph represents a single continuous text block to allow dynamic line wrapping, paragraph spacing and indentation.
+
 ## Canvas API
 
 *wastelib* uses the Canvas API for generating image output but the API is build to not depend on a specific canvas implementation. So in a browser you can use the built-in canvas implementation and in Node.js you can use [node-canvas] instead.
@@ -96,7 +115,7 @@ So you always create an empty canvas object yourself (initial size doesn't matte
 * [GAME format](./doc/formats/game.md)
 * [Sprites (IC0_9.WLF and MASKS.WLF) format](./doc/formats/sprites.md)
 * [TITLE.PIC format](./doc/formats/title.md)
-
+* [PARAGRAPHS.BIN format](./doc/formats/paragraphs.md)
 
 ## See also
 

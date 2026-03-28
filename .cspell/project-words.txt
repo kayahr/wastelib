@@ -8,6 +8,7 @@ COLORF
 devtool
 Driedfruit
 exepack
+Grayscale
 Inplace
 kayahr
 npcs
@@ -29,3 +30,4 @@ unexepack
 Vitaly
 Vxor
 wastelib
+Xile
