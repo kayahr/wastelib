@@ -59,6 +59,12 @@ export class Exe {
     /** The offsets of the five shop lists in the two GAME files (0-3 in GAME1, 4 in GAME2, 3 is not used in game and actually does not exist in GAME1). */
     readonly #shopItemListOffsets: number[];
 
+    /** The portrait indices in ALLPICS1. */
+    readonly #portraitIndices1: Uint8Array;
+
+    /** The portrait indices in ALLPICS2. */
+    readonly #portraitIndices2: Uint8Array;
+
     /**
      * Creates a new Exe information object from the given packed EXE content.
      *
@@ -108,6 +114,10 @@ export class Exe {
             ...Array.from(new Uint16Array(unpacked.slice(SEG2 + 0xbe20, SEG2 + 0xbe20 + 4 * 2).buffer)),
             0
         ].map((offset, index) => this.#savegameOffsets[index < 4 ? 0 : 1] + savegameSize + offset);
+
+        // Read portrait index mapping
+        this.#portraitIndices1 = unpacked.slice(SEG2 + 0xbe2a, SEG2 + 0xbe2a + 80);
+        this.#portraitIndices2 = unpacked.slice(SEG2 + 0xbe7a, SEG2 + 0xbe7a + 80);
     }
 
     /**
@@ -289,5 +299,20 @@ export class Exe {
      */
     public getShopItemListOffset(shop: number): number {
         return this.#shopItemListOffsets[shop];
+    }
+
+    /**
+     * Returns the portrait index in ALLPICS1 (when disk is 0) or ALLPICS2 (when disk is 1) for the given portrait ID.
+     *
+     * @param disk       - This disk index (0 for GAME1, 1 for GAME2).
+     * @param portraitId - The portrait ID as used in the game files.
+     * @returns The portrait index in ALLPICS1 or ALLPICS2 (depending on disk parameter).
+     */
+    public getPortraitIndex(disk: number, portraitId: number): number {
+        const index = (disk === 0 ? this.#portraitIndices1 : this.#portraitIndices2)[portraitId];
+        if (index == null || index === 0x80) {
+            throw new Error(`No portrait index found for disk ${disk} and portrait ID ${portraitId})`);
+        }
+        return index;
     }
 }
