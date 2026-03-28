@@ -6,6 +6,7 @@
 import { unpackExe } from "./exepack.ts";
 import { readStrings } from "../io/string.ts";
 import { BinaryReader } from "../io/BinaryReader.ts";
+import { Skill } from "./Skill.ts";
 
 /** The offset of segment 2 in the unpacked WL.EXE file. */
 const SEG2 = 0xd020;
@@ -65,6 +66,9 @@ export class Exe {
     /** The portrait indices in ALLPICS2. */
     readonly #portraitIndices2: Uint8Array;
 
+    /** The list of skills. */
+    readonly #skills: Skill[];
+
     /**
      * Creates a new Exe information object from the given packed EXE content.
      *
@@ -118,6 +122,22 @@ export class Exe {
         // Read portrait index mapping
         this.#portraitIndices1 = unpacked.slice(SEG2 + 0xbe2a, SEG2 + 0xbe2a + 80);
         this.#portraitIndices2 = unpacked.slice(SEG2 + 0xbe7a, SEG2 + 0xbe7a + 80);
+
+        // Read skill list
+        const skills: Skill[] = [];
+        for (let id = 1; id < 36; id++) {
+            const offset = 0x18A40 + id * 2
+            const b0 = unpacked[offset];
+            const b1 = unpacked[offset + 1];
+            skills.push(new Skill(
+                id,
+                this.#inventoryStrings[id],
+                b0 >> 3,
+                b0 & 0x07,
+                b1 - 0xe
+            ));
+        }
+        this.#skills = skills;
     }
 
     /**
@@ -314,5 +334,15 @@ export class Exe {
             throw new Error(`No portrait index found for disk ${disk} and portrait ID ${portraitId})`);
         }
         return index;
+    }
+
+    /**
+     * Returns the skill list. Note that the indices in the returned array are zero-based while skill IDs are one-based. So if you need to access
+     * skill 2 for example then you have to access `skills[1]`.
+     *
+     * @returns The skill list.
+     */
+    public getSkills(): Skill[] {
+        return this.#skills.slice();
     }
 }

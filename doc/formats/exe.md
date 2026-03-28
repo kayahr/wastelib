@@ -267,6 +267,47 @@ Interpretation:
 - the fourth offset points to the end of `GAME1` and does not correspond to a real shop block in the shipped data
 - there is no separate relative-offset table entry for the real `GAME2` shop list; that block starts immediately after the `GAME2` savegame block
 
+## Skill Metadata
+
+The first `35` decoded inventory strings are the skill names in skill-ID order:
+
+```text
+inventoryStrings[1..35] <-> skill IDs 0x01..0x23
+```
+
+The executable stores the remaining skill metadata in a table at offset `0x18a40`.
+
+Format:
+
+```text
+struct SkillMeta {
+    u8 iqAndBaseCost;
+    u8 linkedAttributeOffset;
+}
+
+SkillMeta skillMeta[36];
+```
+
+Notes:
+
+- entry `0` is a dummy entry
+- entries `1..35` correspond to the skills in `inventoryStrings[1..35]`
+- `iqAndBaseCost >> 3` gives the minimum IQ
+- `iqAndBaseCost & 0x07` gives the base skill-point cost
+- `linkedAttributeOffset` is a direct offset into the character record, not a small enum
+
+Linked-attribute offset mapping:
+
+| Offset | Attribute |
+| --- | --- |
+| `0x0E` | Strength |
+| `0x0F` | IQ |
+| `0x10` | Luck |
+| `0x11` | Speed |
+| `0x12` | Agility |
+| `0x13` | Dexterity |
+| `0x14` | Charisma |
+
 ## Relationship To GAME Files
 
 The tables described here are the reason `GAME1` and `GAME2` are not standalone self-describing archives.

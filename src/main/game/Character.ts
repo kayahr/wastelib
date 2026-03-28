@@ -6,7 +6,7 @@
 import type { Gender } from "./Gender.ts";
 import type { Nationality } from "./Nationality.ts";
 import type { BinaryReader } from "../io/BinaryReader.ts";
-import { Skill } from "./Skill.ts";
+import { SkillLevel } from "./SkillLevel.ts";
 import { Item } from "./Item.ts";
 
 /**
@@ -15,13 +15,13 @@ import { Item } from "./Item.ts";
  * @param reader - The reader to read the skills from.
  * @returns The read skills.
  */
-function readSkills(reader: BinaryReader): Skill[] {
-    const skills: Skill[] = [];
+function readSkills(reader: BinaryReader): SkillLevel[] {
+    const skills: SkillLevel[] = [];
     for (let i = 0; i < 30; ++i) {
         const id = reader.readUint8();
         const level = reader.readUint8();
         if (id) {
-            skills.push(new Skill(id, level));
+            skills.push(new SkillLevel(id, level));
         }
     }
     return skills;
@@ -86,7 +86,7 @@ export class Character {
     private readonly rank: string;
     private readonly gameWon: boolean;
     private readonly specialPromotion: boolean;
-    private readonly skills: Skill[];
+    private readonly skills: SkillLevel[];
     private readonly items: Item[];
 
     /**
@@ -429,7 +429,7 @@ export class Character {
      *
      * @returns The skills.
      */
-    public getSkills(): Skill[] {
+    public getSkills(): SkillLevel[] {
         return this.skills;
     }
 

@@ -4,9 +4,9 @@
  */
 
 /**
- * A character skill.
+ * A character skill level.
  */
-export class Skill {
+export class SkillLevel {
     /** The skill ID. */
     private readonly id: number;
 
@@ -16,8 +16,8 @@ export class Skill {
     /**
      * Creates a new skill.
      *
-     * @param id     The skill ID.
-     * @param level  The skill level.
+     * @param id    - The skill ID (1-35).
+     * @param level - The skill level.
      */
     public constructor(id: number, level: number) {
         this.id = id;
@@ -25,17 +25,13 @@ export class Skill {
     }
 
     /**
-     * Returns the skill ID.
-     *
-     * @returns The skill ID.
+     * @returns The skill ID (1-35).
      */
     public getId(): number {
         return this.id;
     }
 
     /**
-     * Returns the skill level.
-     *
      * @returns The skill level.
      */
     public getLevel(): number {

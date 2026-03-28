@@ -15,6 +15,7 @@ import { EndingPatch } from "../main/ending/EndingPatch.ts";
 import { EndingPlayer } from "../main/ending/EndingPlayer.ts";
 import { EndingUpdate } from "../main/ending/EndingUpdate.ts";
 import { Exe } from "../main/exe/Exe.ts";
+import { Skill } from "../main/exe/Skill.ts";
 import { Font } from "../main/font/Font.ts";
 import { FontChar } from "../main/font/FontChar.ts";
 import { ActionClass } from "../main/game/ActionClass.ts";
@@ -32,7 +33,7 @@ import { type Party, type PartyGroups, Savegame } from "../main/game/Savegame.ts
 import { ShopItem } from "../main/game/ShopItem.ts";
 import { ShopItemList } from "../main/game/ShopItemList.ts";
 import { ItemType } from "../main/game/ItemType.ts";
-import { Skill } from "../main/game/Skill.ts";
+import { SkillLevel } from "../main/game/SkillLevel.ts";
 import { BaseAnimationPlayer } from "../main/image/BaseAnimationPlayer.ts";
 import type { Animation } from "../main/image/Animation.ts";
 import type { AnimationPlayer } from "../main/image/AnimationPlayer.ts";
@@ -67,7 +68,8 @@ describe("wastelib", () => {
             EndingPatch,
             EndingPlayer,
             EndingUpdate,
-            Exe ,
+            Exe,
+            Skill,
             Font ,
             FontChar ,
             ActionClass ,
@@ -85,7 +87,7 @@ describe("wastelib", () => {
             ShopItem ,
             ShopItemList,
             ItemType,
-            Skill ,
+            SkillLevel,
             BaseAnimationPlayer ,
             BaseImage ,
             PicImage ,
