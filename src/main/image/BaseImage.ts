@@ -51,24 +51,28 @@ export abstract class BaseImage implements ToCanvas {
     public abstract getColor(x: number, y: number): number;
 
     /**
-     * Creates an ImageData container for the given canvas context, fills it with the image and returns it.
+     * Copies the opaque pixels of this image into the given image data and returns the modified image data.
      *
-     * @param ctx - The 2D canvas rendering context to create the image data for.
-     * @returns The image as RGBA image data.
+     * @param imageData - The image data to copy the opaque pixels of this image to.
+     * @returns The image data.
      */
-    public toImageData(ctx: CanvasContext2DLike): ImageDataLike {
+    public toImageData(imageData: ImageDataLike): ImageDataLike {
         const width = this.width;
         const height = this.height;
-        const imageData = ctx.createImageData(width, height);
         const pixels = imageData.data;
         let i = 0;
         for (let y = 0; y < height; ++y) {
             for (let x = 0; x < width; ++x) {
                 const color = this.getColor(x, y);
-                pixels[i++] = (color >> 24) & 0xff;
-                pixels[i++] = (color >> 16) & 0xff;
-                pixels[i++] = (color >> 8) & 0xff;
-                pixels[i++] = color & 0xff;
+                if ((color & 0xff) === 0) {
+                    // Pixel is transparent, ignore it
+                    i += 4;
+                } else {
+                    pixels[i++] = (color >> 24) & 0xff;
+                    pixels[i++] = (color >> 16) & 0xff;
+                    pixels[i++] = (color >> 8) & 0xff;
+                    pixels[i++] = color & 0xff;
+                }
             }
         }
         return imageData;
@@ -82,7 +86,8 @@ export abstract class BaseImage implements ToCanvas {
      * @param y   - Optional vertical target position. Defaults to 0.
      */
     public draw(ctx: CanvasContext2DLike, x = 0, y = 0): void {
-        ctx.putImageData(this.toImageData(ctx), x, y);
+        const imageData = ctx.getImageData(x, y, this.getWidth(), this.getHeight());
+        ctx.putImageData(this.toImageData(imageData), x, y);
     }
 
     /** @inheritdoc */

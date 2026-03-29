@@ -7,7 +7,7 @@ import { describe, it } from "node:test";
 import { assertEquals, assertSame, assertThrowWithMessage } from "@kayahr/assert";
 import { readFile } from "node:fs/promises";
 import { assertMatchImage } from "../support/image.ts";
-import { createCanvasContext2D } from "../support/canvas.ts";
+import { createImageData } from "../support/canvas.ts";
 import { openAsBlob } from "node:fs";
 import { Cursors } from "../../main/cursor/Cursors.ts";
 
@@ -26,8 +26,8 @@ describe("Cursors", () => {
             const cursor0 = cursors.getCursor(0);
             const cursor1 = cursors.getCursor(1);
             assertEquals(Array.from(cursors), [ cursor0, cursor1 ]);
-            await assertMatchImage(cursor0.toImageData(createCanvasContext2D()), "cursors/000");
-            await assertMatchImage(cursor1.toImageData(createCanvasContext2D()), "cursors/001");
+            await assertMatchImage(cursor0.toImageData(createImageData(16, 16)), "cursors/000");
+            await assertMatchImage(cursor1.toImageData(createImageData(16, 16)), "cursors/001");
         });
     });
     describe("fromBlob", () => {
@@ -37,8 +37,8 @@ describe("Cursors", () => {
             const cursor0 = cursors.getCursor(0);
             const cursor1 = cursors.getCursor(1);
             assertEquals(Array.from(cursors), [ cursor0, cursor1 ]);
-            await assertMatchImage(cursor0.toImageData(createCanvasContext2D()), "cursors/000");
-            await assertMatchImage(cursor1.toImageData(createCanvasContext2D()), "cursors/001");
+            await assertMatchImage(cursor0.toImageData(createImageData(16, 16)), "cursors/000");
+            await assertMatchImage(cursor1.toImageData(createImageData(16, 16)), "cursors/001");
         });
     });
     describe("getCursor", () => {

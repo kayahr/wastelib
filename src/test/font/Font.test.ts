@@ -7,7 +7,7 @@ import { describe, it } from "node:test";
 import { assertEquals, assertSame, assertThrowWithMessage } from "@kayahr/assert";
 import { readFile } from "node:fs/promises";
 import { assertMatchImage } from "../support/image.ts";
-import { createCanvasContext2D } from "../support/canvas.ts";
+import { createImageData } from "../support/canvas.ts";
 import { openAsBlob } from "node:fs";
 import { Font } from "../../main/font/Font.ts";
 
@@ -27,9 +27,9 @@ describe("Font", () => {
             const char1 = font.getChar(1);
             const char2 = font.getChar(2);
             assertEquals(Array.from(font), [ char0, char1, char2 ]);
-            await assertMatchImage(char0.toImageData(createCanvasContext2D()), "font/000");
-            await assertMatchImage(char1.toImageData(createCanvasContext2D()), "font/001");
-            await assertMatchImage(char2.toImageData(createCanvasContext2D()), "font/002");
+            await assertMatchImage(char0.toImageData(createImageData(8, 8)), "font/000");
+            await assertMatchImage(char1.toImageData(createImageData(8, 8)), "font/001");
+            await assertMatchImage(char2.toImageData(createImageData(8, 8)), "font/002");
         });
     });
     describe("fromBlob", () => {
@@ -40,9 +40,9 @@ describe("Font", () => {
             const char1 = font.getChar(1);
             const char2 = font.getChar(2);
             assertEquals(Array.from(font), [ char0, char1, char2 ]);
-            await assertMatchImage(char0.toImageData(createCanvasContext2D()), "font/000");
-            await assertMatchImage(char1.toImageData(createCanvasContext2D()), "font/001");
-            await assertMatchImage(char2.toImageData(createCanvasContext2D()), "font/002");
+            await assertMatchImage(char0.toImageData(createImageData(8, 8)), "font/000");
+            await assertMatchImage(char1.toImageData(createImageData(8, 8)), "font/001");
+            await assertMatchImage(char2.toImageData(createImageData(8, 8)), "font/002");
         });
     });
     describe("getChar", () => {

@@ -48,6 +48,17 @@ export interface ImageDataLike {
  */
 export interface CanvasContext2DLike {
     /**
+     * Returns image data at the given position.
+     *
+     * @param x      - The horizontal position of the image data to return.
+     * @param y      - The vertical position of the image data to return.
+     * @param width  - The width of the image data to return.
+     * @param height - The height of the image data to return.
+     * @returns The read image data.
+     */
+    getImageData(x: number, y: number, width: number, height: number): ImageDataLike;
+
+    /**
      * Draws the given image data to the given position.
      *
      * @param imageData - The image data to draw.

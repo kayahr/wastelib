@@ -7,7 +7,7 @@ import { describe, it } from "node:test";
 import { assertEquals, assertInstanceOf, assertSame, assertThrowWithMessage } from "@kayahr/assert";
 import { readFile } from "node:fs/promises";
 import { assertMatchImage } from "../support/image.ts";
-import { createCanvasContext2D } from "../support/canvas.ts";
+import { createImageData } from "../support/canvas.ts";
 import { Ending } from "../../main/ending/Ending.ts";
 import { openAsBlob } from "node:fs";
 import { EndingPlayer } from "../../main/ending/EndingPlayer.ts";
@@ -27,7 +27,7 @@ describe("Ending", () => {
             assertEquals(ending.getWidth(), 288);
             assertEquals(ending.getHeight(), 128);
             assertEquals(ending.getUpdateCount(), 15);
-            await assertMatchImage(ending.toImageData(createCanvasContext2D()), "ending/000");
+            await assertMatchImage(ending.toImageData(createImageData(288, 128)), "ending/000");
         });
         it("throws error when file is corrupt", async () => {
             const invalidBaseFrame = await readFile("src/test/data/broken/end-invalid-base-frame.cpa");
@@ -46,7 +46,7 @@ describe("Ending", () => {
             assertEquals(ending.getWidth(), 288);
             assertEquals(ending.getHeight(), 128);
             assertEquals(ending.getUpdateCount(), 15);
-            await assertMatchImage(ending.toImageData(createCanvasContext2D()), "ending/000");
+            await assertMatchImage(ending.toImageData(createImageData(288, 128)), "ending/000");
         });
     });
     describe("getUpdate", () => {
@@ -67,7 +67,7 @@ describe("Ending", () => {
             assertEquals(onDraw.mock.callCount(), 1);
             const frame = onDraw.mock.calls[0].arguments[0];
             assertInstanceOf(frame, BaseImage);
-            await assertMatchImage(frame.toImageData(createCanvasContext2D()), "ending/000");
+            await assertMatchImage(frame.toImageData(createImageData(288, 128)), "ending/000");
 
             const delays = [ 60, 5, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 4 ];
 
@@ -79,7 +79,7 @@ describe("Ending", () => {
                 assertEquals(onDraw.mock.callCount(), 1);
                 const frame = onDraw.mock.calls[0].arguments[0];
                 assertInstanceOf(frame, BaseImage);
-                await assertMatchImage(frame.toImageData(createCanvasContext2D()), `ending/${i.toString().padStart(3, "0")}`);
+                await assertMatchImage(frame.toImageData(createImageData(288, 128)), `ending/${i.toString().padStart(3, "0")}`);
             }
 
             // After frame 15 the original game loops back to frame 12.
@@ -88,7 +88,7 @@ describe("Ending", () => {
             assertEquals(onDraw.mock.callCount(), 1);
             const loopFrame = onDraw.mock.calls[0].arguments[0];
             assertInstanceOf(loopFrame, BaseImage);
-            await assertMatchImage(loopFrame.toImageData(createCanvasContext2D()), "ending/012");
+            await assertMatchImage(loopFrame.toImageData(createImageData(288, 128)), "ending/012");
         });
     });
 });

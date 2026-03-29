@@ -9,7 +9,7 @@ import { readFile } from "node:fs/promises";
 import { Tilesets } from "../../main/tile/Tilesets.ts";
 import { Tileset } from "../../main/tile/Tileset.ts";
 import { assertMatchImage } from "../support/image.ts";
-import { createCanvasContext2D } from "../support/canvas.ts";
+import { createImageData } from "../support/canvas.ts";
 
 describe("Tileset", () => {
     it("is iterable", async () => {
@@ -46,9 +46,9 @@ describe("Tileset", () => {
             const tileset = Tileset.fromArray(array, 0x8a);
             assertEquals(tileset.getDisk(), 0);
             assertEquals(tileset.getTileCount(), 3);
-            await assertMatchImage(tileset.getTile(0).toImageData(createCanvasContext2D()), "tilesets/001/000");
-            await assertMatchImage(tileset.getTile(1).toImageData(createCanvasContext2D()), "tilesets/001/001");
-            await assertMatchImage(tileset.getTile(2).toImageData(createCanvasContext2D()), "tilesets/001/002");
+            await assertMatchImage(tileset.getTile(0).toImageData(createImageData(16, 16)), "tilesets/001/000");
+            await assertMatchImage(tileset.getTile(1).toImageData(createImageData(16, 16)), "tilesets/001/001");
+            await assertMatchImage(tileset.getTile(2).toImageData(createImageData(16, 16)), "tilesets/001/002");
         });
     });
 });

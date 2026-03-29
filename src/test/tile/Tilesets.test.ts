@@ -7,7 +7,7 @@ import { describe, it } from "node:test";
 import { assertEquals, assertSame, assertThrowWithMessage } from "@kayahr/assert";
 import { readFile } from "node:fs/promises";
 import { assertMatchImage } from "../support/image.ts";
-import { createCanvasContext2D } from "../support/canvas.ts";
+import { createImageData } from "../support/canvas.ts";
 import { openAsBlob } from "node:fs";
 import { Tilesets } from "../../main/tile/Tilesets.ts";
 
@@ -28,11 +28,11 @@ describe("Tilesets", () => {
             assertEquals(Array.from(tilesets), [ tileset0, tileset1 ]);
             assertEquals(tileset0.getTileCount(), 2);
             assertEquals(tileset1.getTileCount(), 3);
-            await assertMatchImage(tileset0.getTile(0).toImageData(createCanvasContext2D()), "tilesets/000/000");
-            await assertMatchImage(tileset0.getTile(1).toImageData(createCanvasContext2D()), "tilesets/000/001");
-            await assertMatchImage(tileset1.getTile(0).toImageData(createCanvasContext2D()), "tilesets/001/000");
-            await assertMatchImage(tileset1.getTile(1).toImageData(createCanvasContext2D()), "tilesets/001/001");
-            await assertMatchImage(tileset1.getTile(2).toImageData(createCanvasContext2D()), "tilesets/001/002");
+            await assertMatchImage(tileset0.getTile(0).toImageData(createImageData(16, 16)), "tilesets/000/000");
+            await assertMatchImage(tileset0.getTile(1).toImageData(createImageData(16, 16)), "tilesets/000/001");
+            await assertMatchImage(tileset1.getTile(0).toImageData(createImageData(16, 16)), "tilesets/001/000");
+            await assertMatchImage(tileset1.getTile(1).toImageData(createImageData(16, 16)), "tilesets/001/001");
+            await assertMatchImage(tileset1.getTile(2).toImageData(createImageData(16, 16)), "tilesets/001/002");
         });
         it("throws error when file is corrupt", async () => {
             const array = await readFile("src/test/data/broken/allhtds1");
@@ -48,11 +48,11 @@ describe("Tilesets", () => {
             assertEquals(Array.from(tilesets), [ tileset0, tileset1 ]);
             assertEquals(tileset0.getTileCount(), 2);
             assertEquals(tileset1.getTileCount(), 3);
-            await assertMatchImage(tileset0.getTile(0).toImageData(createCanvasContext2D()), "tilesets/000/000");
-            await assertMatchImage(tileset0.getTile(1).toImageData(createCanvasContext2D()), "tilesets/000/001");
-            await assertMatchImage(tileset1.getTile(0).toImageData(createCanvasContext2D()), "tilesets/001/000");
-            await assertMatchImage(tileset1.getTile(1).toImageData(createCanvasContext2D()), "tilesets/001/001");
-            await assertMatchImage(tileset1.getTile(2).toImageData(createCanvasContext2D()), "tilesets/001/002");
+            await assertMatchImage(tileset0.getTile(0).toImageData(createImageData(16, 16)), "tilesets/000/000");
+            await assertMatchImage(tileset0.getTile(1).toImageData(createImageData(16, 16)), "tilesets/000/001");
+            await assertMatchImage(tileset1.getTile(0).toImageData(createImageData(16, 16)), "tilesets/001/000");
+            await assertMatchImage(tileset1.getTile(1).toImageData(createImageData(16, 16)), "tilesets/001/001");
+            await assertMatchImage(tileset1.getTile(2).toImageData(createImageData(16, 16)), "tilesets/001/002");
         });
     });
     describe("fromArrays", () => {

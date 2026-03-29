@@ -8,7 +8,7 @@ import { assertEquals, assertThrowWithMessage } from "@kayahr/assert";
 import { Title } from "../../main/title/Title.ts";
 import { readFile } from "node:fs/promises";
 import { assertMatchImage } from "../support/image.ts";
-import { createCanvas, createCanvasContext2D } from "../support/canvas.ts";
+import { createCanvas, createImageData } from "../support/canvas.ts";
 import { openAsBlob } from "node:fs";
 
 describe("Title", () => {
@@ -17,7 +17,7 @@ describe("Title", () => {
             const title = Title.fromArray(await readFile("src/test/data/title.pic"));
             assertEquals(title.getWidth(), 288);
             assertEquals(title.getHeight(), 128);
-            await assertMatchImage(title.toImageData(createCanvasContext2D()), "title");
+            await assertMatchImage(title.toImageData(createImageData(288, 128)), "title");
         });
     });
     describe("fromBlob", () => {
@@ -25,7 +25,7 @@ describe("Title", () => {
             const title = await Title.fromBlob(await openAsBlob("src/test/data/title.pic"));
             assertEquals(title.getWidth(), 288);
             assertEquals(title.getHeight(), 128);
-            await assertMatchImage(title.toImageData(createCanvasContext2D()), "title");
+            await assertMatchImage(title.toImageData(createImageData(288, 128)), "title");
         });
     });
     describe("toCanvas", () => {

@@ -8,6 +8,13 @@ export function createCanvas(): CanvasLike & { dump(): ImageDataLike } {
         dump: () => data,
         getContext(id: string): CanvasContext2DLike {
             return {
+                getImageData(x: number, y: number, width: number, height: number): ImageDataLike {
+                    return {
+                        width,
+                        height,
+                        data: new Uint8ClampedArray(width * height * 4)
+                    }
+                },
                 putImageData(imageData: ImageDataLike, x: number, y: number): void {
                     data = imageData;
                 },
@@ -25,4 +32,8 @@ export function createCanvas(): CanvasLike & { dump(): ImageDataLike } {
 
 export function createCanvasContext2D(): CanvasContext2DLike {
     return getCanvasContext2D(createCanvas());
+}
+
+export function createImageData(width: number, height: number): ImageDataLike {
+    return createCanvasContext2D().createImageData(width, height);
 }
