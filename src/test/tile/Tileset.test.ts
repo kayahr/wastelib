@@ -10,6 +10,7 @@ import { Tilesets } from "../../main/tile/Tilesets.ts";
 import { Tileset } from "../../main/tile/Tileset.ts";
 import { assertMatchImage } from "../support/image.ts";
 import { createImageData } from "../support/canvas.ts";
+import { openAsBlob } from "node:fs";
 
 describe("Tileset", () => {
     it("is iterable", async () => {
@@ -41,9 +42,20 @@ describe("Tileset", () => {
         });
     });
     describe("fromArray", () => {
-        it("reads a single tileset block from a given offset", async () => {
+        it("reads a single tileset block from a given offset in given array", async () => {
             const array = await readFile("src/test/data/allhtds1");
             const tileset = Tileset.fromArray(array, 0x8a);
+            assertEquals(tileset.getDisk(), 0);
+            assertEquals(tileset.getTileCount(), 3);
+            await assertMatchImage(tileset.getTile(0).toImageData(createImageData(16, 16)), "tilesets/001/000");
+            await assertMatchImage(tileset.getTile(1).toImageData(createImageData(16, 16)), "tilesets/001/001");
+            await assertMatchImage(tileset.getTile(2).toImageData(createImageData(16, 16)), "tilesets/001/002");
+        });
+    });
+    describe("fromBlob", () => {
+        it("reads a single tileset block from a given offset in given blob", async () => {
+            const blob = await openAsBlob("src/test/data/allhtds1");
+            const tileset = await Tileset.fromBlob(blob, 0x8a);
             assertEquals(tileset.getDisk(), 0);
             assertEquals(tileset.getTileCount(), 3);
             await assertMatchImage(tileset.getTile(0).toImageData(createImageData(16, 16)), "tilesets/001/000");
