@@ -122,4 +122,26 @@ export class Portrait extends PicImage implements Animation {
         // Create the end animation
         return new Portrait(baseFrame, scripts, updates);
     }
+
+    /**
+     * Reads a single portrait record from the given array.
+     *
+     * @param array  - The array to read the portrait from.
+     * @param offset - The byte offset of the portrait record.
+     * @returns The parsed portrait.
+     */
+    public static fromArray(array: Uint8Array, offset: number): Portrait {
+        return this.read(new BinaryReader(array, offset));
+    }
+
+    /**
+     * Reads a single portrait record from the given blob.
+     *
+     * @param blob   - The ALLPICS1 or ALLPICS2 blob to read.
+     * @param offset - The byte offset of the portrait record.
+     * @returns The parsed portrait.
+     */
+    public static async fromBlob(blob: Blob, offset: number): Promise<Portrait> {
+        return this.fromArray(new Uint8Array(await blob.arrayBuffer()), offset);
+    }
 }
