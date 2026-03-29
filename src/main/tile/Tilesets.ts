@@ -4,8 +4,6 @@
  */
 
 import { BinaryReader } from "../io/BinaryReader.ts";
-import { decodeHuffman } from "../io/huffman.ts";
-import { Tile } from "./Tile.ts";
 import { Tileset } from "./Tileset.ts";
 
 /**
@@ -62,19 +60,7 @@ export class Tilesets implements Iterable<Tileset> {
         const reader = new BinaryReader(array);
         const tilesets: Tileset[] = [];
         while (reader.hasData()) {
-            const blockSize = reader.readUint32();
-            const msq = reader.readString(3);
-            if (msq !== "msq") {
-                throw new Error("Invalid data block");
-            }
-            const disk = reader.readUint8();
-            const decoded = decodeHuffman(reader, blockSize);
-            const numOfTiles = blockSize >> 7;
-            const tiles: Tile[] = [];
-            for (let i = 0; i < numOfTiles; ++i) {
-                tiles.push(new Tile(decoded, i * 128));
-            }
-            tilesets.push(new Tileset(tiles, disk));
+            tilesets.push(Tileset.read(reader));
         }
         return new Tilesets(...tilesets);
     }

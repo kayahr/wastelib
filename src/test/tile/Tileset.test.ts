@@ -7,6 +7,9 @@ import { describe, it } from "node:test";
 import { assertEquals, assertSame, assertThrowWithMessage } from "@kayahr/assert";
 import { readFile } from "node:fs/promises";
 import { Tilesets } from "../../main/tile/Tilesets.ts";
+import { Tileset } from "../../main/tile/Tileset.ts";
+import { assertMatchImage } from "../support/image.ts";
+import { createCanvasContext2D } from "../support/canvas.ts";
 
 describe("Tileset", () => {
     it("is iterable", async () => {
@@ -35,6 +38,17 @@ describe("Tileset", () => {
             const tileset = Tilesets.fromArray(await readFile("src/test/data/allhtds1")).getTileset(1);
             assertThrowWithMessage(() => tileset.getTile(-1), RangeError, "Index out of bounds: -1");
             assertThrowWithMessage(() => tileset.getTile(3), RangeError, "Index out of bounds: 3");
+        });
+    });
+    describe("fromArray", () => {
+        it("reads a single tileset block from a given offset", async () => {
+            const array = await readFile("src/test/data/allhtds1");
+            const tileset = Tileset.fromArray(array, 0x8a);
+            assertEquals(tileset.getDisk(), 0);
+            assertEquals(tileset.getTileCount(), 3);
+            await assertMatchImage(tileset.getTile(0).toImageData(createCanvasContext2D()), "tilesets/001/000");
+            await assertMatchImage(tileset.getTile(1).toImageData(createCanvasContext2D()), "tilesets/001/001");
+            await assertMatchImage(tileset.getTile(2).toImageData(createCanvasContext2D()), "tilesets/001/002");
         });
     });
 });

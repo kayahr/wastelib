@@ -25,7 +25,10 @@ import {
     savegameOffset1,
     shopItemListOffsets,
     shopStrings,
-    tileMapOffsets
+    tileMapOffsets,
+    tilesetDisks,
+    tilesetFileOffsets,
+    tilesetSizes
 } from "./exe-data.ts";
 
 async function readPackedExe(): Promise<Exe> {
@@ -146,6 +149,45 @@ describe("Exe", () => {
             for (const { location, disk, map } of locations) {
                 assertEquals(exe.getTileMapOffset(disk, map), tileMapOffsets[location]);
             }
+        });
+    });
+    describe("getTilesetOffset", () => {
+        it("returns the tileset offsets within the corresponding ALLHTDS file", async () => {
+            const exe = await readPackedExe();
+            for (let tilesetId = 0; tilesetId < tilesetFileOffsets.length; ++tilesetId) {
+                assertEquals(exe.getTilesetOffset(tilesetId), tilesetFileOffsets[tilesetId]);
+            }
+        });
+        it("throws exception if the tileset ID is out of bounds", async () => {
+            const exe = await readPackedExe();
+            assertThrowWithMessage(() => exe.getTilesetOffset(-1), RangeError, "Invalid tileset ID: -1");
+            assertThrowWithMessage(() => exe.getTilesetOffset(9), RangeError, "Invalid tileset ID: 9");
+        });
+    });
+    describe("getTilesetDisk", () => {
+        it("returns the tileset disk", async () => {
+            const exe = await readPackedExe();
+            for (let tilesetId = 0; tilesetId < tilesetDisks.length; ++tilesetId) {
+                assertEquals(exe.getTilesetDisk(tilesetId), tilesetDisks[tilesetId]);
+            }
+        });
+        it("throws exception if the tileset ID is out of bounds", async () => {
+            const exe = await readPackedExe();
+            assertThrowWithMessage(() => exe.getTilesetDisk(-1), RangeError, "Invalid tileset ID: -1");
+            assertThrowWithMessage(() => exe.getTilesetDisk(9), RangeError, "Invalid tileset ID: 9");
+        });
+    });
+    describe("getTilesetSize", () => {
+        it("returns the compressed tileset sizes", async () => {
+            const exe = await readPackedExe();
+            for (let tilesetId = 0; tilesetId < tilesetSizes.length; ++tilesetId) {
+                assertEquals(exe.getTilesetSize(tilesetId), tilesetSizes[tilesetId]);
+            }
+        });
+        it("throws exception if the tileset ID is out of bounds", async () => {
+            const exe = await readPackedExe();
+            assertThrowWithMessage(() => exe.getTilesetSize(-1), RangeError, "Invalid tileset ID: -1");
+            assertThrowWithMessage(() => exe.getTilesetSize(9), RangeError, "Invalid tileset ID: 9");
         });
     });
     describe("getMapOffset", () => {

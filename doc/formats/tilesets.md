@@ -40,6 +40,54 @@ There is:
 
 Each block represents exactly one tileset.
 
+## Tileset Offsets
+
+The `ALLHTDS` files themselves do not contain an internal offset table, but the Wasteland 1 executable keeps external lookup tables for `ALLHTDS1` and `ALLHTDS2`.
+
+These tables allow direct random access to tilesets by ID without first walking the archive sequentially.
+
+In the unpacked `WL.EXE`, the tables are stored at these file offsets:
+
+- tileset cumulative start offsets: `0x18E1C` (`9 * u32`)
+- tileset compressed sizes: `0x18E0A` (`9 * u16`)
+
+Wasteland 1 uses global tileset IDs:
+
+- `0..3` for `ALLHTDS1`
+- `4..8` for `ALLHTDS2`
+
+The executable stores these cumulative start offsets:
+
+| Tileset ID | File | Local offset | Cumulative offset |
+| --- | --- | --- | --- |
+| `0` | `ALLHTDS1` | `0x0000` | `0x0000` |
+| `1` | `ALLHTDS1` | `0x1402` | `0x1402` |
+| `2` | `ALLHTDS1` | `0x3EE8` | `0x3EE8` |
+| `3` | `ALLHTDS1` | `0x69FC` | `0x69FC` |
+| `4` | `ALLHTDS2` | `0x0000` | `0x8603` |
+| `5` | `ALLHTDS2` | `0x222C` | `0xA82F` |
+| `6` | `ALLHTDS2` | `0x3C97` | `0xC29A` |
+| `7` | `ALLHTDS2` | `0x5676` | `0xDC79` |
+| `8` | `ALLHTDS2` | `0x70EB` | `0xF6EE` |
+
+To get the local offset in ALLHTDS2 for tilesets >= 4 simply subtract the cumulative offset of tileset 4.
+
+The executable also stores the compressed block sizes:
+
+| Tileset ID | Compressed size |
+| --- | --- |
+| `0` | `0x1402` |
+| `1` | `0x2AE6` |
+| `2` | `0x2B14` |
+| `3` | `0x1C07` |
+| `4` | `0x222C` |
+| `5` | `0x1A6B` |
+| `6` | `0x19DF` |
+| `7` | `0x1A75` |
+| `8` | `0x2853` |
+
+These EXE tables are not required for parsing, but they are useful when implementing true random access.
+
 ## Tileset Block
 
 Each tileset block has this layout:

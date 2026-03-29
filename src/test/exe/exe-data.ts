@@ -112,6 +112,44 @@ export const mapOffsets = [
     ...Array.from({ length: 22 }, (_, map) => 0x00200000 + map * 0x00020202)
 ];
 
+export const tilesetFileOffsets = [
+    0x0000,
+    0x1402,
+    0x3ee8,
+    0x69fc,
+    0x0000,
+    0x222c,
+    0x3c97,
+    0x5676,
+    0x70eb
+];
+
+export const tilesetCumulativeOffsets = [
+    0x0000,
+    0x1402,
+    0x3ee8,
+    0x69fc,
+    0x8603,
+    0xa82f,
+    0xc29a,
+    0xdc79,
+    0xf6ee
+];
+
+export const tilesetSizes = [
+    0x1402,
+    0x2ae6,
+    0x2b14,
+    0x1c07,
+    0x222c,
+    0x1a6b,
+    0x19df,
+    0x1a75,
+    0x2853
+];
+
+export const tilesetDisks = tilesetFileOffsets.map((_, index) => index < 4 ? 0 : 1);
+
 export const savegameOffset0 = 0x012389ab;
 export const savegameOffset1 = 0x4567cdef;
 export const savegameSize = 0x0055;

@@ -20,7 +20,9 @@ import {
     savegameSize,
     shopItemListBaseOffsets,
     shopStrings,
-    tileMapOffsets
+    tileMapOffsets,
+    tilesetCumulativeOffsets,
+    tilesetSizes
 } from "../exe/exe-data.ts";
 
 const baseDir = import.meta.dirname;
@@ -145,12 +147,10 @@ function encodeStrings(strings) {
     return encoded;
 }
 
-function writeBlock(data, offset, length, block) {
-    if (block.length > length) {
-        throw new Error(`Block too large for region at 0x${offset.toString(16)}: ${block.length} > ${length}`);
+function writeUint8Array(view, offset, values) {
+    for (let i = 0; i < values.length; ++i) {
+        view.setUint8(offset + i, values[i], true);
     }
-    data.fill(0, offset, offset + length);
-    data.set(block, offset);
 }
 
 function writeUint16Array(view, offset, values) {
@@ -170,17 +170,15 @@ const data = await readFile(helloExe);
 const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
 
 for (const block of stringBlocks) {
-    writeBlock(data, block.offset, block.length, encodeStrings(block.strings));
+    writeUint8Array(view, block.offset, encodeStrings(block.strings));
 }
 
-writeBlock(data, SEG2 + 0xbf1c, 50, Uint8Array.from(mapSizes));
-writeBlock(data, SEG2 + 0xbc7a, 42 * 4, new Uint8Array(42 * 4));
-writeBlock(data, SEG2 + 0xbd22, 50 * 2, new Uint8Array(50 * 2));
-writeBlock(data, SEG2 + 0xbec9, 50, Uint8Array.from(locationMapping));
-writeBlock(data, SEG2 + 0xbe20, 4 * 2, new Uint8Array(4 * 2));
-
+writeUint8Array(view, SEG2 + 0xbf1c, Uint8Array.from(mapSizes));
+writeUint8Array(view, SEG2 + 0xbec9, Uint8Array.from(locationMapping));
 writeUint32Array(view, SEG2 + 0xbc7a, mapOffsets);
 writeUint16Array(view, SEG2 + 0xbd22, tileMapOffsets);
+writeUint16Array(view, SEG2 + 0xbdea, tilesetSizes);
+writeUint32Array(view, SEG2 + 0xbdfc, tilesetCumulativeOffsets);
 writeUint16Array(view, SEG2 + 0xbe20, shopItemListBaseOffsets);
 
 view.setUint16(0x880c, savegameOffset0 & 0xffff, true);

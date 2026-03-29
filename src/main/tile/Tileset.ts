@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-import type { Tile } from "./Tile.ts";
+import { BinaryReader } from "../io/BinaryReader.ts";
+import { decodeHuffman } from "../io/huffman.ts";
+import { Tile } from "./Tile.ts";
 
 /**
  * Container for a set of tiles read from the ALLHTDS1 or ALLHTDS2 file.
@@ -59,5 +61,39 @@ export class Tileset implements Iterable<Tile> {
             throw new RangeError(`Index out of bounds: ${index}`);
         }
         return this.#tiles[index];
+    }
+
+    /**
+     * Reads one tileset block from the given reader.
+     *
+     * @param reader - The reader to read from.
+     * @returns The read tileset.
+     * @internal
+     */
+    public static read(reader: BinaryReader): Tileset {
+        const blockSize = reader.readUint32();
+        const msq = reader.readString(3);
+        if (msq !== "msq") {
+            throw new Error("Invalid data block");
+        }
+        const disk = reader.readUint8();
+        const decoded = decodeHuffman(reader, blockSize);
+        const numOfTiles = blockSize >> 7;
+        const tiles: Tile[] = [];
+        for (let i = 0; i < numOfTiles; ++i) {
+            tiles.push(new Tile(decoded, i * 128));
+        }
+        return new Tileset(tiles, disk);
+    }
+
+    /**
+     * Reads a single tileset block from the given array.
+     *
+     * @param array  - The array to read the tileset from.
+     * @param offset - The byte offset of the tileset block. Defaults to 0.
+     * @returns The read tileset.
+     */
+    public static fromArray(array: Uint8Array, offset = 0): Tileset {
+        return this.read(new BinaryReader(array, offset));
     }
 }

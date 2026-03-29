@@ -69,6 +69,12 @@ export class Exe {
     /** The portrait indices in ALLPICS2. */
     readonly #portraitIndices2: Uint8Array;
 
+    /** The cumulative tileset offsets across ALLHTDS1 and ALLHTDS2. */
+    readonly #tilesetOffsets: Uint32Array;
+
+    /** The compressed sizes of the tilesets in ALLHTDS1 and ALLHTDS2. */
+    readonly #tilesetSizes: Uint16Array;
+
     /** The list of skills. */
     readonly #skills: Skill[];
 
@@ -126,6 +132,10 @@ export class Exe {
         // Read portrait index mapping
         this.#portraitIndices1 = unpacked.slice(SEG2 + 0xbe2a, SEG2 + 0xbe2a + 80);
         this.#portraitIndices2 = unpacked.slice(SEG2 + 0xbe7a, SEG2 + 0xbe7a + 80);
+
+        // Read tileset offsets and compressed sizes
+        this.#tilesetOffsets = new Uint32Array(unpacked.slice(SEG2 + 0xbdfc, SEG2 + 0xbdfc + 9 * 4).buffer);
+        this.#tilesetSizes = new Uint16Array(unpacked.slice(SEG2 + 0xbdea, SEG2 + 0xbdea + 9 * 2).buffer);
 
         // Read skill list
         const skills: Skill[] = [];
@@ -348,6 +358,39 @@ export class Exe {
     }
 
     /**
+     * Returns the tileset offset within the corresponding ALLHTDS file for the given tileset ID.
+     *
+     * @param tilesetId - The global tileset ID (0-8).
+     * @returns The tileset offset within ALLHTDS1 or ALLHTDS2.
+     */
+    public getTilesetOffset(tilesetId: number): number {
+        tilesetId = this.#validateTilesetId(tilesetId);
+        const offset = this.#tilesetOffsets[tilesetId];
+        return tilesetId < 4 ? offset : offset - this.#tilesetOffsets[4];
+    }
+
+    /**
+     * Returns the disk number of the given tileset ID.
+     *
+     * @param tilesetId - The global tileset ID (0-8).
+     * @returns 0 for ALLHTDS1 and 1 for ALLHTDS2.
+     */
+    public getTilesetDisk(tilesetId: number): number {
+        this.#validateTilesetId(tilesetId);
+        return tilesetId < 4 ? 0 : 1;
+    }
+
+    /**
+     * Returns the compressed tileset size for the given tileset ID.
+     *
+     * @param tilesetId - The global tileset ID (0-8).
+     * @returns The compressed tileset size in bytes.
+     */
+    public getTilesetSize(tilesetId: number): number {
+        return this.#tilesetSizes[this.#validateTilesetId(tilesetId)];
+    }
+
+    /**
      * Returns the skill list. Note that the indices in the returned array are zero-based while skill IDs are one-based. So if you need to access
      * skill 2 for example then you have to access `skills[1]`.
      *
@@ -355,5 +398,19 @@ export class Exe {
      */
     public getSkills(): Skill[] {
         return this.#skills.slice();
+    }
+
+    /**
+     * Validates the given tileset ID.
+     *
+     * @param tilesetId - The tileset ID to validate.
+     * @returns The validated tileset ID.
+     * @throws {@link !RangeError} if the tileset ID is invalid.
+     */
+    #validateTilesetId(tilesetId: number): number {
+        if (tilesetId < 0 || tilesetId >= this.#tilesetOffsets.length) {
+            throw new RangeError(`Invalid tileset ID: ${tilesetId}`);
+        }
+        return tilesetId;
     }
 }
