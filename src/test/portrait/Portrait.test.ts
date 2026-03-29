@@ -10,10 +10,21 @@ import { openAsBlob } from "node:fs";
 import { Portrait } from "../../main/portrait/Portrait.ts";
 import { PortraitPlayer } from "../../main/portrait/PortraitPlayer.ts";
 import type { ImageDataLike } from "../../main/sys/canvas.ts";
+import { BinaryReader } from "../../main/io/BinaryReader.ts";
+import { decodeHuffman } from "../../main/io/huffman.ts";
 import { assertMatchImage } from "../support/image.ts";
 import { createImageData } from "../support/canvas.ts";
 
 const portrait2Offset = 0x0556;
+
+function getAnimationBlockOffset(array: Uint8Array, portraitOffset: number): number {
+    const reader = new BinaryReader(array, portraitOffset);
+    const imageSize = reader.readUint32();
+    reader.readString(3);
+    reader.readUint8();
+    decodeHuffman(reader, imageSize);
+    return portraitOffset + reader.getByteIndex();
+}
 
 function createStrip(...frames: ImageDataLike[]): ImageDataLike {
     const width = frames.length * 96;
@@ -57,6 +68,19 @@ describe("Portrait", () => {
             assertEquals(portrait.getScript(1).getLine(1).getDelay(), 4);
             assertEquals(portrait.getScript(1).getLine(0).getUpdate(), 4);
             await assertMatchImage(portrait.toImageData(createImageData(96, 84)), "portraits/001");
+        });
+        it("throws error when base frame data block is corrupt", async () => {
+            const valid = await readFile("src/test/data/allpics1");
+            const invalidBaseFrame = Uint8Array.from(valid);
+            invalidBaseFrame[7] = 2;
+            assertThrowWithMessage(() => Portrait.fromArray(invalidBaseFrame, 0), Error, "Invalid base frame data block");
+        });
+        it("throws error when animation data block is corrupt", async () => {
+            const valid = await readFile("src/test/data/allpics1");
+            const invalidAnimationBlock = Uint8Array.from(valid);
+            const animationBlockOffset = getAnimationBlockOffset(valid, 0);
+            invalidAnimationBlock[animationBlockOffset + 7] = 1;
+            assertThrowWithMessage(() => Portrait.fromArray(invalidAnimationBlock, 0), Error, "Invalid animation data block: msq10");
         });
     });
     describe("fromBlob", () => {
