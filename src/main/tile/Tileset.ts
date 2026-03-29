@@ -90,10 +90,21 @@ export class Tileset implements Iterable<Tile> {
      * Reads a single tileset block from the given array.
      *
      * @param array  - The array to read the tileset from.
-     * @param offset - The byte offset of the tileset block. Defaults to 0.
+     * @param offset - The byte offset of the tileset block.
      * @returns The read tileset.
      */
-    public static fromArray(array: Uint8Array, offset = 0): Tileset {
+    public static fromArray(array: Uint8Array, offset: number): Tileset {
         return this.read(new BinaryReader(array, offset));
+    }
+
+    /**
+     * Reads tileset from the given blob.
+     *
+     * @param blob   - The ALLHTDS1 or ALLHTDS2 blob to read.
+     * @param offset - The byte offset of the tileset block.
+     * @returns The read tileset.
+     */
+    public static async fromBlob(blob: Blob, offset: number): Promise<Tileset> {
+        return this.fromArray(new Uint8Array(await blob.arrayBuffer()), offset);
     }
 }
