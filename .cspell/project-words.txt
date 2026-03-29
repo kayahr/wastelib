@@ -7,6 +7,9 @@ bitstream
 COLORF
 devtool
 Driedfruit
+Eher
+Ehim
+Eshe
 exepack
 Grayscale
 Inplace
