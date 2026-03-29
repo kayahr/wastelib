@@ -69,6 +69,12 @@ export class Exe {
     /** The portrait indices in ALLPICS2. */
     readonly #portraitIndices2: Uint8Array;
 
+    /** The portrait record offsets in ALLPICS1. */
+    readonly #portraitOffsets1: Uint32Array;
+
+    /** The portrait record offsets in ALLPICS2. */
+    readonly #portraitOffsets2: Uint32Array;
+
     /** The cumulative tileset offsets across ALLHTDS1 and ALLHTDS2. */
     readonly #tilesetOffsets: Uint32Array;
 
@@ -129,9 +135,11 @@ export class Exe {
             0
         ].map((offset, index) => this.#savegameOffsets[index < 4 ? 0 : 1] + savegameSize + offset);
 
-        // Read portrait index mapping
+        // Read portrait index mapping and portrait record offsets
         this.#portraitIndices1 = unpacked.slice(SEG2 + 0xbe2a, SEG2 + 0xbe2a + 80);
         this.#portraitIndices2 = unpacked.slice(SEG2 + 0xbe7a, SEG2 + 0xbe7a + 80);
+        this.#portraitOffsets1 = new Uint32Array(unpacked.slice(SEG2 + 0xba90, SEG2 + 0xba90 + 34 * 4).buffer);
+        this.#portraitOffsets2 = new Uint32Array(unpacked.slice(SEG2 + 0xbb18, SEG2 + 0xbb18 + 49 * 4).buffer);
 
         // Read tileset offsets and compressed sizes
         this.#tilesetOffsets = new Uint32Array(unpacked.slice(SEG2 + 0xbdfc, SEG2 + 0xbdfc + 9 * 4).buffer);
@@ -345,16 +353,29 @@ export class Exe {
     /**
      * Returns the portrait index in ALLPICS1 (when disk is 0) or ALLPICS2 (when disk is 1) for the given portrait ID.
      *
-     * @param disk       - This disk index (0 for GAME1, 1 for GAME2).
+     * @param disk       - The disk index (0 for ALLPICS1, 1 for ALLPICS2).
      * @param portraitId - The portrait ID as used in the game files.
      * @returns The portrait index in ALLPICS1 or ALLPICS2 (depending on disk parameter).
      */
     public getPortraitIndex(disk: number, portraitId: number): number {
-        const index = (disk === 0 ? this.#portraitIndices1 : this.#portraitIndices2)[portraitId];
+        const index = (this.#validatePortraitDisk(disk) === 0 ? this.#portraitIndices1 : this.#portraitIndices2)[portraitId];
         if (index == null || index === 0x80) {
-            throw new Error(`No portrait index found for disk ${disk} and portrait ID ${portraitId})`);
+            throw new Error(`No portrait index found for disk ${disk} and portrait ID ${portraitId}`);
         }
         return index;
+    }
+
+    /**
+     * Returns the portrait record offset within ALLPICS1 (when disk is 0) or ALLPICS2 (when disk is 1) for the
+     * given portrait ID.
+     *
+     * @param disk       - The disk index (0 for ALLPICS1, 1 for ALLPICS2).
+     * @param portraitId - The portrait ID as used in the game files.
+     * @returns The portrait record offset within the corresponding ALLPICS file.
+     */
+    public getPortraitOffset(disk: number, portraitId: number): number {
+        const index = this.getPortraitIndex(disk, portraitId);
+        return (disk === 0 ? this.#portraitOffsets1 : this.#portraitOffsets2)[index];
     }
 
     /**
@@ -412,5 +433,19 @@ export class Exe {
             throw new RangeError(`Invalid tileset ID: ${tilesetId}`);
         }
         return tilesetId;
+    }
+
+    /**
+     * Validates the given portrait disk.
+     *
+     * @param disk - The portrait disk to validate.
+     * @returns The validated portrait disk.
+     * @throws {@link !RangeError} if the portrait disk is invalid.
+     */
+    #validatePortraitDisk(disk: number): number {
+        if (disk < 0 || disk > 1) {
+            throw new RangeError(`Invalid portrait disk: ${disk}`);
+        }
+        return disk;
     }
 }

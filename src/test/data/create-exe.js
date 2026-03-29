@@ -14,6 +14,10 @@ import {
     mapOffsets,
     mapSizes,
     messageStrings,
+    portraitIndices1,
+    portraitIndices2,
+    portraitOffsets1,
+    portraitOffsets2,
     promotionStrings,
     savegameOffset0,
     savegameOffset1,
@@ -177,6 +181,10 @@ writeUint8Array(view, SEG2 + 0xbf1c, Uint8Array.from(mapSizes));
 writeUint8Array(view, SEG2 + 0xbec9, Uint8Array.from(locationMapping));
 writeUint32Array(view, SEG2 + 0xbc7a, mapOffsets);
 writeUint16Array(view, SEG2 + 0xbd22, tileMapOffsets);
+writeUint32Array(view, SEG2 + 0xba90, portraitOffsets1);
+writeUint32Array(view, SEG2 + 0xbb18, portraitOffsets2);
+writeUint8Array(view, SEG2 + 0xbe2a, Uint8Array.from(portraitIndices1));
+writeUint8Array(view, SEG2 + 0xbe7a, Uint8Array.from(portraitIndices2));
 writeUint16Array(view, SEG2 + 0xbdea, tilesetSizes);
 writeUint32Array(view, SEG2 + 0xbdfc, tilesetCumulativeOffsets);
 writeUint16Array(view, SEG2 + 0xbe20, shopItemListBaseOffsets);

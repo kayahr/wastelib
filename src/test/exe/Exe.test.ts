@@ -20,6 +20,7 @@ import {
     mapOffsets,
     mapSizes,
     messageStrings,
+    portraitMappings,
     promotionStrings,
     savegameOffset0,
     savegameOffset1,
@@ -96,6 +97,29 @@ describe("Exe", () => {
             const exe = await readPackedExe();
             for (let shop = 0; shop < shopItemListOffsets.length; ++shop) {
                 assertEquals(exe.getShopItemListOffset(shop), shopItemListOffsets[shop]);
+            }
+        });
+    });
+    describe("getPortraitIndex", () => {
+        it("returns portrait indices for both ALLPICS files", async () => {
+            const exe = await readPackedExe();
+            for (const { disk, portraitId, index } of portraitMappings) {
+                assertEquals(exe.getPortraitIndex(disk, portraitId), index);
+            }
+        });
+        it("throws for invalid portrait disks and unknown portrait IDs", async () => {
+            const exe = await readPackedExe();
+            assertThrowWithMessage(() => exe.getPortraitIndex(-1, 0), RangeError, "Invalid portrait disk: -1");
+            assertThrowWithMessage(() => exe.getPortraitIndex(2, 0), RangeError, "Invalid portrait disk: 2");
+            assertThrowWithMessage(() => exe.getPortraitIndex(0, 4), Error, "No portrait index found for disk 0 and portrait ID 4");
+            assertThrowWithMessage(() => exe.getPortraitIndex(1, 3), Error, "No portrait index found for disk 1 and portrait ID 3");
+        });
+    });
+    describe("getPortraitOffset", () => {
+        it("returns portrait record offsets for both ALLPICS files", async () => {
+            const exe = await readPackedExe();
+            for (const { disk, portraitId, offset } of portraitMappings) {
+                assertEquals(exe.getPortraitOffset(disk, portraitId), offset);
             }
         });
     });

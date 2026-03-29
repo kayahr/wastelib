@@ -36,9 +36,31 @@ There is:
 
 - no global file header
 - no portrait count
-- no top-level offset table
+- no top-level offset table in the `ALLPICS` file itself
 
 To parse the file, read portrait records until EOF is reached.
+
+## Portrait Lookup
+
+The game does not resolve portrait IDs directly inside `ALLPICS1` or `ALLPICS2`. Instead, the unpacked `WL.EXE` contains the lookup metadata for both portrait archives.
+
+The lookup tables are:
+
+| Table | Location in unpacked `WL.EXE` | Format |
+| --- | --- | --- |
+| `portraitOffsets1` | `0x18AB0` | `u32_le[34]` |
+| `portraitOffsets2` | `0x18B38` | `u32_le[49]` |
+| `portraitIndices1` | `0x18E4A` | `u8[80]` |
+| `portraitIndices2` | `0x18E9A` | `u8[80]` |
+
+Portrait lookup is disk-specific and works in two stages:
+
+1. Choose `ALLPICS1` when the portrait reference comes from `GAME1`, or `ALLPICS2` when it comes from `GAME2`.
+2. Read the raw portrait ID from game data.
+3. Map that raw portrait ID through the disk-specific `u8[80]` portrait-index table.
+4. If the mapped value is `0x80`, then the portrait ID is invalid for that disk.
+5. Otherwise use the mapped compact index to look up the portrait record start in the disk-specific `u32` offset table.
+6. Seek to that offset in the corresponding `ALLPICS` file and read one portrait record.
 
 ## Portrait Record Overview
 
