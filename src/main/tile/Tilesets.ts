@@ -72,7 +72,7 @@ export class Tilesets implements Iterable<Tileset> {
      * @returns The read tilesets.
      */
     public static async fromBlob(blob: Blob): Promise<Tilesets> {
-        return Tilesets.fromArray(new Uint8Array(await blob.arrayBuffer()));
+        return this.fromArray(new Uint8Array(await blob.arrayBuffer()));
     }
 
     /**
@@ -83,7 +83,7 @@ export class Tilesets implements Iterable<Tileset> {
      * @returns The read tilesets.
      */
     public static fromArrays(array1: Uint8Array, array2: Uint8Array): Tilesets {
-        return new Tilesets(...this.fromArray(array1).#tilesets, ...this.fromArray(array2).#tilesets);
+        return new this(...this.fromArray(array1).#tilesets, ...this.fromArray(array2).#tilesets);
     }
 
     /**
