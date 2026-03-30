@@ -10,7 +10,8 @@ import { readStrings } from "../io/string.ts";
 import { decodeHuffman } from "../io/huffman.ts";
 import { Mob } from "./Mob.ts";
 import { Character } from "./Character.ts";
-import type { ActionClass } from "./ActionClass.ts";
+import { ActionClass } from "./ActionClass.ts";
+import { Actions } from "./Actions.ts";
 
 /**
  * Container for a single map from on of the GAME files.
@@ -18,14 +19,13 @@ import type { ActionClass } from "./ActionClass.ts";
  * @see https://wasteland.gamepedia.com/GameX
  */
 export class GameMap {
-    private readonly disk: number;
-    private readonly info: MapInfo;
-    private readonly npcs: Character[];
-    private readonly mobs: Mob[];
-    private readonly strings: string[];
-    private readonly tiles: MapTile[][];
-    private readonly unknown$strings: number;
-    private readonly unknown$tilemap: number;
+    readonly #disk: number;
+    readonly #info: MapInfo;
+    readonly #npcs: Character[];
+    readonly #mobs: Mob[];
+    readonly #strings: string[];
+    readonly #tiles: MapTile[][];
+    readonly #actions: Map<number, Actions>;
 
     private constructor(
         disk: number,
@@ -34,17 +34,15 @@ export class GameMap {
         mobs: Mob[],
         strings: string[],
         tiles: MapTile[][],
-        unknown$strings: number,
-        unknown$tilemap: number
+        actions: Map<number, Actions>
     ) {
-        this.disk = disk;
-        this.info = info;
-        this.npcs = npcs;
-        this.mobs = mobs;
-        this.strings = strings;
-        this.tiles = tiles;
-        this.unknown$strings = unknown$strings;
-        this.unknown$tilemap = unknown$tilemap;
+        this.#disk = disk;
+        this.#info = info;
+        this.#npcs = npcs;
+        this.#mobs = mobs;
+        this.#strings = strings;
+        this.#tiles = tiles;
+        this.#actions = actions;
     }
 
     /**
@@ -87,14 +85,14 @@ export class GameMap {
         }
 
         // Read unknown byte between strings and tile map header
-        const unknown$strings = reader.readUint8();
+        reader.skip(1);
 
         // Read the tile map (And the unknown integer between header and compressed data)
         const tileMapSize = reader.readUint32();
         if (tileMapSize !== mapSize ** 2) {
             throw new Error(`Invalid tile map size: ${tileMapSize}`);
         }
-        const unknown$tilemap = reader.readUint32();
+        reader.skip(4); // Unknown 4 bytes
         const tileMap = decodeHuffman(reader, tileMapSize);
 
         // Form here on we read stuff from the decrypted data block
@@ -108,10 +106,8 @@ export class GameMap {
         const stringsOffset = reader.readUint16();
         const mobNamesOffset = reader.readUint16();
         const mobDataOffset = reader.readUint16();
-        // TODO const actionClassOffsets =
-        reader.readUint16s(16);
-        // TODO const specialsOffset =
-        reader.readUint16();
+        const actionClassOffsets = reader.readUint16s(16);
+        const specialActionTableOffset = reader.readUint16();
         const npcOffset = reader.readUint16();
 
         // Read map info
@@ -160,7 +156,27 @@ export class GameMap {
             mapTiles.push(row);
         }
 
-        return new GameMap(disk, mapInfo, npcs, mobs, strings, mapTiles, unknown$strings, unknown$tilemap);
+        // Read the special action table
+        reader.seek(specialActionTableOffset);
+        const specialActionTable = reader.readUint16s(128);
+
+        // Fix invalid offset to unused random encounters
+        if (mapInfo.getMaxRandomEncounters() === 0) {
+            actionClassOffsets[ActionClass.RANDOM_ENCOUNTER] = 0;
+        }
+
+        // Read actions
+        const actions = new Map<number, Actions>();
+        for (let actionClass = 0; actionClass < 16; actionClass++) {
+            const offset = actionClassOffsets[actionClass];
+            if (offset !== 0) {
+                reader.seek(offset);
+                actions.set(actionClass, Actions.read(reader, actionClass, specialActionTable));
+            } else {
+                actions.set(actionClass, Actions.createEmpty());
+            }
+        }
+        return new GameMap(disk, mapInfo, npcs, mobs, strings, mapTiles, actions);
     }
 
     /**
@@ -186,7 +202,7 @@ export class GameMap {
      * @returns The disk number.
      */
     public getDisk(): number {
-        return this.disk;
+        return this.#disk;
     }
 
     /**
@@ -195,7 +211,7 @@ export class GameMap {
      * @returns The map information.
      */
     public getInfo(): MapInfo {
-        return this.info;
+        return this.#info;
     }
 
     /**
@@ -205,10 +221,10 @@ export class GameMap {
      * @returns The string
      */
     public getString(index: number): string {
-        if (index < 0 || index >= this.strings.length) {
+        if (index < 0 || index >= this.#strings.length) {
             throw new Error(`Index out of bounds: ${index}`);
         }
-        return this.strings[index];
+        return this.#strings[index];
     }
 
     /**
@@ -217,7 +233,7 @@ export class GameMap {
      * @returns The number of strings.
      */
     public getNumStrings(): number {
-        return this.strings.length;
+        return this.#strings.length;
     }
 
     /**
@@ -226,7 +242,7 @@ export class GameMap {
      * @returns All map strings.
      */
     public getStrings(): string[] {
-        return this.strings.slice();
+        return this.#strings.slice();
     }
 
     /**
@@ -236,10 +252,10 @@ export class GameMap {
      * @returns The mob.
      */
     public getMob(index: number): Mob {
-        if (index < 0 || index >= this.mobs.length) {
+        if (index < 0 || index >= this.#mobs.length) {
             throw new Error(`Index out of bounds: ${index}`);
         }
-        return this.mobs[index];
+        return this.#mobs[index];
     }
 
     /**
@@ -248,7 +264,7 @@ export class GameMap {
      * @returns The number of mobs.
      */
     public getNumMobs(): number {
-        return this.mobs.length;
+        return this.#mobs.length;
     }
 
     /**
@@ -257,7 +273,7 @@ export class GameMap {
      * @returns All mobs.
      */
     public getMobs(): Mob[] {
-        return this.mobs.slice();
+        return this.#mobs.slice();
     }
 
     /**
@@ -267,10 +283,10 @@ export class GameMap {
      * @returns The NPC.
      */
     public getNPC(index: number): Character {
-        if (index < 0 || index >= this.npcs.length) {
+        if (index < 0 || index >= this.#npcs.length) {
             throw new Error(`Index out of bounds: ${index}`);
         }
-        return this.npcs[index];
+        return this.#npcs[index];
     }
 
     /**
@@ -279,7 +295,7 @@ export class GameMap {
      * @returns The number of NPCs.
      */
     public getNumNPcs(): number {
-        return this.npcs.length;
+        return this.#npcs.length;
     }
 
     /**
@@ -288,7 +304,7 @@ export class GameMap {
      * @returns All NPCs.
      */
     public getNPCs(): Character[] {
-        return this.npcs.slice();
+        return this.#npcs.slice();
     }
 
     /**
@@ -299,29 +315,25 @@ export class GameMap {
      * @returns The map tile.
      */
     public getTile(x: number, y: number): MapTile {
-        const mapSize = this.info.getMapSize();
+        const mapSize = this.#info.getMapSize();
         if (x < 0 || x >= mapSize || y < 0 || y >= mapSize) {
             throw new Error(`Invalid X position: ${x}/${y}`);
         }
-        return this.tiles[y][x];
+        return this.#tiles[y][x];
     }
 
     /**
-     * Returns the unknown byte between the strings and the header of the compressed tile map.
+     * Returns the actions for the given action class.
      *
-     * @returns The unknown data.
+     * @param actionClass - The action class.
+     * @returns The actions or null if there are no actions.
      */
-    public getUnknown$strings(): number {
-        return this.unknown$strings;
+    public getActions(actionClass: ActionClass): Actions {
+        const actions = this.#actions.get(actionClass);
+        if (actions == null) {
+            throw new RangeError(`No actions found for action class ${actionClass}`);
+        }
+        return actions;
     }
 
-    /**
-     * Returns the unknown 32 bit value between the huffman compressed tilemap data and the 32 bit value before
-     * it which contains the uncompressed size of the compressed data.
-     *
-     * @returns The unknown data.
-     */
-    public getUnknown$tilemap(): number {
-        return this.unknown$tilemap;
-    }
 }

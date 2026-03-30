@@ -175,6 +175,17 @@ export class BinaryReader {
     }
 
     /**
+     * Reads a signed 8 bit value (byte) and returns it.
+     *
+     * @returns The read value.
+     * @throws {@link !RangeError} if reached the end of the data.
+     */
+    public readInt8(): number {
+        const unsigned = this.readUint8();
+        return unsigned >= 0x80 ? unsigned - 0x100 : unsigned;
+    }
+
+    /**
      * Reads the specified number of unsigned 8 bit values (bytes) and returns them.
      *
      * @param count - The number of bytes to read.

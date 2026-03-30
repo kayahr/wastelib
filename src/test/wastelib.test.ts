@@ -18,6 +18,11 @@ import { Exe } from "../main/exe/Exe.ts";
 import { Skill } from "../main/exe/Skill.ts";
 import { Font } from "../main/font/Font.ts";
 import { FontChar } from "../main/font/FontChar.ts";
+import { BlockedAction } from "../main/game/actions/BlockedAction.ts";
+import { PrintAction } from "../main/game/actions/PrintAction.ts";
+import { TransitionAction } from "../main/game/actions/TransitionAction.ts";
+import { Action } from "../main/game/Action.ts";
+import { Actions } from "../main/game/Actions.ts";
 import { ActionClass } from "../main/game/ActionClass.ts";
 import { Character } from "../main/game/Character.ts";
 import { Gender } from "../main/game/Gender.ts";
@@ -72,6 +77,11 @@ describe("wastelib", () => {
             Skill,
             Font,
             FontChar,
+            PrintAction,
+            BlockedAction,
+            TransitionAction,
+            Action,
+            Actions,
             ActionClass,
             Character,
             Gender,

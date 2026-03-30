@@ -42,6 +42,7 @@
         "test:lint": "oxlint --type-aware --deny-warnings",
         "test:site": "typedoc --emit none",
         "test:spell": "cspell --no-progress --no-summary",
+        "test:apidoc": "typedoc --emit none",
         "site": "run site:*",
         "site:apidoc": "typedoc",
         "site:demo": "node esbuild.js",
