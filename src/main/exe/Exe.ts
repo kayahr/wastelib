@@ -54,6 +54,9 @@ export class Exe {
     /** The mapping from location index to disk+map index. */
     readonly #locationMapping: Uint8Array;
 
+    /** The mapping from derelict building location (lower 7 bit) to shared location. */
+    readonly #derelictMapping: Uint8Array;
+
     /** The offsets to the tile maps. */
     readonly #tileMapOffsets: Uint16Array;
 
@@ -116,6 +119,9 @@ export class Exe {
 
         // Read the location to disk+map mapping
         this.#locationMapping = unpacked.slice(SEG2 + 0xbec9, SEG2 + 0xbec9 + 50);
+
+        // Read derelict mapping table
+        this.#derelictMapping = unpacked.slice(SEG2 + 0xbf9c, SEG2 + 0xbf9c + 125);
 
         // Read the offsets to the tile maps
         this.#tileMapOffsets = new Uint16Array(unpacked.slice(SEG2 + 0xbd22, SEG2 + 0xbd22 + 50 * 2).buffer);
@@ -299,6 +305,16 @@ export class Exe {
      */
     public getLocation(disk: number, map: number): number {
         return this.#locationMapping.indexOf((disk + 1 ^ 3) << 6 | map);
+    }
+
+    /**
+     * Returns the actual shared location for the specified derelict building location.
+     *
+     * @param derelictLocation - The derelict location (lower 7 bit).
+     * @returns The actual shared location.
+     */
+    public getSharedLocation(derelictLocation: number): number {
+        return this.#derelictMapping[derelictLocation];
     }
 
     /**
