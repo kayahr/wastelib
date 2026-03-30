@@ -11,7 +11,7 @@ import { Sprites } from "../main/sprite/Sprites.ts";
 import { Tilesets } from "../main/tile/Tilesets.ts";
 import { Title } from "../main/title/Title.ts";
 import { Exe } from "../main/exe/Exe.ts";
-import { Map } from "../main/game/Map.ts";
+import { GameMap } from "../main/game/GameMap.ts";
 import { Savegame } from "../main/game/Savegame.ts";
 import { ShopItemList } from "../main/game/ShopItemList.ts";
 
@@ -305,14 +305,14 @@ export class WebAssets {
      * @param location - The map location (0-49)
      * @returns the read map.
      */
-    public async readMap(location: number): Promise<Map> {
+    public async readMap(location: number): Promise<GameMap> {
         const exe = await this.readExe();
         const map = exe.getLocationMap(location);
         const disk  = exe.getLocationDisk(location);
         const offset = exe.getMapOffset(disk, map);
         const mapSize = exe.getMapSize(disk, map);
         const tileMapOffset = exe.getTileMapOffset(disk, map);
-        return Map.fromBlob(this.getFile(disk === 0 ? "GAME1" : "GAME2"), offset, mapSize, tileMapOffset);
+        return GameMap.fromBlob(this.getFile(disk === 0 ? "GAME1" : "GAME2"), offset, mapSize, tileMapOffset);
     }
 
     /**

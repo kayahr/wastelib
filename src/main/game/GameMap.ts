@@ -17,7 +17,7 @@ import type { ActionClass } from "./ActionClass.ts";
  *
  * @see https://wasteland.gamepedia.com/GameX
  */
-export class Map {
+export class GameMap {
     private readonly disk: number;
     private readonly info: MapInfo;
     private readonly npcs: Character[];
@@ -60,7 +60,7 @@ export class Map {
      *                       from the {@link Exe#getTileMapOffset} method.
      * @returns The read game map.
      */
-    public static fromArray(array: Uint8Array, offset: number, mapSize: number, tileMapOffset: number): Map {
+    public static fromArray(array: Uint8Array, offset: number, mapSize: number, tileMapOffset: number): GameMap {
         let reader = new BinaryReader(array, offset);
 
         // Read and validate the header
@@ -160,7 +160,7 @@ export class Map {
             mapTiles.push(row);
         }
 
-        return new Map(disk, mapInfo, npcs, mobs, strings, mapTiles, unknown$strings, unknown$tilemap);
+        return new GameMap(disk, mapInfo, npcs, mobs, strings, mapTiles, unknown$strings, unknown$tilemap);
     }
 
     /**
@@ -176,7 +176,7 @@ export class Map {
      *                        from the {@link Exe#getTileMapOffset} method.
      * @returns The read game map.
      */
-    public static async fromBlob(blob: Blob, offset: number, mapSize: number, tileMapOffset: number): Promise<Map> {
+    public static async fromBlob(blob: Blob, offset: number, mapSize: number, tileMapOffset: number): Promise<GameMap> {
         return this.fromArray(new Uint8Array(await blob.arrayBuffer()), offset, mapSize, tileMapOffset);
     }
 

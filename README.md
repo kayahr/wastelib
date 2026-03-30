@@ -41,7 +41,7 @@ There are classes for each asset type of the game:
 * `Ending` - For parsing the end animation from the `END.CPA` file.
 * `Exe` - For fetching strings and offsets from the `WL.EXE` file.
 * `Font` - For parsing the color font from the `COLORF.FNT` file.
-* `Map` - For parsing map data from `GAME1` and `GAME2` files.
+* `GameMap` - For parsing map data from `GAME1` and `GAME2` files.
 * `Portraits` - For parsing the portrait animations from the `ALLPICS1` and `ALLPICS2` files.
 * `Savegame` - For parsing savegame data from `GAME1` and `GAME2` files.
 * `ShopItemList` - For parsing shop item lists from `GAME1` and `GAME2` files.

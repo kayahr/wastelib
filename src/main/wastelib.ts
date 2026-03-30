@@ -18,7 +18,7 @@ export { ActionClass } from "./game/ActionClass.ts";
 export { Character } from "./game/Character.ts";
 export { Gender } from "./game/Gender.ts";
 export { Item } from "./game/Item.ts";
-export { Map } from "./game/Map.ts";
+export { GameMap } from "./game/GameMap.ts";
 export { MapInfo } from "./game/MapInfo.ts";
 export { MapTile } from "./game/MapTile.ts";
 export { Mob } from "./game/Mob.ts";
