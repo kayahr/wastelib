@@ -105,6 +105,8 @@ export const locationMapping = Array.from({ length: 50 }, (_, index) => {
 
 export const mapSizes = Array.from({ length: 50 }, (_, index) => index < locations.length ? 24 + index * 3 : 0);
 
+export const sharedLocations = Array.from({ length: 125 }, (_, index) => index < 64 ? 5 : 11);
+
 export const tileMapOffsets = Array.from({ length: 50 }, (_, index) => index < locations.length ? 0x0200 + index * 0x23 : 0);
 
 export const mapOffsets = [

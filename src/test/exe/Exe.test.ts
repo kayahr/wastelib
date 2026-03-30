@@ -24,6 +24,7 @@ import {
     promotionStrings,
     savegameOffset0,
     savegameOffset1,
+    sharedLocations,
     shopItemListOffsets,
     shopStrings,
     tileMapOffsets,
@@ -128,6 +129,14 @@ describe("Exe", () => {
             const exe = await readPackedExe();
             for (const { location, disk, map } of locations) {
                 assertEquals(exe.getLocation(disk, map), location);
+            }
+        });
+    });
+    describe("getSharedLocation", () => {
+        it("returns shared locations for derelict building IDs", async () => {
+            const exe = await readPackedExe();
+            for (let derelictLocation = 0; derelictLocation < sharedLocations.length; ++derelictLocation) {
+                assertEquals(exe.getSharedLocation(derelictLocation), sharedLocations[derelictLocation]);
             }
         });
     });

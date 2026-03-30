@@ -22,6 +22,7 @@ import {
     savegameOffset0,
     savegameOffset1,
     savegameSize,
+    sharedLocations,
     shopItemListBaseOffsets,
     shopStrings,
     tileMapOffsets,
@@ -179,6 +180,7 @@ for (const block of stringBlocks) {
 
 writeUint8Array(view, SEG2 + 0xbf1c, Uint8Array.from(mapSizes));
 writeUint8Array(view, SEG2 + 0xbec9, Uint8Array.from(locationMapping));
+writeUint8Array(view, SEG2 + 0xbf9c, Uint8Array.from(sharedLocations));
 writeUint32Array(view, SEG2 + 0xbc7a, mapOffsets);
 writeUint16Array(view, SEG2 + 0xbd22, tileMapOffsets);
 writeUint32Array(view, SEG2 + 0xba90, portraitOffsets1);

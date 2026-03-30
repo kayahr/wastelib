@@ -179,6 +179,41 @@ Observed values are the map edge length:
 - `32`
 - `64`
 
+### Shared Location Lookup Table
+
+Location:
+
+```text
+0x18FBC
+```
+
+Format:
+
+```text
+u8 sharedLocations[125]
+```
+
+This table is indexed by the lower 7 bits of special transition target locations `128..252`.
+
+The loader uses it to translate a special building location into a normal shared location before consulting the normal location-to-disk/map table.
+
+In other words:
+
+```text
+if targetLocation >= 128 && targetLocation <= 252:
+    sharedLocation = sharedLocations[targetLocation - 128]
+```
+
+Observed values in the shipped executable:
+
+- entries `0..63` (`128..191`) are all `5`
+- entries `64..124` (`192..252`) are all `11`
+
+These resolve to the shared interior maps:
+
+- location `5` -> `GAME1 map 5`
+- location `11` -> `GAME2 map 1`
+
 ## Savegame Metadata
 
 The executable stores the savegame offsets as split low/high words rather than one packed `u32`.
