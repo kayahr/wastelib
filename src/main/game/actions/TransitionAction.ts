@@ -15,12 +15,12 @@ export class TransitionAction extends Action {
     readonly #messageIndex: number;
     readonly #targetX: number;
     readonly #targetY: number;
-    readonly #targetMap: number | null;
+    readonly #targetLocation: number | null;
     readonly #newActionClass: number | null;
     readonly #newAction: number | null;
 
-    private constructor(relative: boolean, confirm: boolean, messageIndex: number, targetX: number, targetY: number, targetMap: number | null,
-            newActionClass: number | null, newAction: number | null) {
+    private constructor(relative: boolean, confirm: boolean, messageIndex: number, targetX: number, targetY: number,
+            targetLocation: number | null, newActionClass: number | null, newAction: number | null) {
         super();
         this.#relative = relative;
         this.#confirm = confirm;
@@ -29,7 +29,7 @@ export class TransitionAction extends Action {
         this.#newAction = newAction;
         this.#targetX = targetX;
         this.#targetY = targetY;
-        this.#targetMap = targetMap;
+        this.#targetLocation = targetLocation;
     }
 
     /**
@@ -42,10 +42,10 @@ export class TransitionAction extends Action {
         const messageIndex = flags & 0x3f;
         const targetX = reader.readInt8();
         const targetY = reader.readInt8();
-        const targetMap = reader.readUint8();
+        const targetLocation = reader.readUint8();
         const newActionClass = reader.readUint8();
         const newAction = newActionClass < 253 ? reader.readUint8() : null;
-        return new TransitionAction(relative, confirm, messageIndex, targetX, targetY, targetMap === 255 ? null : targetMap,
+        return new TransitionAction(relative, confirm, messageIndex, targetX, targetY, targetLocation === 255 ? null : targetLocation,
             newActionClass === 255 ? null : newActionClass, newAction);
     }
 
@@ -86,10 +86,10 @@ export class TransitionAction extends Action {
     }
 
     /**
-     * @returns The target map. Null for previous map.
+     * @returns The target location. Null for previous map.
      */
-    public getTargetMap(): number | null {
-        return this.#targetMap;
+    public getTargetLocation(): number | null {
+        return this.#targetLocation;
     }
 
     /**
