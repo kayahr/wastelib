@@ -15,6 +15,7 @@ export { Skill } from "./exe/Skill.ts";
 export { Font } from "./font/Font.ts";
 export { FontChar } from "./font/FontChar.ts";
 export { BlockedAction } from "./game/actions/BlockedAction.ts";
+export { MaskAction } from "./game/actions/MaskAction.ts";
 export { PrintAction } from "./game/actions/PrintAction.ts";
 export { TransitionAction } from "./game/actions/TransitionAction.ts";
 export { Action } from "./game/Action.ts";
