@@ -356,6 +356,8 @@ export const portraitMappings: PortraitMappingEntry[] = [
     { disk: 1, portraitId: 77, index: 48, offset: 0x1fe8f }
 ];
 
+export const mobSpriteMap = [ 0, 6, 3, 4, 2, 1 ];
+
 export const savegameOffset0 = 0x012389ab;
 export const savegameOffset1 = 0x4567cdef;
 export const savegameSize = 0x0055;

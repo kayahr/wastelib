@@ -14,6 +14,7 @@ import {
     mapOffsets,
     mapSizes,
     messageStrings,
+    mobSpriteMap,
     portraitIndices1,
     portraitIndices2,
     portraitOffsets1,
@@ -187,6 +188,7 @@ writeUint32Array(view, SEG2 + 0xba90, portraitOffsets1);
 writeUint32Array(view, SEG2 + 0xbb18, portraitOffsets2);
 writeUint8Array(view, SEG2 + 0xbe2a, Uint8Array.from(portraitIndices1));
 writeUint8Array(view, SEG2 + 0xbe7a, Uint8Array.from(portraitIndices2));
+writeUint8Array(view, SEG2 + 0xaa17, Uint8Array.from(mobSpriteMap));
 writeUint16Array(view, SEG2 + 0xbdea, tilesetSizes);
 writeUint32Array(view, SEG2 + 0xbdfc, tilesetCumulativeOffsets);
 writeUint16Array(view, SEG2 + 0xbe20, shopItemListBaseOffsets);

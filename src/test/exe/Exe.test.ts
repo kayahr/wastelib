@@ -20,6 +20,7 @@ import {
     mapOffsets,
     mapSizes,
     messageStrings,
+    mobSpriteMap,
     portraitMappings,
     promotionStrings,
     savegameOffset0,
@@ -122,6 +123,24 @@ describe("Exe", () => {
             for (const { disk, portraitId, offset } of portraitMappings) {
                 assertEquals(exe.getPortraitOffset(disk, portraitId), offset);
             }
+        });
+    });
+    describe("getMobSpriteMap", () => {
+        it("returns the encounter map sprite mapping by mob type", async () => {
+            assertEquals((await readPackedExe()).getMobSpriteMap(), mobSpriteMap);
+        });
+    });
+    describe("getMobSpriteIndex", () => {
+        it("returns the encounter map sprite index for each mob type", async () => {
+            const exe = await readPackedExe();
+            for (let mobType = 0; mobType < mobSpriteMap.length; ++mobType) {
+                assertEquals(exe.getMobSpriteIndex(mobType), mobSpriteMap[mobType]);
+            }
+        });
+        it("throws for invalid mob types", async () => {
+            const exe = await readPackedExe();
+            assertThrowWithMessage(() => exe.getMobSpriteIndex(-1), RangeError, "Invalid mob type: -1");
+            assertThrowWithMessage(() => exe.getMobSpriteIndex(mobSpriteMap.length), RangeError, `Invalid mob type: ${mobSpriteMap.length}`);
         });
     });
     describe("getLocation", () => {

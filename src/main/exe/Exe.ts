@@ -78,6 +78,9 @@ export class Exe {
     /** The portrait record offsets in ALLPICS2. */
     readonly #portraitOffsets2: Uint32Array;
 
+    /** The mapping from mob type to the sprite index shown on the map for encounter actions. */
+    readonly #mobSpriteMap: Uint8Array;
+
     /** The cumulative tileset offsets across ALLHTDS1 and ALLHTDS2. */
     readonly #tilesetOffsets: Uint32Array;
 
@@ -146,6 +149,9 @@ export class Exe {
         this.#portraitIndices2 = unpacked.slice(SEG2 + 0xbe7a, SEG2 + 0xbe7a + 80);
         this.#portraitOffsets1 = new Uint32Array(unpacked.slice(SEG2 + 0xba90, SEG2 + 0xba90 + 34 * 4).buffer);
         this.#portraitOffsets2 = new Uint32Array(unpacked.slice(SEG2 + 0xbb18, SEG2 + 0xbb18 + 49 * 4).buffer);
+
+        // Read encounter-map sprite mapping by mob type (index 0 is the empty sentinel).
+        this.#mobSpriteMap = unpacked.slice(SEG2 + 0xaa17, SEG2 + 0xaa17 + 6);
 
         // Read tileset offsets and compressed sizes
         this.#tilesetOffsets = new Uint32Array(unpacked.slice(SEG2 + 0xbdfc, SEG2 + 0xbdfc + 9 * 4).buffer);
@@ -395,6 +401,27 @@ export class Exe {
     }
 
     /**
+     * Returns the mapping from mob type to the sprite index used for encounter actions on the map.
+     * Index 0 is the empty sentinel, indices 1-5 match the five mob types.
+     *
+     * @returns The mob type to sprite index mapping.
+     */
+    public getMobSpriteMap(): number[] {
+        return Array.from(this.#mobSpriteMap);
+    }
+
+    /**
+     * Returns the map sprite index used for the given mob type in encounter actions.
+     *
+     * @param mobType - The mob type (0-5, where 0 is the empty sentinel).
+     * @returns The sprite index shown on the map.
+     */
+    public getMobSpriteIndex(mobType: number): number {
+        mobType = this.#validateMobType(mobType);
+        return this.#mobSpriteMap[mobType];
+    }
+
+    /**
      * Returns the tileset offset within the corresponding ALLHTDS file for the given tileset ID.
      *
      * @param tilesetId - The global tileset ID (0-8).
@@ -463,5 +490,19 @@ export class Exe {
             throw new RangeError(`Invalid portrait disk: ${disk}`);
         }
         return disk;
+    }
+
+    /**
+     * Validates the given mob type for the encounter sprite table.
+     *
+     * @param mobType - The mob type to validate.
+     * @returns The validated mob type.
+     * @throws {@link !RangeError} if the mob type is invalid.
+     */
+    #validateMobType(mobType: number): number {
+        if (mobType < 0 || mobType >= this.#mobSpriteMap.length) {
+            throw new RangeError(`Invalid mob type: ${mobType}`);
+        }
+        return mobType;
     }
 }
