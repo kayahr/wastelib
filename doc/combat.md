@@ -83,7 +83,7 @@ Examples of governing combat skills include `Brawling`, `Knife fight`, `Clip pis
 
 For combat sequencing, weapon families split into two major classes:
 
-- melee / direct: `1`
+- melee: `1`
 - ranged / explosive: `2..13`
 
 That same family split is also used by enemy `Weapon Type`.
@@ -135,13 +135,17 @@ Important behavior:
 ### Combat Sides
 
 Combat does not operate directly on raw encounter actions.
-Before a round starts, the engine flattens nearby encounter groups into combat sides.
+Before a round starts, the engine turns source encounter groups into combat groups and assigns those
+combat groups to combat sides.
 
 Important rules:
 
+- one encounter action can contribute up to three source groups
 - groups are assigned to sides by side identity, not by encounter record
 - multiple nearby encounters that belong to the same non-player side can therefore join one fight
-- when they do, their groups are appended into one shared combat side
+- when they do, their source groups are appended as separate combat groups in one shared combat side
+- those groups are not merged into one HP pool or one shared group size; they stay separate combat
+  groups under the same side
 - a combat side has `7` group slots
 - a battle has at most `4` sides total
 - one of those sides is always the player-controlled side
@@ -155,7 +159,8 @@ This gives the hard runtime ceilings:
 That is why multi-encounter fights such as Darwin or Rail Nomads can involve more than the three
 groups from one encounter action, but they still do not grow without bound.
 The engine is not "all nearby encounters, unlimited". It is "up to three enemy sides, each with up
-to seven active groups".
+to seven active combat groups, with those groups potentially coming from several nearby encounter
+actions".
 
 <!--
 RE anchors for combat sides:
@@ -179,12 +184,23 @@ This document uses standard dice notation:
 
 Most damage values in Wasteland are stored as dice counts, not as flat damage.
 
-### Attribute Adjustment Table
+### Raw Values And Modifiers
 
-The same adjustment curve is used whenever combat asks for a `Luck`, `Dexterity`, `Agility`, or
-`Strength` adjustment:
+This document uses two different terms for attributes:
 
-| Attribute value | Adjustment |
+- `attribute value`: the raw stored attribute number from the character record
+- `attribute modifier`: the combat modifier derived from the table below
+
+Unless a formula explicitly says `modifier`, it uses the raw value.
+For the combat formulas documented here, the modifier curve tops out at `+3`. Values above `18`
+do not gain a larger confirmed combat modifier.
+
+### Attribute Modifier Table
+
+The same modifier curve is used whenever combat asks for a `Luck`, `Dexterity`, `Agility`, or
+`Strength` modifier:
+
+| Attribute value | Modifier |
 | --- | --- |
 | `1..2` | `-4` |
 | `3..4` | `-3` |
@@ -193,7 +209,7 @@ The same adjustment curve is used whenever combat asks for a `Luck`, `Dexterity`
 | `9..13` | `0` |
 | `14..15` | `1` |
 | `16..17` | `2` |
-| `18` | `3` |
+| `18+` | `3` |
 
 ## Combat Round Structure
 
@@ -205,7 +221,7 @@ The phase order is:
 1. player ranged and explosive attacks
 2. enemy ranged and explosive attacks
 3. melee scheduler
-4. non-attack order execution
+4. non-attack command execution
 
 This structure is the key to understanding mixed combat:
 
@@ -213,7 +229,7 @@ This structure is the key to understanding mixed combat:
 - enemy ranged attacks can kill player melee attackers before those players reach phase `3`
 - player melee and enemy melee attacks do not happen in separate side phases; they are mixed
   together inside the scheduler
-- non-attack orders such as `Hire`, `Evade`, `Load / unjam`, and `Use` happen only after all
+- non-attack commands such as `Hire`, `Evade`, `Load / unjam`, and `Use` happen only after all
   attack phases are done
 
 The handbook claim that ranged attacks are always simultaneous does not match the decoded code path.
@@ -221,7 +237,7 @@ The actual code commits damage and deaths immediately between phases and also in
 
 ### Phase Assignment
 
-The `Attack` order first splits by attack family:
+The `Attack` command first splits by attack family:
 
 - player weapons with family `2..13` enter the player ranged / explosive phase
 - enemy groups with `Weapon Type` `2..13` enter the enemy ranged / explosive phase
@@ -229,8 +245,8 @@ The `Attack` order first splits by attack family:
 
 For players this also explains why melee is tied to the scheduler and firearms are not:
 
-- ranged / explosive `Attack` orders are consumed in phase `1`
-- melee / direct `Attack` orders survive until phase `3`
+- ranged / explosive `Attack` commands are consumed in phase `1`
+- melee `Attack` commands survive until phase `3`
 
 So manual melee is not a mysterious second subsystem floating beside the main combat loop.
 It is the dedicated phase-`3` attack subsystem for non-ranged attacks.
@@ -247,6 +263,8 @@ Known hard restrictions:
 
 If the target's `Willingness` is `0`, the NPC joins automatically.
 
+This action uses raw values, not attribute modifiers.
+
 Otherwise the game compares:
 
 ```text
@@ -255,8 +273,8 @@ npcResistance =
   + targetLevel
 
 rangerAppeal =
-    floor((rangerCharisma + rangerIntelligence) / 2)
-  + rangerCharisma
+    floor((rangerCharismaValue + rangerIntelligenceValue) / 2)
+  + rangerCharismaValue
   + rangerLevel
   + distinct2d6
 ```
@@ -274,23 +292,23 @@ On success:
 
 - the NPC is moved into the party roster
 - the NPC's join string is shown
-- the NPC's post-join obedience data is reinitialized for party use
+- the NPC stops using its encounter-side control state and becomes a normal party member
 
 On failure the game logs that the ranger tried to hire the target and failed.
 
 ### Evade
 
-`Evade` is a defense order.
+`Evade` is a defense command.
 
 Its main confirmed effect is to make enemy attacks less likely to hit.
 
 For the direct enemy attack resolver, the hit threshold uses:
 
-| Player order | Base |
+| Player command | Base |
 | --- | --- |
 | `Evade` | `60` |
 | `Attack` | `50` |
-| all other known orders | `40` |
+| all other known commands | `40` |
 
 Higher threshold values are better for the defender because enemy attacks hit only when:
 
@@ -299,7 +317,7 @@ random(1..100) >= threshold
 ```
 
 So `Evade` is explicitly better defense than `Attack`, and `Attack` is explicitly better defense
-than the other known non-evade orders.
+than the other known non-evade commands.
 
 There is also a second confirmed evade rule in one enemy damage-application path:
 
@@ -343,7 +361,7 @@ unjamDifficulty =
 
 unjamScore =
     distinct2d6
-  + Intelligence
+  + Intelligence value
   + 3 * current weapon skill level
 ```
 
@@ -382,7 +400,7 @@ RE anchors for load/unjam:
 
 The ranged / explosive resolver is used when all of the following are true:
 
-- the player's order is `Attack`
+- the player's command is `Attack`
 - the equipped weapon is a ranged, rocket, energy, or explosive weapon
 - the weapon is loaded and not jammed
 
@@ -451,7 +469,7 @@ Finally use this threshold table:
 For normal loaded firearms and energy weapons:
 
 ```text
-rawDamage = weaponDamage d6 + Luck adjustment
+rawDamage = weaponDamage d6 + Luck modifier
 armorSoak = enemyArmorClass d6
 finalDamage = max(0, rawDamage - armorSoak)
 ```
@@ -470,10 +488,12 @@ else:
 Then:
 
 ```text
-finalDamage = rocketDice d6 + Luck adjustment
+finalDamage = rocketDice d6 + Luck modifier
 ```
 
 Rockets do not apply the normal enemy armor soak roll afterward.
+They also stay on the normal single-target ranged path. They do not enter the explosive
+area-of-effect path.
 
 #### Unloaded or Jammed Fallback
 
@@ -486,7 +506,8 @@ back to a weaker attack:
 This fallback is not the real firearm damage model. It is the penalty case for a non-usable ranged
 weapon.
 
-Weapon types `2` and `10` are used by projectile pistols and laser pistols, so the intention here seems to be that a small empty ranged weapon does less damage than a larger empty ranged weapon.
+Weapon types `2` and `10` are used by projectile pistols and laser pistols, so the intent appears
+to be that a small empty ranged weapon does less damage than a larger empty ranged weapon.
 
 ### Timing And Interruptibility
 
@@ -502,7 +523,7 @@ What is clear:
 - player ranged attackers fire before enemy ranged attackers and before any melee scheduler events
 - if a player ranged attacker kills an enemy before phase `2`, that enemy does not get its own
   ranged attack later in the round
-- after a player's ranged / explosive attack finishes, that attack order is consumed and does not
+- after a player's ranged / explosive attack finishes, that attack command is consumed and does not
   also enter the melee scheduler
 
 <!--
@@ -574,12 +595,15 @@ Targeting by fire mode:
 - `Auto`: each successful hit application can be redistributed across the available enemy groups on
   the current target side
 
-For `Auto`, empty groups are retried until a living target group is found. The spray is therefore
-distributed across the live runtime groups on the current target side, not across map positions.
+For `Auto`, the game rerolls the random target-group pick until it lands on a living group. The
+spray is therefore distributed across the live runtime groups on the current target side, not
+across map positions.
 
 ## Explosives
 
 Explosives use a separate area-of-effect path.
+This confirmed blast path is selected by weapon family `13`.
+Weapon families `8` and `9` are rockets, but they stay on the normal single-target ranged path.
 
 Rules:
 
@@ -724,7 +748,7 @@ finalDamage = max(rawDamage - armorSoak, 0)
 Confirmed evade special case:
 
 ```text
-if playerOrder == Evade and rawDamage < 6:
+if playerCommand == Evade and rawDamage < 6:
     finalDamage = 0
 ```
 
@@ -736,19 +760,17 @@ The melee scheduler is phase `3`.
 
 It is the resolver for:
 
-- player `Attack` orders that did not qualify as ranged / explosive fire
+- player `Attack` commands that did not qualify as ranged / explosive fire
 - enemy groups whose `Weapon Type` is `1`
 
 This is the part of the combat system where `Brawling`, `Speed`, repeated attacks, and mixed
 player-versus-enemy initiative actually matter.
 
-### Scheduler Order
+### Initiative
 
-The scheduler does not simply alternate sides.
-Instead it builds a queue of all melee activations still eligible to act in this round and then
-executes them in initiative order.
+Melee attack order is determined by initiative rolls, from highest initiative to lowest.
 
-Player activation score:
+Player initiative:
 
 ```text
 playerInitiative =
@@ -757,45 +779,13 @@ playerInitiative =
   + 3 * Brawling
 ```
 
-Enemy activation score:
+Enemy initiative:
 
 ```text
 enemyInitiative =
     distinct2d6
   + 8 * Combat Rating
 ```
-
-The scheduler then repeatedly executes the highest remaining activation.
-After one activation finishes, it is removed from the queue and the next-best activation is chosen.
-
-This means:
-
-- player melee can act before enemy melee if its initiative score is higher
-- enemy melee can act before player melee if its initiative score is higher
-- build order does not determine execution order; the score comparison does
-
-### Scheduler Queue
-
-Internally the scheduler uses a queue of activation records.
-Each queue entry is a pair:
-
-- activation token
-- initiative score
-
-The important part for implementation is:
-
-- empty queue entries are zeroed
-- the initiative score is what the scheduler compares
-- the activation token is only a dispatch identifier, not a gameplay statistic
-- tokens below the player range resolve as enemy melee activations
-- tokens in the high player range resolve as player melee activations
-
-So the queue's byte encoding is internal bookkeeping.
-For the combat rules, what matters is only:
-
-- who is still eligible to act
-- what initiative score they rolled
-- whether they resolve as player-melee or enemy-melee activations
 
 <!--
 RE anchors for queue encoding:
@@ -804,12 +794,12 @@ RE anchors for queue encoding:
 - token class split at 0xaf0d..0xaf27
 -->
 
-### Player Melee Activations
+### Player Melee Attack Count, Accuracy, And Damage
 
-Player melee attacks per activation:
+Player melee attack count:
 
 ```text
-attacksPerActivation = floor(Brawling / 2) + 1
+playerMeleeAttackCount = floor(Brawling / 2) + 1
 ```
 
 Player melee hit chance:
@@ -818,7 +808,7 @@ Player melee hit chance:
 hitChance =
     meleeBase
   + 3 * Brawling
-  + Agility adjustment
+  + Agility modifier
   - defenseTerm
 ```
 
@@ -844,20 +834,8 @@ The decoded code uses two possible melee base values:
 - `50`
 - `60`
 
-The split is not random.
-It depends on whether the targeted enemy group currently has a valid melee-slot assignment in the
-runtime engagement table:
-
-- valid slot assignment: use `60`
-- no slot assignment: use `50`
-
-For a ruleset implementation, this can be modeled simply as:
-
-- engaged target: use `60`
-- unengaged target: use `50`
-
-The remaining internal pairing/queue encoding is runtime bookkeeping, not a second visible combat
-rule.
+Use `60` when the target enemy group is already locked into close combat with the attacker's side.
+Use `50` when the target enemy group is not already locked into that close engagement.
 
 Player melee raw damage:
 
@@ -865,9 +843,9 @@ Player melee raw damage:
 rawDamage =
     weaponDamage d6
   + 3 * current weapon skill level
-  + Dexterity adjustment
-  + Strength adjustment
-  + Luck adjustment
+  + Dexterity modifier
+  + Strength modifier
+  + Luck modifier
 ```
 
 Then:
@@ -877,12 +855,12 @@ armorSoak = enemyArmorClass d6
 finalDamage = max(0, rawDamage - armorSoak)
 ```
 
-### Enemy Melee Activations
+### Enemy Melee Attack Count, Accuracy, And Damage
 
-Enemy melee attacks per activation:
+Enemy melee attack count:
 
 ```text
-attacksPerActivation = Combat Rating
+enemyMeleeAttackCount = Combat Rating
 ```
 
 Enemy melee threshold:
@@ -891,7 +869,7 @@ Enemy melee threshold:
 threshold =
     base
   + 3 * playerBrawling
-  + Agility adjustment
+  + Agility modifier
   - defenseTerm
 ```
 
@@ -907,13 +885,13 @@ else:
 Like the player version, this threshold is built through the same bounded accumulator logic and
 therefore effectively stays inside the `0..100` range.
 
-The base depends on the defending player's current order:
+The base depends on the defending player's current command:
 
-| Player order | Base |
+| Player command | Base |
 | --- | --- |
 | `Evade` | `60` |
 | `Attack` | `50` |
-| all other known orders | `40` |
+| all other known commands | `40` |
 
 The enemy hit roll is:
 
