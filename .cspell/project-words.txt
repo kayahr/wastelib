@@ -12,12 +12,17 @@ Ehim
 Eshe
 exepack
 Grayscale
+HAWRELU
 Inplace
+Interruptibility
+interruptible
 kayahr
 npcs
 ntest
 oxlint
 readwrite
+recruitability
+recruitable
 Reimer
 reloc
 rgba
