@@ -39,9 +39,10 @@ export class Item {
     }
 
     /**
-     * Returns the item load (ammunition).
+     * Returns the item load (ammunition) when weapon is not jammed. If weapon is jammed then the weapon is effectively no longer loaded and
+     * the returned value reflects the jam severity (0-5). See `combat.md` for details.
      *
-     * @returns The item load.
+     * @returns The item load or jam severity.
      */
     public getLoad(): number {
         return this.load;
