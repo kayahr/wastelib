@@ -7,6 +7,7 @@ import type { BinaryReader } from "../io/BinaryReader.ts";
 import type { Action } from "./Action.ts";
 import { ActionClass } from "./ActionClass.ts";
 import { BlockedAction } from "./actions/BlockedAction.ts";
+import { EncounterAction } from "./actions/EncounterAction.ts";
 import { MaskAction } from "./actions/MaskAction.ts";
 import { PrintAction } from "./actions/PrintAction.ts";
 import { TransitionAction } from "./actions/TransitionAction.ts";
@@ -43,6 +44,10 @@ export class Actions {
 
             case ActionClass.MASK:
                 return MaskAction.read(reader);
+
+            case ActionClass.RANDOM_ENCOUNTER:
+            case ActionClass.FIXED_ENCOUNTER:
+                return EncounterAction.read(reader);
 
             default:
                 console.warn("Unhandled action class:", actionClass);

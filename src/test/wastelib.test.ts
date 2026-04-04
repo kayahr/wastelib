@@ -19,6 +19,7 @@ import { Skill } from "../main/exe/Skill.ts";
 import { Font } from "../main/font/Font.ts";
 import { FontChar } from "../main/font/FontChar.ts";
 import { BlockedAction } from "../main/game/actions/BlockedAction.ts";
+import { EncounterAction } from "../main/game/actions/EncounterAction.ts";
 import { MaskAction } from "../main/game/actions/MaskAction.ts";
 import { PrintAction } from "../main/game/actions/PrintAction.ts";
 import { TransitionAction } from "../main/game/actions/TransitionAction.ts";
@@ -79,6 +80,7 @@ describe("wastelib", () => {
             Font,
             FontChar,
             PrintAction,
+            EncounterAction,
             BlockedAction,
             MaskAction,
             TransitionAction,
