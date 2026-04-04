@@ -10,55 +10,22 @@ import { Action } from "../Action.ts";
  * The encounter action is used for fixed (class 3) and random (class 15) encounters.
  */
 export class EncounterAction extends Action {
-    /** The minimum distance in feet for the encounter to start */
     readonly #visibleDistance: number;
-
-    /** The minimum hit distance for the monsters in the encounter */
     readonly #hitDistance: number;
-
-    /** The message to print when the encounter begins */
-    readonly #message: number;
-
-    /** The monster type of the first group */
-    readonly #monster1: number;
-
-    /** If the number of monsters in the first group is random */
+    readonly #messageIndex: number;
+    readonly #mobIndex1: number;
     readonly #random1: boolean;
-
-    /** The number of monsters in the first group */
     readonly #maxGroupSize1: number;
-
-    /** The monster type of the second group */
-    readonly #monster2: number;
-
-    /** If the number of monsters in the second group is random */
+    readonly #mobIndex2: number;
     readonly #random2: boolean;
-
-    /** The number of monsters in the second group */
     readonly #maxGroupSize2: number;
-
-    /** The monster type of the third group */
-    readonly #monster3: number;
-
-    /** If the number of monsters in the third group is random */
+    readonly #mobIndex3: number;
     readonly #random3: boolean;
-
-    /** The number of monsters in the third group */
     readonly #maxGroupSize3: number;
-
-    /** If the proper name should be displayed instead of a generic one */
     readonly #properName: boolean;
-
-    /** If the monster is friendly until attacked */
     readonly #friendly: boolean;
-
-    /** The NPC number (0 if not hireable) */
     readonly #npc: number;
-
-    /** The new action class to set after the encounter */
     readonly #newActionClass: number | null;
-
-    /** The action class to set after the encounter */
     readonly #newAction: number | null;
 
     private constructor(
@@ -83,14 +50,14 @@ export class EncounterAction extends Action {
         super();
         this.#visibleDistance = visibleDistance;
         this.#hitDistance = hitDistance;
-        this.#message = message;
-        this.#monster1 = monster1;
+        this.#messageIndex = message;
+        this.#mobIndex1 = monster1;
         this.#random1 = random1;
         this.#maxGroupSize1 = maxGroupSize1;
-        this.#monster2 = monster2;
+        this.#mobIndex2 = monster2;
         this.#random2 = random2;
         this.#maxGroupSize2 = maxGroupSize2;
-        this.#monster3 = monster3;
+        this.#mobIndex3 = monster3;
         this.#random3 = random3;
         this.#maxGroupSize3 = maxGroupSize3;
         this.#properName = properName;
@@ -122,12 +89,8 @@ export class EncounterAction extends Action {
         b = reader.readUint8();
         const properName = (b & 1) === 1;
         const friendly = (b & 2) === 2;
-        if ((b & 4) === 4) {
-            console.warn("Encounter action unknown093 is set!");
-        }
-        if ((b & 8) === 8) {
-            console.warn("Encounter action unknown094 is set!");
-        }
+        // Unknown bit: b & 4;
+        // Unknown bit: b & 8
         const npc = b >> 4;
 
         // Read new action class
@@ -155,72 +118,130 @@ export class EncounterAction extends Action {
         );
     }
 
+    /**
+     * @returns The minimum distance in feet for the encounter to start.
+     */
     public getVisibleDistance(): number {
         return this.#visibleDistance;
     }
 
+    /**
+     * @returns The minimum hit distance for the mobs in this encounter.
+     */
     public getHitDistance(): number {
         return this.#hitDistance;
     }
 
-    public getMessage(): number {
-        return this.#message;
+    /**
+     * @returns The index of the message to print when encounter starts.
+     */
+    public getMessageIndex(): number {
+        return this.#messageIndex;
     }
 
-    public getMonster1(): number {
-        return this.#monster1;
+    /**
+     * @returns The index of the referenced mob on map in group 1.
+     */
+    public getMobIndex1(): number {
+        return this.#mobIndex1;
     }
 
+    /**
+     * @returns True if size of group 1 is random, false if it is fixed.
+     */
     public isRandom1(): boolean {
         return this.#random1;
     }
 
+    /**
+     * @returns The maximum size for group 1 if random flag is set. Otherwise this is the fixed group size. 0 if group is empty.
+     */
     public getMaxGroupSize1(): number {
         return this.#maxGroupSize1;
     }
 
-    public getMonster2(): number {
-        return this.#monster2;
+
+    /**
+     * @returns The index of the referenced mob on map in group 2.
+     */
+    public getMobIndex2(): number {
+        return this.#mobIndex2;
     }
 
+    /**
+     * @returns True if size of group 2 is random, false if it is fixed.
+     */
     public isRandom2(): boolean {
         return this.#random2;
     }
 
+    /**
+     * @returns The maximum size for group 2 if random flag is set. Otherwise this is the fixed group size. 0 if group is empty.
+     */
     public getMaxGroupSize2(): number {
         return this.#maxGroupSize2;
     }
 
-    public getMonster3(): number {
-        return this.#monster3;
+    /**
+     * @returns The index of the referenced mob on map in group 3.
+     */
+    public getMobIndex3(): number {
+        return this.#mobIndex3;
     }
 
+    /**
+     * @returns True if size of group 3 is random, false if it is fixed.
+     */
     public isRandom3(): boolean {
         return this.#random3;
     }
 
+    /**
+     * @returns The maximum size for group 3 if random flag is set. Otherwise this is the fixed group size. 0 if group is empty.
+     */
     public getMaxGroupSize3(): number {
         return this.#maxGroupSize3;
     }
 
+    /** @returns True if the proper name should be displayed instead of a generic one. */
     public isProperName(): boolean {
         return this.#properName;
     }
 
+    /**
+     * @returns True if mob is friendly until attacked. False if it is hostile and attacks itself.
+     */
     public isFriendly(): boolean {
         return this.#friendly;
     }
 
+    /**
+     * @returns The NPC index if hirable. 0 if not hirable.
+     */
     public getNpc(): number {
         return this.#npc;
     }
 
+    /**
+     * Checks if this is a hireable NPC.
+     *
+     * @returns True if this is a hireable NPC, false if not.
+     */
+    public isHireable(): boolean {
+        return this.#npc !== 0;
+    }
+
+    /**
+     * @returns The new action class to set after the encounter. Null for none.
+     */
     public getNewActionClass(): number | null {
         return this.#newActionClass;
     }
 
+    /**
+     * @returns The new action to set after the encounter. Null for none.
+     */
     public getNewAction(): number | null {
         return this.#newAction;
     }
-
 }
