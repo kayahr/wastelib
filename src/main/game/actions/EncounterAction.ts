@@ -24,6 +24,7 @@ export class EncounterAction extends Action {
     readonly #maxGroupSize3: number;
     readonly #properName: boolean;
     readonly #friendly: boolean;
+    readonly #immobile: boolean;
     readonly #npc: number;
     readonly #newActionClass: number | null;
     readonly #newAction: number | null;
@@ -43,6 +44,7 @@ export class EncounterAction extends Action {
         maxGroupSize3: number,
         properName: boolean,
         friendly: boolean,
+        immobile: boolean,
         npc: number,
         newActionClass: number | null,
         newAction: number | null
@@ -62,6 +64,7 @@ export class EncounterAction extends Action {
         this.#maxGroupSize3 = maxGroupSize3;
         this.#properName = properName;
         this.#friendly = friendly;
+        this.#immobile = immobile;
         this.#npc = npc;
         this.#newActionClass = newActionClass;
         this.#newAction = newAction;
@@ -89,7 +92,7 @@ export class EncounterAction extends Action {
         b = reader.readUint8();
         const properName = (b & 1) === 1;
         const friendly = (b & 2) === 2;
-        // Unknown bit: b & 4;
+        const immobile = (b & 4) === 4;
         // Unknown bit: b & 8
         const npc = b >> 4;
 
@@ -112,6 +115,7 @@ export class EncounterAction extends Action {
             maxGroupSize3,
             properName,
             friendly,
+            immobile,
             npc,
             newActionClass === 255 ? null : newActionClass,
             newAction
@@ -213,6 +217,13 @@ export class EncounterAction extends Action {
      */
     public isFriendly(): boolean {
         return this.#friendly;
+    }
+
+    /**
+     * @returns True if mob is immobile and cannot move during combat.
+     */
+    public isImmobile(): boolean {
+        return this.#immobile;
     }
 
     /**
