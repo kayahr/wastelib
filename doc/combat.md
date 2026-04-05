@@ -1,7 +1,8 @@
 # Wasteland Combat
 
-This document describes the combat system as it is currently reconstructed from the original game
-data.
+This document describes the combat system as it is currently reconstructed from reverse
+engineering of the original assembly code and game data.
+It is therefore not guaranteed to be perfect and may still contain mistakes.
 
 <!--
 RE anchors for future work:
@@ -834,8 +835,7 @@ The decoded code uses two possible melee base values:
 - `50`
 - `60`
 
-Use `60` when the target enemy group is already locked into close combat with the attacker's side.
-Use `50` when the target enemy group is not already locked into that close engagement.
+The exact gameplay condition that selects between these two base values is still unclear.
 
 Player melee raw damage:
 
