@@ -3,38 +3,38 @@
  * SPDX-License-Identifier: MIT
  */
 
+import type { BinaryReader } from "../io/BinaryReader.ts";
+
 /**
  * A character skill level.
  */
 export class SkillLevel {
-    /** The skill ID. */
-    private readonly id: number;
+    readonly #id: number;
+    readonly #level: number;
 
-    /** The skill level. */
-    private readonly level: number;
+    private constructor(id: number, level: number) {
+        this.#id = id;
+        this.#level = level;
+    }
 
-    /**
-     * Creates a new skill.
-     *
-     * @param id    - The skill ID (1-35).
-     * @param level - The skill level.
-     */
-    public constructor(id: number, level: number) {
-        this.id = id;
-        this.level = level;
+    /** @internal */
+    public static read(reader: BinaryReader): SkillLevel | null {
+        const id = reader.readUint8();
+        const level = reader.readUint8();
+        return id === 0 || level === 0 ? null : new SkillLevel(id, level);
     }
 
     /**
      * @returns The skill ID (1-35).
      */
     public getId(): number {
-        return this.id;
+        return this.#id;
     }
 
     /**
-     * @returns The skill level.
+     * @returns The skill level (1-n).
      */
     public getLevel(): number {
-        return this.level;
+        return this.#level;
     }
 }

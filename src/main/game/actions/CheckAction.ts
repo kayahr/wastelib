@@ -106,48 +106,6 @@ export class CheckAction extends Action {
             }
         }
 
-        /* TODO These patches were used in wlandsuite. Really needed?
-        // Bugfix for Safe-check (5) on map 3 of game1
-        if (flags === 64 && startMessage === 31
-                && passMessage === 32 && failMessage === 0
-                && passNewActionClass === 2 && passNewAction === 35
-                && failNewActionClass === 2 && failNewAction === 35
-                && modifierTarget === 0 && modifier === 0
-                && !fixedModifier && checks.length > 2
-                && checks[2].getType() === CheckType.UNKNOWN6) {
-            checks.splice(3, 1);
-            checks.splice(2, 1);
-        }
-
-        // Bugfix for Safe-check on map 4 of game1
-        if (flags === 228 && startMessage === 65
-                && passMessage === 99 && failMessage === 0
-                && passNewActionClass === 8 && passNewAction === 5
-                && failNewActionClass === 255 && failNewAction === 0
-                && modifierTarget === 0 && modifier === 4
-                && !fixedModifier && checks.length > 2
-                && checks[2].getType() === CheckType.UNKNOWN7) {
-            const newChecks: Check[] = [];
-            newChecks.push(new Check(b2 >> 5, (checks[0].getType() << 5) | checks[0].getDifficulty(), b2 & 31));
-            const b = checks[0].getValue();
-            newChecks.push(new Check(b >> 5, (checks[1].getType() << 5) | checks[1].getDifficulty(), b & 31));
-            checks.splice(0, checks.length, ...newChecks);
-            modifier = 0;
-            failNewAction = 0xff;
-        }
-
-        // Bugfix for Barrier-check on map 7 of game2
-        if (flags === 0 && startMessage === 36 && passMessage === 0
-                && failMessage === 0 && passNewActionClass === 255
-                && passNewAction === 255 && failNewActionClass === 255
-                && failNewAction === 255 && modifierTarget === 0
-                && modifier === 0 && !fixedModifier
-                && checks.length > 2
-                && checks[2].getType() === CheckType.UNKNOWN4) {
-            throw new Error("Broken check?");
-        }
-        */
-
         return new CheckAction(
             passable,
             autoCheck,

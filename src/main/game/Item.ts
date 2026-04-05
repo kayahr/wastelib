@@ -3,39 +3,36 @@
  * SPDX-License-Identifier: MIT
  */
 
+import type { BinaryReader } from "../io/BinaryReader.ts";
+
 /**
  * An item carried by a character.
  */
 export class Item {
-    /** The item ID. */
-    private readonly id: number;
+    readonly #id: number;
+    readonly #load: number;
+    readonly #jammed: boolean;
 
-    /** The item load (ammunition). */
-    private readonly load: number;
+    private constructor(id: number, load: number, jammed: boolean) {
+        this.#id = id;
+        this.#load = load;
+        this.#jammed = jammed;
+    }
 
-    /** If item is jammed. */
-    private readonly jammed: boolean;
-
-    /**
-     * Creates a new item carried by a character.
-     *
-     * @param id      The item ID.
-     * @param load    The item load (ammunition).
-     * @param jammed  If item is jammed.
-     */
-    public constructor(id: number, load: number, jammed: boolean) {
-        this.id = id;
-        this.load = load;
-        this.jammed = jammed;
+    /** @internal */
+    public static read(reader: BinaryReader): Item | null {
+        const id = reader.readUint8();
+        const ammoAndStatus = reader.readUint8();
+        const load = ammoAndStatus & 0x7f;
+        const jammed = (ammoAndStatus & 0x80) !== 0;
+        return id === 0 ? null : new Item(id, load, jammed);
     }
 
     /**
-     * Returns the item ID.
-     *
-     * @returns the item ID.
+     * @returns The item ID.
      */
     public getId(): number {
-        return this.id;
+        return this.#id;
     }
 
     /**
@@ -45,15 +42,13 @@ export class Item {
      * @returns The item load or jam severity.
      */
     public getLoad(): number {
-        return this.load;
+        return this.#load;
     }
 
     /**
-     * Checks if item is jammed.
-     *
      * @returns True if item is jammed, false if not.
      */
     public isJammed(): boolean {
-        return this.jammed;
+        return this.#jammed;
     }
 }
