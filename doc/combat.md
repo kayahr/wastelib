@@ -147,6 +147,7 @@ Important rules:
 - when they do, their source groups are appended as separate combat groups in one shared combat side
 - those groups are not merged into one HP pool or one shared group size; they stay separate combat
   groups under the same side
+- each combat side also has a fixed combat-grid reference tile
 - a combat side has `7` group slots
 - a battle has at most `4` sides total
 - one of those sides is always the player-controlled side
@@ -251,6 +252,190 @@ For players this also explains why melee is tied to the scheduler and firearms a
 
 So manual melee is not a mysterious second subsystem floating beside the main combat loop.
 It is the dedicated phase-`3` attack subsystem for non-ranged attacks.
+
+## Enemy Movement
+
+Enemy movement is a separate subsystem from attack resolution.
+The game does not use one simple random `attack or move` roll.
+Instead, it builds automatic movement for the currently acting non-player faction, resolves the four
+combat phases, and only then commits the planned steps that are still legal.
+
+<!--
+RE anchors:
+- combat center constants: 0x8578..0x857f
+- absolute <-> relative transforms: 0x7fc7..0x7ff0
+- side record load/store: 0x6349..0x639e
+- side record bytes 8/9 loaded into 46a6/46a7, relative form in 464e/464f
+-->
+
+### Timing
+
+The flow for the currently acting non-player faction is:
+
+1. build one-step movement plans
+2. resolve phases `1..4`
+3. commit the planned moves that still have a legal destination
+
+Important consequences:
+
+- movement is deterministic in this planner; there is no `rnd` call in the move builder
+- only one tile of automatic movement can be committed for a slot in one round
+- the move is dropped if the slot died before commit time
+- the move is also dropped if the destination tile is blocked or newly occupied
+- the encounter data contains a `0x04` no-auto-move flag; when it is set, this planner skips the
+  slot entirely
+
+<!--
+RE anchors:
+- planner build: 0x4df0..0x503b
+- phase dispatch: 0x2027 -> 0x2751
+- move commit: 0x203c -> 0x5236
+- movement skip on byte9 & 0x04: 0x4e55..0x4e61
+- fallback vector build: 0x5045..0x5077
+- toward-reference mode: 0x504a
+- away-from-reference mode: 0x5045
+-->
+
+### Melee Auto-Movement
+
+Enemies with `Weapon Type == 1` use the melee auto-move branch.
+
+There are two important cases:
+
+1. A non-`Mob Type 1` melee group can flip into the `awayFromReference` fallback when its members
+   are badly wounded on average.
+2. Otherwise, melee auto-approach uses the `towardReference` fallback when the slot's stored
+   distance code is at least `16`.
+
+The wounded-group check uses the current average HP per living enemy in the group:
+
+```text
+groupAverageHP = floor(currentGroupTotalHP / currentGroupSize)
+
+if mobType != 1 and groupAverageHP < floor(sturdiness / 2):
+    use awayFromReference
+```
+
+Otherwise:
+
+```text
+if slotDistanceCode >= 16:
+    use towardReference
+else:
+    no auto-move
+```
+
+`slotDistanceCode` is a precomputed distance value stored in the runtime slot.
+Its exact conversion to displayed feet is still not fully decoded, but the threshold used by the
+movement logic is the hard value `16`.
+
+<!--
+RE anchors:
+- melee/ranged split: 0x4e7a..0x4e83
+- melee wounded fallback: 0x4e85..0x4ea2
+- melee toward-reference branch: 0x4ea5..0x4ebc -> 0x500c
+- slot distance code built at spawn/setup: 0x4744..0x4755 via 0x9f4d
+-->
+
+### Ranged And Explosive Auto-Movement
+
+Enemies with `Weapon Type == 2..13` use the ranged / explosive movement branch.
+
+This branch has two distinct behaviors:
+
+- a normal threshold-improvement branch
+- an explicit HP-based `awayFromReference` fallback
+
+#### HP-Based Retreat Branch
+
+The planner first computes two averages:
+
+```text
+groupAverageHP = floor(currentGroupTotalHP / currentGroupSize)
+partyAverageHP = floor(currentPartyTotalHP / currentPartySize)
+```
+
+Then it applies a `Mob Type` specific retreat rule:
+
+```text
+if mobType == 4:
+    if groupAverageHP < floor(partyAverageHP / 2):
+        use awayFromReference
+else if mobType == 5:
+    do not use this HP-based retreat check
+else:
+    if groupAverageHP < floor(partyAverageHP / 4):
+        use awayFromReference
+```
+
+This is the clearest confirmed source of visible enemy retreat behavior.
+It is an explicit branch in the movement planner, not a random panic roll.
+
+#### Normal Ranged Repositioning
+
+If the HP retreat check does not trigger, the planner evaluates the current position with the same
+`defenderThreshold` calculation that is used by the enemy phase-`2` ranged hit logic.
+
+This document calls that value:
+
+```text
+positionThreshold
+```
+
+Lower values are better for the attacker, because phase `2` hits on:
+
+```text
+random(1..100) >= defenderThreshold
+```
+
+The planner then compares that pure positional value against a separate AI tolerance cutoff:
+
+```text
+if mobType == 4:
+    acceptableThreshold = Combat Rating + 11
+else if mobType == 5:
+    acceptableThreshold = Combat Rating + 15
+else:
+    acceptableThreshold = Combat Rating + 7
+
+positionThreshold = current position's defenderThreshold
+
+if positionThreshold <= acceptableThreshold:
+    no auto-move
+else:
+    scan all legal neighboring tiles
+    choose the neighboring tile with the strictly lowest positionThreshold
+    move there only if it is strictly better than the current positionThreshold
+```
+
+So:
+
+- `positionThreshold` comes only from position, distance band, and attack family
+- `acceptableThreshold` is an AI cutoff, not a second distance formula
+- `Combat Rating` does not change the positional calculation itself
+- `Combat Rating` only changes how bad a position the enemy is willing to tolerate before moving
+
+Important consequences:
+
+- ordinary ranged repositioning is deterministic
+- it is based on the same threshold value that drives enemy ranged accuracy
+- it is not a generic random flee decision
+- if no legal neighbor improves the threshold, the enemy simply stays put
+
+This also means the observed "running away" behavior should not be explained as a generic
+close-range penalty for all ranged attackers.
+The confirmed retreat branch is the HP-based `awayFromReference` fallback above.
+
+<!--
+RE anchors:
+- ranged branch entry: 0x4eca
+- HP gate helper: 0x517a..0x519c
+- current group total HP helper: 0x51de..0x5233
+- current ranged score: 0x4f0a -> 0x58cb
+- acceptable score compare: 0x4f24..0x4f31
+- candidate scan / best-neighbor search: 0x4f34..0x4fe8
+- same score builder reused by enemy ranged phase: 0x2a31 -> 0x58cb
+-->
 
 ### Hire
 
