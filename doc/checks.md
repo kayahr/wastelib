@@ -1,7 +1,7 @@
 # Wasteland Checks
 
-This document describes the map-check mechanics as they are currently reconstructed from reverse
-engineering of the original assembly code and game data.
+This document describes the confirmed check-like mechanics as they are currently reconstructed from
+reverse engineering of the original assembly code and game data.
 It currently covers the confirmed behavior of:
 
 - skill checks
@@ -9,6 +9,7 @@ It currently covers the confirmed behavior of:
 - item checks
 - member-count checks
 - money-threshold checks
+- willingness/refusal checks used by NPC command and trade interactions
 
 It is therefore not guaranteed to be perfect and may still contain mistakes.
 
@@ -29,8 +30,12 @@ RE anchors for future work:
 
 ## Scope
 
-This document describes how one individual check record resolves to pass or fail once a specific
-character has already been chosen.
+This document describes how one individual map check record resolves to pass or fail once a
+specific character has already been chosen.
+
+It also documents a small set of adjacent refusal mechanics stored in character records. These are
+not encoded as normal map-check records, but they use the same threshold formula and the same
+distinct-2d6 roll.
 
 It does not yet cover:
 
@@ -483,6 +488,150 @@ function resolveMoneyThresholdCheck(characterMoney, value):
 - the surrounding action can still apply separate modifiers or redirects after the check, so this
     comparison alone does not tell you what the full gameplay outcome is
 
+## Willingness And Refusal Checks
+
+These mechanics are not normal map-check records.
+They are separate NPC interaction checks stored in the character record itself.
+
+Confirmed relevant character fields:
+
+| Offset | Meaning |
+| --- | --- |
+| `0x2B` | Item refuse |
+| `0x2C` | Skill refuse |
+| `0x2D` | Attribute refuse |
+| `0x2E` | Trade refuse |
+| `0x31` | Willingness |
+
+### Generic Refusal Formula
+
+The original game uses one shared helper for all confirmed refusal checks.
+
+Inputs:
+
+- a base score
+- one refusal byte from the target character record
+
+Resolution:
+
+1. If the refusal byte is `255`, the action is refused immediately.
+2. Roll `distinct2d6`.
+3. If `distinct2d6 < 5`, the action is refused immediately.
+4. Compute:
+
+```text
+threshold = 15 + 5 * refuseValue
+score = baseScore + distinct2d6
+```
+
+5. The action is accepted if:
+
+```text
+score >= threshold
+```
+
+Otherwise it is refused.
+
+### Refusal Field Updates
+
+The refusal byte is not a passive static value. The helper updates it after each resolved check.
+
+On failure:
+
+- increment the refusal byte by `1`
+- cap it at `10`
+
+On success:
+
+- roll `1d20`
+- if the roll is exactly `1`, decrement the refusal byte by `1`
+- do not decrement below `0`
+
+So refusal usually gets worse after failed commands and only rarely improves after successful ones.
+
+### Skill, Item, And Attribute Refusal
+
+The command-obedience checks for skill use, item use, and attribute use all feed the same base
+score into the generic refusal helper:
+
+```text
+baseScore = willingness
+```
+
+The only thing that changes is which refusal field is used:
+
+| Command type | Refusal field |
+| --- | --- |
+| Skill command | `skillRefuse` (`0x2C`) |
+| Item command | `itemRefuse` (`0x2B`) |
+| Attribute command | `attribRefuse` (`0x2D`) |
+
+So the exact command-refusal rule is:
+
+```text
+threshold = 15 + 5 * refusalField
+score = willingness + distinct2d6
+pass if score >= threshold
+fail if score < threshold
+```
+
+with the same immediate-failure rule when `distinct2d6 < 5`.
+
+These checks are only taken on the NPC command path.
+Player characters do not use this refusal branch.
+
+### Trade Refusal
+
+Trade refusal uses the same generic helper but a different base score:
+
+```text
+baseScore = initiatorCharisma
+```
+
+The refusal field is the target character's `tradeRefuse` byte.
+
+So the exact trade-refusal rule is:
+
+```text
+threshold = 15 + 5 * tradeRefuse
+score = rawCharisma + distinct2d6
+pass if score >= threshold
+fail if score < threshold
+```
+
+with the same immediate refusal when `tradeRefuse == 255` and the same `distinct2d6 < 5`
+automatic failure.
+
+So `tradeRefuse` is not driven by willingness.
+It uses raw Charisma instead.
+
+### Willingness In Hiring
+
+Willingness is also used by the hire check documented in [combat.md](combat.md).
+That mechanic is separate from the generic refusal helper.
+
+Confirmed hire rule:
+
+- if `willingness == 0`, the NPC joins immediately
+- otherwise the NPC's resistance is:
+
+```text
+npcResistance = willingness + level
+```
+
+- and the ranger's appeal is:
+
+```text
+rangerAppeal = floor((charisma + intelligence) / 2) + charisma + level + distinct2d6
+```
+
+- the NPC joins if `rangerAppeal >= npcResistance`
+
+So willingness has two confirmed gameplay roles:
+
+- as the base score for NPC item/skill/attribute command obedience
+- as part of the separate hire resistance formula
+
 ## Implementation Notes
 
 - Skill checks and normal attribute checks share the same threshold formula:
@@ -507,3 +656,13 @@ distinct2d6 < 5
 - Member checks use exact equality with party size.
 - Money-threshold checks pass only when `currentMoney < value`, where `value` is a literal dollar
     threshold `0..255`.
+- Refusal checks reuse the same threshold formula as skill and normal attribute checks:
+
+```text
+15 + 5 * difficultyLikeValue
+```
+
+- For refusal checks, the `difficultyLikeValue` is the stored refusal byte rather than a map-check
+    `difficulty` field.
+- Skill, item, and attribute refusal use `willingness` as the base score.
+- Trade refusal uses raw Charisma as the base score.

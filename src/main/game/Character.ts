@@ -262,44 +262,48 @@ export class Character {
     }
 
     /**
-     * Returns the chance of refusing an item usage. Affected by the willingness value.
+     * Returns the current item-command refusal value.
      *
-     * TODO Find out how this actually works.
+     * For NPC command checks this value is used as the threshold component in the formula
+     * `willingness + distinct2d6 >= 15 + 5 * itemRefuse`.
      *
-     * @returns The chance to refuse an item usage.
+     * @returns The current item-command refusal value.
      */
     public getItemRefuse(): number {
         return this.#itemRefuse;
     }
 
     /**
-     * Returns the chance of refusing a skill usage. Affected by the willingness value.
+     * Returns the current skill-command refusal value.
      *
-     * TODO Find out how this actually works.
+     * For NPC command checks this value is used as the threshold component in the formula
+     * `willingness + distinct2d6 >= 15 + 5 * skillRefuse`.
      *
-     * @returns The chance to refuse a skill usage.
+     * @returns The current skill-command refusal value.
      */
     public getSkillRefuse(): number {
         return this.#skillRefuse;
     }
 
     /**
-     * Returns the chance of refusing an attribute usage. Affected by the willingness value.
+     * Returns the current attribute-command refusal value.
      *
-     * TODO Find out how this actually works.
+     * For NPC command checks this value is used as the threshold component in the formula
+     * `willingness + distinct2d6 >= 15 + 5 * attribRefuse`.
      *
-     * @returns The chance to refuse an attribute usage.
+     * @returns The current attribute-command refusal value.
      */
     public getAttribRefuse(): number {
         return this.#attribRefuse;
     }
 
     /**
-     * Returns the chance of refusing to trade. Affected by the willingness value.
+     * Returns the current trade-refusal value.
      *
-     * TODO Find out how this actually works.
+     * Trade refusal uses raw Charisma as its base score, not willingness. The confirmed formula is
+     * `charisma + distinct2d6 >= 15 + 5 * tradeRefuse`.
      *
-     * @returns The chance to refuse trading.
+     * @returns The current trade-refusal value.
      */
     public getTradeRefuse(): number {
         return this.#tradeRefuse;
@@ -313,11 +317,12 @@ export class Character {
     }
 
     /**
-     * Returns the willingness to carry out a command.
+     * Returns the willingness value.
      *
-     * TODO Find out how this actually works.
+     * This value is used as the base score for NPC item, skill, and attribute command-refusal
+     * checks. It is also used separately by the hire mechanic.
      *
-     * @returns The willingness to carry out a command.
+     * @returns The willingness value.
      */
     public getWillingness(): number {
         return this.#willingness;
