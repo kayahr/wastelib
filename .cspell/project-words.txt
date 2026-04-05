@@ -38,4 +38,5 @@ unexepack
 Vitaly
 Vxor
 wastelib
+wlandsuite
 Xile

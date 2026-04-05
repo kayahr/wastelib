@@ -7,6 +7,7 @@ import type { BinaryReader } from "../io/BinaryReader.ts";
 import type { Action } from "./Action.ts";
 import { ActionClass } from "./ActionClass.ts";
 import { BlockedAction } from "./actions/BlockedAction.ts";
+import { CheckAction } from "./actions/CheckAction.ts";
 import { EncounterAction } from "./actions/EncounterAction.ts";
 import { MaskAction } from "./actions/MaskAction.ts";
 import { PrintAction } from "./actions/PrintAction.ts";
@@ -38,6 +39,9 @@ export class Actions {
 
             case ActionClass.BLOCKED:
                 return BlockedAction.read(reader);
+
+            case ActionClass.CHECK:
+                return CheckAction.read(reader);
 
             case ActionClass.TRANSITION:
                 return TransitionAction.read(reader);
