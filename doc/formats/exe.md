@@ -76,6 +76,42 @@ The sizes above are the raw encoded byte spans inside the executable, not decode
 
 The executable also contains the tables needed to parse `GAME1` and `GAME2`.
 
+### Encounter Mob Sprite Mapping
+
+Location:
+
+```text
+0x17A37
+```
+
+Format:
+
+```text
+u8 mobSpriteMap[6]
+```
+
+Interpretation:
+
+- index `0` is the empty sentinel
+- indices `1..5` are the map mob types from [Map Format](map.md)
+- each value is the sprite index in `IC0_9.WLF` used when encounter actions are rendered on the map
+
+Observed values in the shipped executable:
+
+```text
+[0, 6, 3, 4, 2, 1]
+```
+
+So the shipped game maps mob type to map sprite like this:
+
+- `1 (Animal)` -> `6`
+- `2 (Mutant)` -> `3`
+- `3 (Humanoid)` -> `4`
+- `4 (Cyborg)` -> `2`
+- `5 (Robot)` -> `1`
+
+This table is used for encounter-action map sprites, not for portrait selection.
+
 ### Map Offset Table
 
 Location:

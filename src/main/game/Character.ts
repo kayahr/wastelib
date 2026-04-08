@@ -10,307 +10,237 @@ import { SkillLevel } from "./SkillLevel.ts";
 import { Item } from "./Item.ts";
 
 /**
- * Reads the skill list from the given reader. Reads 60 bytes in total but only returns the occupied skill slots.
- *
- * @param reader - The reader to read the skills from.
- * @returns The read skills.
- */
-function readSkills(reader: BinaryReader): SkillLevel[] {
-    const skills: SkillLevel[] = [];
-    for (let i = 0; i < 30; ++i) {
-        const id = reader.readUint8();
-        const level = reader.readUint8();
-        if (id) {
-            skills.push(new SkillLevel(id, level));
-        }
-    }
-    return skills;
-}
-
-/**
- * Reads the item list from the given reader. Reads 60 bytes in total but only returns the occupied item slots.
- *
- * @param reader - The reader to read the items from.
- * @returns The read items.
- */
-function readItems(reader: BinaryReader): Item[] {
-    const items: Item[] = [];
-    for (let i = 0; i < 30; ++i) {
-        const id = reader.readUint8();
-        const ammoAndStatus = reader.readUint8();
-        const load = ammoAndStatus & 0x7f;
-        const jammed = (ammoAndStatus & 0x80) !== 0;
-        if (id) {
-            items.push(new Item(id, load, jammed));
-        }
-    }
-    return items;
-}
-
-/**
  * Character data used for player characters and NPCs.
- *
- * TODO Add setters for all the data.
  *
  * @see https://wasteland.gamepedia.com/Character_Data
  */
 export class Character {
-    private readonly name: string;
-    private readonly strength: number;
-    private readonly intelligence: number;
-    private readonly luck: number;
-    private readonly speed: number;
-    private readonly agility: number;
-    private readonly dexterity: number;
-    private readonly charisma: number;
-    private readonly money: number;
-    private readonly gender: Gender;
-    private readonly nationality: Nationality;
-    private readonly armorClass: number;
-    private readonly maxCon: number;
-    private readonly curCon: number;
-    private readonly weapon: number;
-    private readonly skillPoints: number;
-    private readonly experience: number;
-    private readonly level: number;
-    private readonly armor: number;
-    private readonly lastCon: number;
-    private readonly afflictions: number;
-    private readonly npc: boolean;
-    private readonly itemRefuse: number;
-    private readonly skillRefuse: number;
-    private readonly attribRefuse: number;
-    private readonly tradeRefuse: number;
-    private readonly joinString: number;
-    private readonly willingness: number;
-    private readonly rank: string;
-    private readonly gameWon: boolean;
-    private readonly specialPromotion: boolean;
-    private readonly skills: SkillLevel[];
-    private readonly items: Item[];
+    readonly #name: string;
+    readonly #strength: number;
+    readonly #intelligence: number;
+    readonly #luck: number;
+    readonly #speed: number;
+    readonly #agility: number;
+    readonly #dexterity: number;
+    readonly #charisma: number;
+    readonly #money: number;
+    readonly #gender: Gender;
+    readonly #nationality: Nationality;
+    readonly #armorClass: number;
+    readonly #maxCon: number;
+    readonly #curCon: number;
+    readonly #weapon: number;
+    readonly #skillPoints: number;
+    readonly #experience: number;
+    readonly #level: number;
+    readonly #armor: number;
+    readonly #lastCon: number;
+    readonly #afflictions: number;
+    readonly #npc: boolean;
+    readonly #itemRefuse: number;
+    readonly #skillRefuse: number;
+    readonly #attribRefuse: number;
+    readonly #tradeRefuse: number;
+    readonly #joinMessageIndex: number;
+    readonly #willingness: number;
+    readonly #rank: string;
+    readonly #gameWon: boolean;
+    readonly #specialPromotion: boolean;
+    readonly #skills: SkillLevel[] = [];
+    readonly #items: Item[] = [];
 
     /**
      * @internal
      */
     public constructor(reader: BinaryReader) {
-        this.name = reader.readNullString(14);
-        this.strength = reader.readUint8();
-        this.intelligence = reader.readUint8();
-        this.luck = reader.readUint8();
-        this.speed = reader.readUint8();
-        this.agility = reader.readUint8();
-        this.dexterity = reader.readUint8();
-        this.charisma = reader.readUint8();
-        this.money = reader.readUint24();
-        this.gender = reader.readUint8() as Gender;
-        this.nationality = reader.readUint8() as Nationality;
-        this.armorClass = reader.readUint8();
-        this.maxCon = reader.readUint16();
-        this.curCon = reader.readUint16();
-        this.weapon = reader.readUint8();
-        this.skillPoints = reader.readUint8();
-        this.experience = reader.readUint24();
-        this.level = reader.readUint8();
-        this.armor = reader.readUint8();
-        this.lastCon = reader.readUint16();
-        this.afflictions = reader.readUint8();
-        this.npc = reader.readUint8() === 1;
+        this.#name = reader.readNullString(14);
+        this.#strength = reader.readUint8();
+        this.#intelligence = reader.readUint8();
+        this.#luck = reader.readUint8();
+        this.#speed = reader.readUint8();
+        this.#agility = reader.readUint8();
+        this.#dexterity = reader.readUint8();
+        this.#charisma = reader.readUint8();
+        this.#money = reader.readUint24();
+        this.#gender = reader.readUint8() as Gender;
+        this.#nationality = reader.readUint8() as Nationality;
+        this.#armorClass = reader.readUint8();
+        this.#maxCon = reader.readUint16();
+        this.#curCon = reader.readUint16();
+        this.#weapon = reader.readUint8();
+        this.#skillPoints = reader.readUint8();
+        this.#experience = reader.readUint24();
+        this.#level = reader.readUint8();
+        this.#armor = reader.readUint8();
+        this.#lastCon = reader.readUint16();
+        this.#afflictions = reader.readUint8();
+        this.#npc = reader.readUint8() === 1;
         reader.skip(1); // Skip unknown byte at 0x2a
-        this.itemRefuse = reader.readUint8();
-        this.skillRefuse = reader.readUint8();
-        this.attribRefuse = reader.readUint8();
-        this.tradeRefuse = reader.readUint8();
+        this.#itemRefuse = reader.readUint8();
+        this.#skillRefuse = reader.readUint8();
+        this.#attribRefuse = reader.readUint8();
+        this.#tradeRefuse = reader.readUint8();
         reader.skip(1); // Skip unknown byte at 0x2f
-        this.joinString = reader.readUint8();
-        this.willingness = reader.readUint8();
-        this.rank = reader.readNullString(25);
-        this.gameWon = reader.readUint8() === 1;
-        this.specialPromotion = reader.readUint8() === 1;
+        this.#joinMessageIndex = reader.readUint8();
+        this.#willingness = reader.readUint8();
+        this.#rank = reader.readNullString(25);
+        this.#gameWon = reader.readUint8() === 1;
+        this.#specialPromotion = reader.readUint8() === 1;
         reader.skip(51) // Skip 51 unknown bytes from 0x4d - 0x7f
-        this.skills = readSkills(reader);
+        for (let i = 0; i < 30; ++i) {
+            const skill = SkillLevel.read(reader);
+            if (skill != null) {
+                this.#skills.push(skill);
+            }
+        }
         reader.skip(1); // Skip unknown byte at 0xbc
-        this.items = readItems(reader);
+        for (let i = 0; i < 30; ++i) {
+            const item = Item.read(reader);
+            if (item != null) {
+                this.#items.push(item);
+            }
+        }
         reader.skip(7); // Skip 7 unknown bytes at 0xf9 - 0xff
     }
 
     /**
-     * Returns the character name. NPC names are always upper-case.
-     *
-     * @returns The character name.
+     * @returns The character name. NPC names are always upper-case.
      */
     public getName(): string {
-        return this.name;
+        return this.#name;
     }
 
     /**
-     * Returns the strength.
-     *
-     * @returns The strength.
+     * @returns The strength attribute value.
      */
     public getStrength(): number {
-        return this.strength;
+        return this.#strength;
     }
 
     /**
-     * Returns the intelligence.
-     *
-     * @returns The intelligence.
+     * @returns The intelligence attribute value.
      */
     public getIntelligence(): number {
-        return this.intelligence;
+        return this.#intelligence;
     }
 
     /**
-     * Returns the luck.
-     *
-     * @returns The luck.
+     * @returns The luck attribute value.
      */
     public getLuck(): number {
-        return this.luck;
+        return this.#luck;
     }
 
     /**
-     * Returns the speed.
-     *
-     * @returns The speed.
+     * @returns The speed attribute value.
      */
     public getSpeed(): number {
-        return this.speed;
+        return this.#speed;
     }
 
     /**
-     * Returns the agility.
-     *
-     * @returns The agility.
+     * @returns The agility attribute value.
      */
     public getAgility(): number {
-        return this.agility;
+        return this.#agility;
     }
 
     /**
-     * Returns the dexterity.
-     *
-     * @returns The dexterity.
+     * @returns The dexterity attribute value.
      */
     public getDexterity(): number {
-        return this.dexterity;
+        return this.#dexterity;
     }
 
     /**
-     * Returns the charisma.
-     *
-     * @returns The charisma.
+     * @returns The charisma attribute value.
      */
     public getCharisma(): number {
-        return this.charisma;
+        return this.#charisma;
     }
 
     /**
-     * Returns the amount of dollars the character owns.
-     *
      * @returns The amount of dollars.
      */
     public getMoney(): number {
-        return this.money;
+        return this.#money;
     }
 
     /**
-     * Returns the gender.
-     *
      * @returns The gender.
      */
     public getGender(): Gender {
-        return this.gender;
+        return this.#gender;
     }
 
     /**
-     * Returns the nationality.
-     *
      * @returns The nationality.
      */
     public getNationality(): Nationality {
-        return this.nationality;
+        return this.#nationality;
     }
 
     /**
-     * Returns the armor class.
-     *
      * @returns The armor class.
      */
     public getArmorClass(): number {
-        return this.armorClass;
+        return this.#armorClass;
     }
 
     /**
-     * Returns the maximum constitution.
-     *
      * @returns The maximum constitution.
      */
     public getMaxCon(): number {
-        return this.maxCon;
+        return this.#maxCon;
     }
 
     /**
-     * Returns the current constitution.
-     *
      * @returns The current constitution.
      */
     public getCon(): number {
-        return this.curCon;
+        return this.#curCon;
     }
 
     /**
-     * Returns the item index of the equipped weapon. The index starts with 1. 0 means no weapon is equipped.
-     *
-     * @returns The item index of the equipped weapon. 0 if none.
+     * @returns The item index of the equipped weapon. The index starts with 1. 0 means no weapon is equipped.
      */
     public getWeapon(): number {
-        return this.weapon;
+        return this.#weapon;
     }
 
     /**
-     * Returns the number of unspent skill points.
-     *
      * @returns The number of unspent skill points.
      */
     public getSkillPoints(): number {
-        return this.skillPoints;
+        return this.#skillPoints;
     }
 
     /**
-     * Returns the experience points.
-     *
      * @returns The experience points.
      */
     public getExperience(): number {
-        return this.experience;
+        return this.#experience;
     }
 
     /**
-     * Returns the level.
-     *
-     * @returns The level.
+     * @returns The character level.
      */
     public getLevel(): number {
-        return this.level;
+        return this.#level;
     }
 
     /**
-     * Returns the item index of the equipped armor. The index starts with 1. 0 means no armor is equipped.
-     *
-     * @returns The item index of the equipped armor. 0 if none.
+     * @returns The item index of the equipped armor. The index starts with 1. 0 means no armor is equipped.
      */
     public getArmor(): number {
-        return this.armor;
+        return this.#armor;
     }
 
     /**
-     * Returns the last constitution before the player went unconscious or worse.
-     *
-     * @returns The last recorded constitution.
+     * @returns The last constitution before the player went unconscious or worse.
      */
     public getLastCon(): number {
-        return this.lastCon;
+        return this.#lastCon;
     }
 
     /**
@@ -321,124 +251,115 @@ export class Character {
      * @returns The afflictions.
      */
     public getAfflictions(): number {
-        return this.afflictions;
+        return this.#afflictions;
     }
 
     /**
-     * Checks if character is an NPC.
-     *
-     * @returns True if NPC, false if player character.
+     * @returns True if this character is an NPC, false if player character.
      */
     public isNPC(): boolean {
-        return this.npc;
+        return this.#npc;
     }
 
     /**
-     * Returns the chance of refusing an item usage. Affected by the willingness value.
+     * Returns the current item-command refusal value.
      *
-     * TODO Find out how this actually works.
+     * For NPC command checks this value is used as the threshold component in the formula
+     * `willingness + distinct2d6 >= 15 + 5 * itemRefuse`.
      *
-     * @returns The chance to refuse an item usage.
+     * @returns The current item-command refusal value.
      */
     public getItemRefuse(): number {
-        return this.itemRefuse;
+        return this.#itemRefuse;
     }
 
     /**
-     * Returns the chance of refusing a skill usage. Affected by the willingness value.
+     * Returns the current skill-command refusal value.
      *
-     * TODO Find out how this actually works.
+     * For NPC command checks this value is used as the threshold component in the formula
+     * `willingness + distinct2d6 >= 15 + 5 * skillRefuse`.
      *
-     * @returns The chance to refuse a skill usage.
+     * @returns The current skill-command refusal value.
      */
     public getSkillRefuse(): number {
-        return this.skillRefuse;
+        return this.#skillRefuse;
     }
 
     /**
-     * Returns the chance of refusing an attribute usage. Affected by the willingness value.
+     * Returns the current attribute-command refusal value.
      *
-     * TODO Find out how this actually works.
+     * For NPC command checks this value is used as the threshold component in the formula
+     * `willingness + distinct2d6 >= 15 + 5 * attribRefuse`.
      *
-     * @returns The chance to refuse an attribute usage.
+     * @returns The current attribute-command refusal value.
      */
     public getAttribRefuse(): number {
-        return this.attribRefuse;
+        return this.#attribRefuse;
     }
 
     /**
-     * Returns the chance of refusing to trade. Affected by the willingness value.
+     * Returns the current trade-refusal value.
      *
-     * TODO Find out how this actually works.
+     * Trade refusal uses raw Charisma as its base score, not willingness. The confirmed formula is
+     * `charisma + distinct2d6 >= 15 + 5 * tradeRefuse`.
      *
-     * @returns The chance to refuse trading.
+     * @returns The current trade-refusal value.
      */
     public getTradeRefuse(): number {
-        return this.tradeRefuse;
+        return this.#tradeRefuse;
     }
 
     /**
-     * Returns the string ID of the join message.
-     *
      * @returns The string ID of the join message.
      */
-    public getJoinString(): number {
-        return this.joinString;
+    public getJoinMessageIndex(): number {
+        return this.#joinMessageIndex;
     }
 
     /**
-     * Returns the willingness to carry out a command.
+     * Returns the willingness value.
      *
-     * TODO Find out how this actually works.
+     * This value is used as the base score for NPC item, skill, and attribute command-refusal
+     * checks. It is also used separately by the hire mechanic.
      *
-     * @returns The willingness to carry out a command.
+     * @returns The willingness value.
      */
     public getWillingness(): number {
-        return this.willingness;
+        return this.#willingness;
     }
 
     /**
-     * Returns the rank name.
-     *
      * @returns The rank name.
      */
     public getRank(): string {
-        return this.rank;
+        return this.#rank;
     }
 
     /**
-     * Checks if character has won the game.
-     *
      * @returns True if character has won the game, false if not.
      */
     public isGameWon(): boolean {
-        return this.gameWon;
+        return this.#gameWon;
     }
 
     /**
-     * Checks if character has received the special promotion after the end of the game.
-     *
      * @returns True if character has received the special promotion, false if not.
      */
     public isSpecialPromotion(): boolean {
-        return this.specialPromotion;
+        return this.#specialPromotion;
     }
 
     /**
-     * Returns the skills.
-     *
-     * @returns The skills.
+     * @returns The skill levels.
      */
     public getSkills(): SkillLevel[] {
-        return this.skills;
+        return this.#skills;
     }
 
     /**
-     * Returns the items.
-     *
-     * @returns The items.
+     * @returns The list of carried items.
      */
     public getItems(): Item[] {
-        return this.items;
+        return this.#items.slice();
     }
 }

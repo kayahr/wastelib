@@ -201,8 +201,10 @@ Slot semantics:
 
 - `id = 0` means unused
 - otherwise the slot is occupied
-- bits `0..6` of the second byte store the current ammo / load value
-- bit `7` of the second byte stores the jammed-weapon flag
+- bit `7` of the second byte indicates whether the equipped weapon is jammed
+- if bit `7` is clear, bits `0..6` store the current ammo / load value
+- if bit `7` is set, the byte no longer represents usable ammo; observed jammed values are
+  `0x80..0x85`, where the low bits encode a jam severity from `0` to `5`
 
 ## Validation Notes
 

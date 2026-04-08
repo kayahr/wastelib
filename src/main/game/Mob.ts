@@ -5,43 +5,44 @@
 
 import type { MobType } from "./MobType.ts";
 import type { BinaryReader } from "../io/BinaryReader.ts";
+import type { ItemType } from "./ItemType.ts";
 
 /**
  * Mob stats.
  *
- * @see https://wasteland.gamepedia.com/Map_Data_Monster_Body
+ * @see https://wasteland.fandom.com/wiki/Map_Data_Monster_Body
  */
 export class Mob {
-    private readonly hitPoints: number;
-    private readonly hitChance: number;
+    private readonly sturdiness: number;
+    private readonly combatRating: number;
     private readonly randomDamage: number;
     private readonly maxGroupSize: number;
     private readonly armorClass: number;
     private readonly fixedDamage: number;
-    private readonly damageType: number;
+    private readonly weaponType: ItemType;
     private readonly mobType: MobType;
     private readonly portrait: number;
     private readonly name: string;
 
     private constructor(
-        hitPoints: number,
-        hitChance: number,
+        sturdiness: number,
+        combatRating: number,
         randomDamage: number,
         maxGroupSize: number,
         armorClass: number,
         fixedDamage: number,
-        damageType: number,
+        weaponType: ItemType,
         mobType: MobType,
         portrait: number,
         name: string
     ) {
-        this.hitPoints = hitPoints;
-        this.hitChance = hitChance;
+        this.sturdiness = sturdiness;
+        this.combatRating = combatRating;
         this.randomDamage = randomDamage;
         this.maxGroupSize = maxGroupSize;
         this.armorClass = armorClass;
         this.fixedDamage = fixedDamage;
-        this.damageType = damageType;
+        this.weaponType = weaponType;
         this.mobType = mobType;
         this.portrait = portrait;
         this.name = name;
@@ -57,65 +58,75 @@ export class Mob {
      * @internal
      */
     public static read(reader: BinaryReader, name: string): Mob {
-        const hitPoints = reader.readUint16();
-        const hitChance = reader.readUint8();
+        const sturdiness = reader.readUint16();
+        const combatRating = reader.readUint8();
         const randomDamage = reader.readUint8();
         const maxGroupSize = reader.readBits(4);
         const armorClass = reader.readBits(4);
         const fixedDamage = reader.readBits(4);
-        const damageType = reader.readBits(4);
+        const weaponType = reader.readBits(4) as ItemType;
         const mobType = reader.readUint8() as MobType;
         const portrait = reader.readUint8();
-        return new Mob(hitPoints, hitChance, randomDamage, maxGroupSize, armorClass, fixedDamage, damageType, mobType,
+        return new Mob(sturdiness, combatRating, randomDamage, maxGroupSize, armorClass, fixedDamage, weaponType, mobType,
             portrait, name);
     }
 
     /**
-     * Returns the base hit points of the mob. This is used to calculate the minimum and maximum number of hit points
-     * and also the experience points the player gets when killing the mob.
+     * Returns the sturdiness value of the mob. This is the raw seed used for both hit point rolls and the awarded
+     * experience points.
      *
-     * @returns The base hit points.
+     * @returns The sturdiness value.
      */
-    public getHitPoints(): number {
-        return this.hitPoints;
+    public getSturdiness(): number {
+        return this.sturdiness;
     }
 
     /**
-     * Returns the minimum number of hit points. This is calculated by dividing the base hit points by four. Well,
-     * at least I think so. The Deconstruction Wiki says "([B1:B0] / 4) + (rnd B1)(rnd B0)" but it's unclear how
-     * "rnd" works and if the minimum value it returns is 0 or 1.
-     *
-     * TODO Go and find a good opponent, kill it over and over again and check how many minimum hit points it really
-     * has.
+     * Returns the minimum number of hit points a spawned mob instance can have. Hit points are rolled as
+     * `floor(sturdiness / 4) + ((rnd(highByte) << 8) | rnd(lowByte))` with `rnd(0) = 0`, `rnd(1) = 1` and
+     * `rnd(n >= 2) = 1..n`.
      *
      * @returns The minimum number of hit points.
      */
     public getMinHitPoints(): number {
-        return this.hitPoints >> 2;
+        const lowByte = this.sturdiness & 0xff;
+        const highByte = this.sturdiness >> 8;
+        return (this.sturdiness >> 2) + (lowByte === 0 ? 0 : 1) + (highByte === 0 ? 0 : 0x100);
     }
 
     /**
-     * Returns the maximum number of hit points. This is calculated by dividing the base hit points by four and then
-     * adding the base hit points again. Well, at least I think so. The Deconstruction Wiki says
-     * "([B1:B0] / 4) + (rnd B1)(rnd B0)" but it's unclear how rnd works.
-     *
-     * TODO Go and find a good opponent, kill it over and over again and check how many maximum hit points it really
-     * has.
+     * Returns the maximum number of hit points a spawned mob instance can have. Hit points are rolled as
+     * `floor(sturdiness / 4) + ((rnd(highByte) << 8) | rnd(lowByte))` with `rnd(0) = 0`, `rnd(1) = 1` and
+     * `rnd(n >= 2) = 1..n`.
      *
      * @returns The maximum number of hit points.
      */
     public getMaxHitPoints(): number {
-        return (this.hitPoints >> 2) + this.hitPoints;
+        return (this.sturdiness >> 2) + this.sturdiness;
     }
 
     /**
-     * Returns the hit chance of the mob. The higher this number is the better chance of hitting the target.
-     * Unfortunately it's unknown how this actually works.
+     * Rolls the hit points for a spawned mob instance using the same byte-wise logic as the game:
+     * `floor(sturdiness / 4) + ((rnd(highByte) << 8) | rnd(lowByte))`.
+     * Randomness is sourced from `Math.random()`.
      *
-     * @returns The hit chance.
+     * @returns The rolled hit points.
      */
-    public getHitChance(): number {
-        return this.hitChance;
+    public rollHitPoints(): number {
+        const lowByte = this.sturdiness & 0xff;
+        const highByte = this.sturdiness >> 8;
+        const lowRoll = Mob.rollByte(lowByte);
+        const highRoll = Mob.rollByte(highByte);
+        return (this.sturdiness >> 2) + (highRoll << 8) + lowRoll;
+    }
+
+    /**
+     * The overall combat rating of the mob. See `combat.md` for details.
+     *
+     * @returns The combat rating.
+     */
+    public getCombatRating(): number {
+        return this.combatRating;
     }
 
     /**
@@ -155,17 +166,13 @@ export class Mob {
     }
 
     /**
-     * Returns the damage type. Unclear how this actually works in combat.
-     *
-     * @returns The damage type.
+     * @returns The weapon type.
      */
-    public getDamageType(): number {
-        return this.damageType;
+    public getWeaponType(): number {
+        return this.weaponType;
     }
 
     /**
-     * Returns the mob type.
-     *
      * @returns The mob type.
      */
     public getMobType(): MobType {
@@ -173,9 +180,7 @@ export class Mob {
     }
 
     /**
-     * Returns the portrait number to display for this mob.
-     *
-     * @returns The portrait number to display.
+     * @returns The portrait number to display for this mob.
      */
     public getPortrait(): number {
         return this.portrait;
@@ -194,11 +199,21 @@ export class Mob {
 
     /**
      * Returns the number of experience points the player gets when killing this mob. This is calculated by
-     * multiplying the base hit points with the armor class plus 1.
+     * multiplying the sturdiness by the armor class plus 1.
      *
      * @returns The number of XP.
      */
     public getExperience(): number {
-        return this.hitPoints * (this.armorClass + 1);
+        return this.sturdiness * (this.armorClass + 1);
+    }
+
+    /**
+     * Emulates the game's `rnd` helper for a single byte.
+     */
+    private static rollByte(max: number): number {
+        if (max <= 1) {
+            return max;
+        }
+        return Math.min(max - 1, Math.floor(Math.random() * max)) + 1;
     }
 }

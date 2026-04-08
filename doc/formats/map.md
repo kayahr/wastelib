@@ -254,15 +254,24 @@ At `mobDataOffset`, the map stores `numMobs` monster records of `8` bytes each:
 
 | Offset within record | Type | Meaning |
 | --- | --- | --- |
-| `+0x00` | `u16` | Base hit points |
-| `+0x02` | `u8` | Hit chance |
+| `+0x00` | `u16` | Sturdiness (HP/XP seed) |
+| `+0x02` | `u8` | Combat rating |
 | `+0x03` | `u8` | Random damage in D6 |
 | `+0x04` | high nibble of `u8` | Max group size |
 | `+0x04` | low nibble of `u8` | Armor class |
 | `+0x05` | high nibble of `u8` | Fixed damage |
-| `+0x05` | low nibble of `u8` | Damage type |
+| `+0x05` | low nibble of `u8` | Weapon type |
 | `+0x06` | `u8` | Monster type |
 | `+0x07` | `u8` | Portrait index |
+
+Derived values:
+
+- Hit points are rolled separately for each spawned enemy as
+  `floor(sturdiness / 4) + ((rnd(highByte) << 8) | rnd(lowByte))`.
+- `rnd(0) = 0`, `rnd(1) = 1`, and `rnd(n >= 2)` returns a uniform value in `1..n`.
+- Experience for killing the monster is `sturdiness * (armorClass + 1)`.
+- The low nibble of byte `+0x04` is therefore both armor class and the experience multiplier
+  offset, with `0 => *1`, `1 => *2`, and so on.
 
 ### String Section
 
