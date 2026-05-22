@@ -28,7 +28,7 @@ export class Actions {
      *
      * @internal
      */
-    static createEmpty(): Actions {
+    public static createEmpty(): Actions {
         return new Actions([]);
     }
 
