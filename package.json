@@ -57,7 +57,7 @@
         "@kayahr/typedoc": "0.28.19-bundle.1",
         "@types/node": "25.9.2",
         "@types/pngjs": "6.0.5",
-        "esbuild": "0.28.0",
+        "esbuild": "0.28.1",
         "pixelmatch": "7.2.0",
         "pngjs": "7.0.0",
         "typescript": "6.0.3"
