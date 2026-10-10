@@ -58,7 +58,7 @@
         "@types/node": "26.2.0",
         "@types/pngjs": "6.0.5",
         "esbuild": "0.28.2",
-        "pixelmatch": "7.2.0",
+        "pixelmatch": "8.0.0",
         "pngjs": "7.0.0",
         "typescript": "7.0.2"
     },
